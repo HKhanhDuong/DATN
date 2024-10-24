@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
 <meta charset="UTF-8" />
@@ -32,7 +32,7 @@
 					<li><a href="#!">Khuyến Mãi</a></li>
 					<div class="menu-line"></div>
 					<li><a href="rigister.html" class="register-link">Đăng ký</a></li>
-					<li><a href="Login.html" class="border">Đăng nhập</a></li>
+					<li><a href="/Login" class="border">Đăng nhập</a></li>
 				</ul>
 				<div class="menu-mobile">
 					<div class="wrap-svg tab-menu">
@@ -67,14 +67,45 @@
 							alt="Ảnh Xe Chính" loading="lazy" />
 					</div>
 				</div>
-				<div class="sub-img">
+				<!-- Hiển thị ảnh -->
+<script th:inline="javascript">
+    // Hàm tách chuỗi URL thành mảng
+    function splitImageUrls(imageUrls) {
+        if (!imageUrls || typeof imageUrls !== 'string') {
+            return [];
+        }
+        return imageUrls.split(',').map(url => url.trim());
+    }
+
+    // Lấy chuỗi URL ảnh từ Thymeleaf và xử lý thành mảng
+    const imageUrlsString = /*[[${car.imageUrl}]]*/ ''; // Giá trị từ Thymeleaf (giả sử car.imageUrl là một chuỗi)
+    const imageUrlsArray = splitImageUrls(imageUrlsString);
+    console.log(imageUrlsArray); // Hiển thị mảng URL ảnh trong console để kiểm tra
+</script>
+
+<!-- Hiển thị ảnh -->
+<script th:inline="javascript">
+						    function splitImageUrls(imageUrls) {
+						        if (!imageUrls || typeof imageUrls !== 'string') {
+						            return [];
+						        }
+						        return imageUrls.split(',').map(url => url.trim());
+						    }
+						
+						    const imageUrlsString = [[${car.imageUrl}]]; // Giá trị từ Thymeleaf
+						    const imageUrlsArray = splitImageUrls(imageUrlsString);
+						    console.log(imageUrlsArray); // Kết quả sẽ là mảng với giá trị thực tế
+						</script> lấy ảnh lên từ csdl <div class="sub-img">
 					<div th:each="image : ${car.imageUrl}" class="cover-car-item">
 						<img th:src="@{'/assets/images/car/' + ${image}}" alt="Ảnh Xe Phụ"
 							loading="lazy" />
 					</div>
 				</div>
+
+
 				<div class="see-more-img">
 					<div class="wrap-svg">
+					
 						<svg width="24" height="24" viewBox="0 0 24 24" fill="none"
 							xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -114,8 +145,7 @@
 				</div>
 				<!-- Ảnh lớn hiển thị ngay lập tức -->
 				<div class="modal-main-image">
-					<img id="zoomedImage"
-						src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/toyota_veloz_cross_2022/p/g/2024/02/26/08/N_RalqcAaKEe12XDf5FfqA.jpg"
+					<img th:src="@{'/assets/images/car/' + ${car.imageUrl}}"
 						alt="Zoomed Image">
 				</div>
 				<div class="arrow right-arrow">
@@ -127,20 +157,13 @@
 				</div>
 				<!-- Các ảnh nhỏ bên dưới -->
 				<div class="modal-thumbnails">
-					<img class="thumbnail"
-						src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/toyota_veloz_cross_2022/p/g/2024/02/26/08/N_RalqcAaKEe12XDf5FfqA.jpg"
-						alt="Thumbnail 1"> <img class="thumbnail"
-						src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/toyota_veloz_cross_2022/p/g/2024/05/28/14/oxKE3ZN09CO9ZqwcOqXjvg.jpg"
-						alt="Thumbnail 2"> <img class="thumbnail"
-						src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/toyota_veloz_cross_2022/p/g/2024/02/26/08/YUs0_CMjj8F0Hq2e57DCzA.jpg"
-						alt="Thumbnail 3"> <img class="thumbnail"
-						src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/toyota_veloz_cross_2022/p/g/2024/05/28/14/oxKE3ZN09CO9ZqwcOqXjvg.jpg"
-						alt="Thumbnail 4">
+					<img th:src="@{'/assets/images/car/' + ${car.imageUrl}}" class="thumbnail" alt="Thumbnail 1">
+					<img th:src="@{'/assets/images/car/' + ${car.imageUrl}}" class="thumbnail" alt="Thumbnail 2">
+					<img th:src="@{'/assets/images/car/' + ${car.imageUrl}}" class="thumbnail" alt="Thumbnail 3"> \
+					<img th:src="@{'/assets/images/car/' + ${car.imageUrl}}" class="thumbnail" alt="Thumbnail 4">
 				</div>
 			</div>
 		</div>
-
-
 
 		<div
 			covers="[object Object],[object Object],[object Object],[object Object]">
@@ -881,7 +904,7 @@
 							<div class="price-discount">
 								<!-- Giá gốc (dailyRate * 1.1) -->
 								<p class="origin">
-									<span th:text="${car.dailyRate * 1.1}">985K</span>
+									<span th:text="${#numbers.formatDecimal(car.dailyRate * 1.1, 0, 3)}"></span>
 								</p>
 								<!-- Thẻ giảm giá -->
 								<span class="tag-item discount">-14%</span>
@@ -890,7 +913,7 @@
 							<!-- Tính giá sau khi giảm -->
 							<h4>
 								<!-- Giá đã giảm = giá gốc - (giá gốc * 14%) -->
-								<span th:text="${(car.dailyRate * 1.1) * (1 - 0.14)}">865K</span>
+								<span th:text="${#numbers.formatDecimal((car.dailyRate * 1.1) * (1 - 0.14), 0, 3)}"></span>
 								<span class="inner-h"> /ngày</span>
 							</h4>
 						</div>
@@ -977,7 +1000,7 @@
                                             </svg></span></span>
 								</p>
 								<p class="cost">
-									<span>984 984đ/ ngày</span>
+									<span th:text="${#numbers.formatDecimal((car.dailyRate * 1.1) * (1 - 0.14), 0, 3)}"></span>
 								</p>
 							</div>
 							<div class="price-item">
@@ -1007,7 +1030,7 @@
 							<div class="price-item">
 								<p>Tổng cộng</p>
 								<p class="cost">
-									<span>1 073 358đ </span>x 1 ngày
+								    <span th:text="${#numbers.formatDecimal((car.dailyRate * 1.1) * (1 - 0.14) + 88374, 0, 3)}"></span> x 1 ngày
 								</p>
 							</div>
 							<div class="line-page"></div>
@@ -1071,7 +1094,7 @@
 							<div class="price-item total">
 								<p>Thành tiền</p>
 								<p class="cost">
-									<span>953 358đ</span>
+									<span th:text="${#numbers.formatDecimal((car.dailyRate * 1.1) * (1 - 0.14) + 88374, 0, 3)}"></span>
 								</p>
 							</div>
 						</div>
@@ -1378,7 +1401,8 @@
                 }
             };
         });
-       
+
+        
 
     </script>
 
