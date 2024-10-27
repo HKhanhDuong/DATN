@@ -62,7 +62,7 @@ public class DetailVehicleController {
             return "error-page";  // Trả về trang lỗi
         }
 
-        return "car-details2";  // Trả về trang chi tiết xe
+        return "motorbikes-details";  // Trả về trang chi tiết xe
     }
 }
 
