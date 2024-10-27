@@ -67,8 +67,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-
-
 // Xử lí modal giờ nhận trả xe
 var modal = document.getElementById("uniqueModal");
 var closeButton = document.querySelector(".unique-modal-close");

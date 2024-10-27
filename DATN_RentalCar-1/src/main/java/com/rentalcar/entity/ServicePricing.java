@@ -40,7 +40,7 @@ public class ServicePricing {
     @Column(precision = 5, scale = 2)
     private BigDecimal percentDiscount;
 
-    @Column(length = 255)
+    @Column(length = 255, columnDefinition = "NVARCHAR(255)")
     private String description;
 
     // Getters and Setters

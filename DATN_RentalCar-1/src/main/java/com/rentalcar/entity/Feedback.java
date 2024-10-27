@@ -27,7 +27,7 @@ public class Feedback {
     @Column(nullable = false)
     private Integer rating;
 
-    @Column(length = 255)
+    @Column(length = 255, columnDefinition = "NVARCHAR(255)")
     private String comment;
 
     @Column(nullable = false)

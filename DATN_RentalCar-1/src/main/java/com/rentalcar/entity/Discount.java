@@ -22,7 +22,7 @@ public class Discount {
     @Column(nullable = false, unique = true, length = 50)
     private String discountCode;
 
-    @Column(length = 255)
+    @Column(length = 255, columnDefinition = "NVARCHAR(255)")
     private String description;
 
     @Column(nullable = false, precision = 5, scale = 2)
@@ -34,7 +34,7 @@ public class Discount {
     @Column(nullable = false)
     private Date endDate;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 50, columnDefinition = "NVARCHAR(50)")
     private String status;
 
     // Getters and Setters

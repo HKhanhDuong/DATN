@@ -24,7 +24,7 @@ public class Damage {
     @JoinColumn(name = "rentalVehicleID", nullable = false)
     private RentalVehicle rentalVehicle;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, length = 255, columnDefinition = "NVARCHAR(255)")
     private String description;
 
     @Column(nullable = false, precision = 10, scale = 2)

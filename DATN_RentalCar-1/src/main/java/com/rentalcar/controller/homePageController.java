@@ -75,20 +75,6 @@ public class homePageController {
 		return "login";
 	}
 
-    @GetMapping("/car/detail/{id}")
-    public String getCarById(@PathVariable Long id, Model model) {
-        Optional<Car> car = carService.findById(id);
-
-        if (car.isPresent()) {
-            model.addAttribute("car", car.get());  // Truyền đối tượng car vào model
-        } else {
-            // Xử lý lỗi khi không tìm thấy xe
-            model.addAttribute("error", "Không tìm thấy xe với ID này");
-            return "error-page";  // Trả về trang lỗi
-        }
-
-        return "car-details2";  // Trả về trang chi tiết xe
-    }
     
     @GetMapping("/testReact")
     public String getCar( Model model) {

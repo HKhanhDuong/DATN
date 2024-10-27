@@ -31,7 +31,7 @@ public class Payment {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 50, columnDefinition = "NVARCHAR(50)")
     private String paymentMethod; // Enum might be better
 
     // Getters and Setters

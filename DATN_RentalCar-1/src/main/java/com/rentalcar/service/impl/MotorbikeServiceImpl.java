@@ -62,6 +62,15 @@ public class MotorbikeServiceImpl implements MotorbikeService{
 	}
 
 	/**
+	 * @param entities
+	 * @deprecated
+	 * @see org.springframework.data.jpa.repository.JpaRepository#deleteInBatch(java.lang.Iterable)
+	 */
+	public void deleteInBatch(Iterable<Motorbike> entities) {
+		motorbikeRepo.deleteInBatch(entities);
+	}
+
+	/**
 	 * @param id
 	 * @return
 	 * @see org.springframework.data.repository.CrudRepository#findById(java.lang.Object)
@@ -140,31 +149,6 @@ public class MotorbikeServiceImpl implements MotorbikeService{
 		motorbikeRepo.deleteAll();
 	}
 	
-	
-
-//	public <S extends Motorbike> S save(S entity) {
-//		return motobikeRepo.save(entity);
-//	}
-//
-//	public List<Motorbike> findAll() {
-//		return motobikeRepo.findAll();
-//	}
-//
-//	public Optional<Motorbike> findById(Long id) {
-//		return motobikeRepo.findById(id);
-//	}
-//
-//	public boolean existsById(Long id) {
-//		return motobikeRepo.existsById(id);
-//	}
-//
-//	public long count() {
-//		return motobikeRepo.count();
-//	}
-//
-//	public void deleteById(Long id) {
-//		motobikeRepo.deleteById(id);
-//	}
 	
 	
 }

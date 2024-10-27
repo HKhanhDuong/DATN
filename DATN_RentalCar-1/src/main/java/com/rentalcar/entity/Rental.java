@@ -37,7 +37,7 @@ public class Rental {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal totalCost;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 50, columnDefinition = "NVARCHAR(50)")
     private String renStatus;
 
     @ManyToOne

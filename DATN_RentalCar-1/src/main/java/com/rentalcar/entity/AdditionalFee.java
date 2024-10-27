@@ -21,13 +21,13 @@ public class AdditionalFee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long feeID;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 50, columnDefinition = "NVARCHAR(50)")
     private String feeType;
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
 
-    @Column(length = 255)
+    @Column(length = 255, columnDefinition = "NVARCHAR(255)")
     private String description;
     
     @ManyToOne

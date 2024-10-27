@@ -1230,7 +1230,8 @@
 					<div th:each="car, iterStat : ${cars}" th:if="${iterStat.index < 8}" class="product-item">
 						<a th:href="@{'/car/detail/' + ${car.carId}}" class="product-link">
 							<div class="product-img">
-								<img th:src="'./assets/images/car/' + ${car.imageUrl}" alt="" />
+								<img th:src="@{'/assets/images/car/' + ${#strings.arraySplit(car.imageUrl, ',')[0]}}" alt="" />
+								
 								<div class="product-rents">
 									<span class="product-rent">Miễn thế chấp <svg width="16"
 											height="16" viewBox="0 0 16 16" fill="none"
@@ -1358,7 +1359,7 @@
 						<a th:href="@{'/motorbikes/detail/' + ${motorbike.motorbikeId}}" class="product-link">
 
 							<div class="product-img">
-								<img th:src="'./assets/images/motobike/' + ${motorbike.imageUrl}" alt="" />
+								<img th:src="@{'/assets/images/motobike/' + ${#strings.arraySplit(motorbike.imageUrl, ',')[0]}}" alt="" />
 					
 								<div class="product-discount">Giảm 9%</div>
 								<div class="product-rents">

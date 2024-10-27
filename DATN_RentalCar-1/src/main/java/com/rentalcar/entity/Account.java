@@ -21,7 +21,7 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long accountId;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, length = 255, columnDefinition = "NVARCHAR(255)")
     private String fullName;
 
     @Column(nullable = false, unique = true, length = 255)
@@ -30,14 +30,14 @@ public class Account {
     @Column(length = 20)
     private String phoneNumber;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(nullable = false, unique = true, length = 100, columnDefinition = "NVARCHAR(255)")
     private String username;
 
     @Column(nullable = false, length = 255)
     private String passwordHash;
 
     @ManyToMany(fetch = FetchType.EAGER) // Thay đổi từ ManyToOne sang ManyToMany
-    @JsonBackReference
+    //@JsonBackReference
     @JoinTable(
         name = "account_roles", // Tên bảng trung gian
         joinColumns = @JoinColumn(name = "account_id"), // Khóa ngoại của bảng Accounts
@@ -45,10 +45,13 @@ public class Account {
     )
     private List<Role> roles; // Danh sách các vai trò
 
-    @Column(length = 255)
+    @Column(length = 255, columnDefinition = "NVARCHAR(255)")
     private String address;
-
+    
     private Date dateOfBirth;
+    
+    @Column(columnDefinition = "NVARCHAR")
+    private String imageUrl;
 
     // Getters and Setters
 }

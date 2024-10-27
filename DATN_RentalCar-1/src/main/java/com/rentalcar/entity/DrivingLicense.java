@@ -31,10 +31,10 @@ public class DrivingLicense {
 
     private Date dateOfBirth;
 
-    @Column(length = 255)
+    @Column(length = 255, columnDefinition = "NVARCHAR(255)")
     private String imageUrl;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 50, columnDefinition = "NVARCHAR(50)")
     private String licenseStatus;
 
     // Getters and Setters

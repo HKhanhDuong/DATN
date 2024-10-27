@@ -33,7 +33,7 @@ public class CarMaintenance {
     @Column(nullable = false)
     private Date maintenanceDate;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
     private String description;
 
     @Column(nullable = false, precision = 10, scale = 2)

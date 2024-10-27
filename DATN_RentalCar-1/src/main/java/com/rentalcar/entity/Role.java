@@ -19,10 +19,10 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roleId;
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(nullable = false, unique = true, length = 50, columnDefinition = "NVARCHAR(50)")
     private String roleName;
 
-    @Column(length = 255)
+    @Column(length = 255, columnDefinition = "NVARCHAR(255)")
     private String description;
 
     @ManyToMany(mappedBy = "roles")  // Đây là ánh xạ ngược lại từ bảng Account

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 
 <head>
 <meta charset="UTF-8" />
@@ -58,50 +58,37 @@
 	<!--Car Details-->
 	<div class="cover-car">
 		<div class="m-container">
-			<div
-				covers="[object Object],[object Object],[object Object],[object Object]"
-				class="cover-car-container">
+			<div covers="[object Object],[object Object],[object Object],[object Object]" class="cover-car-container">
+			
 				<div class="main-img">
-					<div class="cover-car-item">
-						<img th:src="@{'/assets/images/car/' + ${car.imageUrl}}"
-							alt="Ảnh Xe Chính" loading="lazy" />
-					</div>
+				    <div class="cover-car-item">
+				        <img th:src="@{'/assets/images/car/' + ${#strings.arraySplit(car.imageUrl, ',')[0]}}"
+				            alt="Ảnh Xe Chính" loading="lazy" />
+				    </div>
 				</div>
+				
+				<!-- Hiển thị ảnh phụ -->
+				<div class="sub-img">
+				    <div th:each="image : ${#strings.arraySplit(car.imageUrl, ',')}" class="cover-car-item">
+				        <img th:src="@{'/assets/images/car/' + ${image}}" alt="Ảnh Xe Phụ" loading="lazy" />
+				    </div>
+				</div>
+
 				<!-- Hiển thị ảnh -->
-<script th:inline="javascript">
-    // Hàm tách chuỗi URL thành mảng
-    function splitImageUrls(imageUrls) {
-        if (!imageUrls || typeof imageUrls !== 'string') {
-            return [];
-        }
-        return imageUrls.split(',').map(url => url.trim());
-    }
-
-    // Lấy chuỗi URL ảnh từ Thymeleaf và xử lý thành mảng
-    const imageUrlsString = /*[[${car.imageUrl}]]*/ ''; // Giá trị từ Thymeleaf (giả sử car.imageUrl là một chuỗi)
-    const imageUrlsArray = splitImageUrls(imageUrlsString);
-    console.log(imageUrlsArray); // Hiển thị mảng URL ảnh trong console để kiểm tra
-</script>
-
-<!-- Hiển thị ảnh -->
-<script th:inline="javascript">
-						    function splitImageUrls(imageUrls) {
-						        if (!imageUrls || typeof imageUrls !== 'string') {
-						            return [];
-						        }
-						        return imageUrls.split(',').map(url => url.trim());
-						    }
-						
-						    const imageUrlsString = [[${car.imageUrl}]]; // Giá trị từ Thymeleaf
-						    const imageUrlsArray = splitImageUrls(imageUrlsString);
-						    console.log(imageUrlsArray); // Kết quả sẽ là mảng với giá trị thực tế
-						</script> lấy ảnh lên từ csdl <div class="sub-img">
-					<div th:each="image : ${car.imageUrl}" class="cover-car-item">
-						<img th:src="@{'/assets/images/car/' + ${image}}" alt="Ảnh Xe Phụ"
-							loading="lazy" />
-					</div>
-				</div>
-
+				<!-- <script th:inline="javascript">
+				    // Hàm tách chuỗi URL thành mảng và loại bỏ khoảng trắng
+				    function splitImageUrls(imageUrls) {
+				        if (!imageUrls || typeof imageUrls !== 'string') {
+				            return [];
+				        }
+				        return imageUrls.replace(/\s+/g, '%20').split(',');
+				    }
+				
+				    // Lấy chuỗi URL ảnh từ Thymeleaf và xử lý thành mảng
+				    const imageUrlsString = /*[[${car.imageUrl}]]*/ ''; // Giá trị từ Thymeleaf (giả sử car.imageUrl là một chuỗi)
+				    const imageUrlsArray = splitImageUrls(imageUrlsString);
+				    console.log(imageUrlsArray); // Hiển thị mảng URL ảnh trong console để kiểm tra
+				</script> -->
 
 				<div class="see-more-img">
 					<div class="wrap-svg">
@@ -134,83 +121,34 @@
 		</div>
 		<!-- Popup Modal -->
 		<div id="imageModal" class="modal">
-			<span class="close">&times;</span>
-			<div class="modal-content">
-				<div class="arrow left-arrow">
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-						fill="none" viewBox="0 0 24 24" stroke="white">
-                        <path stroke-linecap="round"
-							stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-				</div>
-				<!-- Ảnh lớn hiển thị ngay lập tức -->
-				<div class="modal-main-image">
-					<img th:src="@{'/assets/images/car/' + ${car.imageUrl}}"
-						alt="Zoomed Image">
-				</div>
-				<div class="arrow right-arrow">
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-						fill="none" viewBox="0 0 24 24" stroke="white">
-                        <path stroke-linecap="round"
-							stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-				</div>
-				<!-- Các ảnh nhỏ bên dưới -->
-				<div class="modal-thumbnails">
-					<img th:src="@{'/assets/images/car/' + ${car.imageUrl}}" class="thumbnail" alt="Thumbnail 1">
-					<img th:src="@{'/assets/images/car/' + ${car.imageUrl}}" class="thumbnail" alt="Thumbnail 2">
-					<img th:src="@{'/assets/images/car/' + ${car.imageUrl}}" class="thumbnail" alt="Thumbnail 3"> \
-					<img th:src="@{'/assets/images/car/' + ${car.imageUrl}}" class="thumbnail" alt="Thumbnail 4">
-				</div>
-			</div>
+		    <span class="close">&times;</span>
+		    <div class="modal-content">
+		        <div class="arrow left-arrow">
+		            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="white">
+		                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+		            </svg>
+		        </div>
+		        <!-- Ảnh lớn hiển thị ngay lập tức -->
+		        <div class="modal-main-image">
+		            <img id="zoomedImage" th:src="@{'/assets/images/car/' + ${#strings.arraySplit(car.imageUrl, ',')[0]}}" alt="Zoomed Image">
+		        </div>
+		        <div class="arrow right-arrow">
+		            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="white">
+		                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+		            </svg>
+		        </div>
+		        
+		        <!-- Các ảnh nhỏ bên dưới -->
+		        <div class="modal-thumbnails">
+		            <div th:each="image : ${#strings.arraySplit(car.imageUrl, ',')}">
+		                <img th:src="@{'/assets/images/car/' + ${image}}" class="thumbnail" alt="Thumbnail 1">
+		            </div>
+		        </div>
+		    </div>
 		</div>
-
-		<div
-			covers="[object Object],[object Object],[object Object],[object Object]">
-			<div
-				class="swiper swiper-cover-car swiper-initialized swiper-horizontal swiper-pointer-events cover-car-swiper swiper-backface-hidden">
-				<div class="swiper-wrapper"
-					style="transition-duration: 0ms; transform: translate3d(0px, 0px, 0px);">
-					<div class="swiper-slide swiper-slide-active" style="width: 400px;">
-						<div class="fix-img">
-							<img loading="lazy"
-								src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/toyota_veloz_cross_2022/p/g/2024/02/26/08/N_RalqcAaKEe12XDf5FfqA.jpg">
-						</div>
-					</div>
-					<div class="swiper-slide swiper-slide-next" style="width: 400px;">
-						<div class="fix-img">
-							<img loading="lazy"
-								src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/toyota_veloz_cross_2022/p/g/2024/05/28/14/oxKE3ZN09CO9ZqwcOqXjvg.jpg">
-						</div>
-					</div>
-					<div class="swiper-slide" style="width: 400px;">
-						<div class="fix-img">
-							<img loading="lazy"
-								src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/toyota_veloz_cross_2022/p/g/2024/02/26/08/YUs0_CMjj8F0Hq2e57DCzA.jpg">
-						</div>
-					</div>
-					<div class="swiper-slide" style="width: 400px;">
-						<div class="fix-img">
-							<img loading="lazy"
-								src="https://n1-pstg.mioto.vn/cho_thue_xe_o_to_tu_lai_thue_xe_du_lich_hochiminh/toyota_veloz_cross_2022/p/g/2024/02/26/08/N_RalqcAaKEe12XDf5FfqA.jpg">
-						</div>
-					</div>
-				</div>
-				<div
-					class="swiper-pagination pagi-cover swiper-pagination-clickable swiper-pagination-bullets swiper-pagination-horizontal swiper-pagination-bullets-dynamic"
-					style="width: 80px;">
-					<span
-						class="swiper-pagination-bullet swiper-pagination-bullet-active swiper-pagination-bullet-active-main"
-						style="left: 24px;"></span><span
-						class="swiper-pagination-bullet swiper-pagination-bullet-active-next"
-						style="left: 24px;"></span><span
-						class="swiper-pagination-bullet swiper-pagination-bullet-active-next-next"
-						style="left: 24px;"></span><span class="swiper-pagination-bullet"
-						style="left: 24px;"></span>
-				</div>
-			</div>
-		</div>
-	</div>
+		
+		
+	
 	<!--Details Product-->
 	<div class="car-details">
 		<div class="container">
@@ -428,8 +366,11 @@
 						<h6>Mô Tả</h6>
 						<br>
 						<div class="outstanding-features">
-							<h3 th:text="${car.make + ' ' + car.model + ' ' + car.year}"
-								class="product-title"></h3>
+							<h3 th:text="${car.make + ' ' + car.model + ' ' + car.year}" class="product-title"> </h3>
+							<ul>
+								<li th:text="${car.detailCar}"></li>
+							</ul>
+							
 							<!-- ở đây -->
 						</div>
 					</div>
@@ -440,9 +381,7 @@
 						<br>
 						<div class="features-car">
 							<ul>
-								<li><img loading="lazy"
-									src="https://n1-cstg.mioto.vn/v4/p/m/icons/features/etc-v2.png"
-									alt="RENTALCAR - Thuê xe tự lái"> ETC</li>
+								<li th:text="${car.facilities}"></li>
 							</ul>
 						</div>
 					</div>
@@ -904,7 +843,7 @@
 							<div class="price-discount">
 								<!-- Giá gốc (dailyRate * 1.1) -->
 								<p class="origin">
-									<span th:text="${#numbers.formatDecimal(car.dailyRate * 1.1, 0, 3)}"></span>
+									<span th:text="${#numbers.formatInteger(car.dailyRate, 3, 'POINT') + 'đ'}"></span>
 								</p>
 								<!-- Thẻ giảm giá -->
 								<span class="tag-item discount">-14%</span>
@@ -913,7 +852,9 @@
 							<!-- Tính giá sau khi giảm -->
 							<h4>
 								<!-- Giá đã giảm = giá gốc - (giá gốc * 14%) -->
-								<span th:text="${#numbers.formatDecimal((car.dailyRate * 1.1) * (1 - 0.14), 0, 3)}"></span>
+								<span th:text="${#numbers.formatInteger(car.dailyRate * (1 - 0.14), 3, 'POINT')}"></span>đ
+
+
 								<span class="inner-h"> /ngày</span>
 							</h4>
 						</div>

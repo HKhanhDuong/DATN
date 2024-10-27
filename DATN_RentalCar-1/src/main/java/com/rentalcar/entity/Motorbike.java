@@ -27,10 +27,10 @@ public class Motorbike {
     @Column(nullable = false, length = 100)
     private String model;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 100, columnDefinition = "NVARCHAR(100)")
     private String condition;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, length = 255, columnDefinition = "NVARCHAR(255)")
     private String vehicleLocation;
 
     @Column(nullable = false)
@@ -39,16 +39,16 @@ public class Motorbike {
     @Column(nullable = false, length = 20)
     private String licensePlate;
     
-    @Column(nullable = true, length = 50)
+    @Column(nullable = true, length = 50, columnDefinition = "NVARCHAR(50)")
     private String gearBox;
 
-    @Column(length = 50)
+    @Column(length = 50, columnDefinition = "NVARCHAR(50)")
     private String color;
 
     @Column(nullable = false)
     private Integer mileage;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 50, columnDefinition = "NVARCHAR(50)")
     private String status;
 
     @Column(nullable = false, precision = 10, scale = 2)
@@ -63,13 +63,13 @@ public class Motorbike {
     @Column(nullable = false, precision = 4, scale = 1)
     private BigDecimal fuelConsumption;
 
-    @Column(length = 255)
+    @Column(length = 255, columnDefinition = "NVARCHAR(255)")
     private String imageUrl;
 
     @Column(nullable = false, length = 255)
     private String detailBike;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, length = 255, columnDefinition = "NVARCHAR(255)")
     private String facilities;
     
     private Integer rentals;

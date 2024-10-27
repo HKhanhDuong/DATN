@@ -27,17 +27,16 @@ public class Car {
     @Column(nullable = false, length = 100)
     private String model;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 100, columnDefinition = "NVARCHAR(100)")
     private String condition;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, length = 255, columnDefinition = "NVARCHAR(255)")
     private String vehicleLocation;
 
     @Column(nullable = false)
     private Integer year;
     
-    
-    @Column(nullable = true, length = 50)
+    @Column(nullable = true, length = 50, columnDefinition = "NVARCHAR(50)")
     private String gearBox;
 
     @Column(nullable = false, length = 20)
@@ -49,19 +48,19 @@ public class Car {
     @Column(nullable = false)
     private Integer mileage;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 50, columnDefinition = "NVARCHAR(50)")
     private String status;
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal dailyRate;
 
-    @Column(length = 255)
+    @Column(length = 255, columnDefinition = "NVARCHAR(255)")
     private String imageUrl;
 
     @Column(nullable = false)
     private Integer seats;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 50, columnDefinition = "NVARCHAR(50)")
     private String transmission;
 
     @Column(nullable = false)

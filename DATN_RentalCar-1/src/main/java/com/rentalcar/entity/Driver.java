@@ -30,10 +30,10 @@ public class Driver {
     @Column(nullable = false)
     private Integer experienceYears;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 50, columnDefinition = "NVARCHAR(50)")
     private String status;
 
-    @Column(length = 255)
+    @Column(length = 255, columnDefinition = "NVARCHAR(255)")
     private String imageUrl;
 
     // Getters and Setters

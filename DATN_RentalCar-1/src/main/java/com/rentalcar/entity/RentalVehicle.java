@@ -30,7 +30,7 @@ public class RentalVehicle {
     @JoinColumn(name = "motorbikeId")
     private Motorbike motorbike;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 50, columnDefinition = "NVARCHAR(50)")
     private String vehicleType;
 
     @ManyToOne
