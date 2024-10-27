@@ -840,13 +840,13 @@
 					<br>
 					<div class="rent-box" id="cardetail" style="position: relative;">
 						<div class="price">
-							<div class="price-discount">
-								<!-- Giá gốc (dailyRate * 1.1) -->
-								<p class="origin">
-									<span th:text="${#numbers.formatInteger(car.dailyRate, 3, 'POINT') + 'đ'}"></span>
-								</p>
-								<!-- Thẻ giảm giá -->
-								<span class="tag-item discount">-14%</span>
+							<div class="price-discount" th:if="${car.percentDiscount != null and car.percentDiscount > 0}">
+							    <!-- Giá gốc (dailyRate) -->
+							    <p class="origin">
+							        <span th:text="${#numbers.formatInteger(car.dailyRate, 3, 'POINT') + 'đ'}"></span>
+							    </p>
+							    <!-- Thẻ giảm giá -->
+							    <span th:text="'-' + ${#numbers.formatInteger(car.percentDiscount, 2)} + '%'" class="tag-item discount"></span>
 							</div>
 
 							<!-- Tính giá sau khi giảm -->

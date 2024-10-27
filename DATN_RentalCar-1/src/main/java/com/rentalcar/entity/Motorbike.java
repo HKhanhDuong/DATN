@@ -1,12 +1,11 @@
 package com.rentalcar.entity;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -72,10 +71,11 @@ public class Motorbike {
     @Column(nullable = false, length = 255, columnDefinition = "NVARCHAR(255)")
     private String facilities;
     
+    @Min(0)
     private Integer rentals;
 
-    @OneToMany(mappedBy = "motorbike", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<ServicePricing> servicePricingList;
-    // Getters and Setters
+    @DecimalMin("0.00")
+    @DecimalMax("100.00")
+    @Column(precision = 5, scale = 2)
+    private BigDecimal percentDiscount;
 }

@@ -70,7 +70,7 @@ public class MotorbikeApiController {
                     motorbike.setMake(motorbikeDetails.getMake());
                     motorbike.setMileage(motorbikeDetails.getMileage());
                     motorbike.setModel(motorbikeDetails.getModel());
-                    motorbike.setServicePricingList(motorbikeDetails.getServicePricingList());
+
                     motorbike.setStatus(motorbikeDetails.getStatus());
                     motorbike.setVehicleLocation(motorbikeDetails.getVehicleLocation());
                     motorbike.setYear(motorbikeDetails.getYear());

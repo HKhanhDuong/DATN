@@ -85,6 +85,14 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- thêm validator -->
+		<dependency>
+		    <groupId>org.hibernate.validator</groupId>
+		    <artifactId>hibernate-validator</artifactId>
+		    <version>6.1.5.Final</version> <!-- hoặc phiên bản phù hợp -->
+		</dependency>
+
 
 	</dependencies>
 
