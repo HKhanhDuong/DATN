@@ -132,6 +132,7 @@
             </svg>
 						<span>Xe Con</span>
 					</button>
+					
 					<button class="btn motorbike-btn">
 						<svg width="24" height="24" viewBox="0 0 24 24" fill="none"
 							xmlns="http://www.w3.org/2000/svg">
@@ -318,43 +319,83 @@
 									<div class="price" th:text="${car.dailyRate} + '/Ngày'">600.000₫</div>
 									<div class="pay-online">-5% khi thanh toán online</div>
 								</div>
-								<a class="btn btn-primary" title="Đặt xe">Chi tiết</a>
-								<!-- <a class="btn btn-primary" th:href="@{'/' + ${car.id}}" title="Đặt xe">Chi tiết</a> -->
+								<a class="btn btn-primary" th:href="@{'/car/detail/' + ${car.carId}}">Chi tiết</a>
+
 							</div>
 
 						</div>
 					</div>
 				</div>
 
-				<!-- Fill Xe Máy  -->
-				<div class="prod motorbike">
-					<!-- Đây là sản phẩm xe máy -->
+				<!-- Fill Xe Máy -->
+				<div th:each="motorbike : ${motorbikes}" class="prod motorbike">
 					<div class="info-prod">
 						<div class="three-column">
-							<div class="col car-image">
-								<a title="Honda Wave" class="vehicle-image"
-									href="/chi-tiet-xe/motorbike/123-Honda-Wave"> <img
-									src="https://example.com/honda-wave.jpeg" width="100%"
-									height="auto" alt="Honda Wave">
+							<!-- Cột đầu tiên: Hình xe -->
+							<div class="col motorbike-image">
+								<a th:title="${motorbike.model}"> <img
+									th:src="'/assets/images/motorbike/' + ${motorbike.imageUrl}"
+									width="200" height="150" th:alt="${motorbike.model}"
+									style="object-fit: cover;">
 								</a>
 							</div>
-							<div class="col car-info">
-								<h2 class="car-title">
-									<a href="/chi-tiet-xe/motorbike/123-Honda-Wave">Honda Wave</a>
+
+
+							<!-- Cột thứ hai: Thông tin xe -->
+							<div class="col motorbike-info">
+								<h2 class="motorbike-title">
+									<a th:title="${motorbike.model}" style="color: inherit;"
+										th:text="${motorbike.make + ' ' + motorbike.model}">Tên xe
+										máy</a>
 								</h2>
-								<div class="properties">
-									<div class="property-item">Xe số</div>
-									<div class="property-item">3.5l/100km</div>
+								<div class="property-item">
+									<svg width="16" height="16" viewBox="0 0 14 18"
+										xmlns="http://www.w3.org/2000/svg">
+                        <path d="..." fill="#0A4348"></path>
+                    </svg>
+									<span th:text="${motorbike.gearBox}">Hộp số</span>
+								</div>
+
+								<div class="property-item">
+									<svg width="16" height="16" viewBox="0 0 15 16"
+										xmlns="http://www.w3.org/2000/svg">
+                        <path d="..." />
+                    </svg>
+									<span th:text="${motorbike.fuelConsumption} + ' l/100Km'">0L/100km</span>
+								</div>
+
+								<div class="property-item">
+									<svg width="16" height="16" viewBox="0 0 512 512"
+										xmlns="http://www.w3.org/2000/svg">
+                        <path d="..." />
+                    </svg>
+									<span th:text="'Sản xuất: ' + ${motorbike.year}">0000</span>
+								</div>
+
+								<div class="property-item">
+									<svg width="16" height="16" viewBox="0 0 24 24"
+										xmlns="http://www.w3.org/2000/svg">
+                        <path d="..." />
+                    </svg>
+									<span th:text="${motorbike.vehicleLocation}">Địa điểm</span>
 								</div>
 							</div>
+
+							<!-- Cột thứ ba: Giá thuê và nút chi tiết -->
 							<div class="col car-price">
-								<div class="price">150.000₫/ngày</div>
-								<a class="btn btn-primary"
-									href="/chi-tiet-xe/motorbike/123-Honda-Wave">Chi tiết</a>
+								<div class="price-item">
+									<div class="price" th:text="${motorbike.dailyRate} + '/Ngày'">150.000₫</div>
+									<div class="pay-online"
+										th:if="${motorbike.percentDiscount > 0}"
+										th:text="'-' + ${motorbike.percentDiscount} + '% khi thanh toán online'">-5%
+										khi thanh toán online</div>
+								</div>
+								<a class="btn btn-primary" th:href="@{'/motorbike/detail/' + ${motorbike.motorbikeId}}">Chi tiết</a>
 							</div>
 						</div>
 					</div>
 				</div>
+
 
 
 			</div>

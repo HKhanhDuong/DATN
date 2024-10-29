@@ -182,5 +182,16 @@ public class CarServiceImpl implements CarService {
 		carRepo.deleteAll();
 	}
 
+	
+	@Override
+	public List<String> getAllCarModels() {
+        return carRepo.findAllModels();
+    }
+	
+
+	@Override
+	public List<String> getAllCarMakes() {
+        return carRepo.findAllMakes();
+    }
 }
 
