@@ -94,11 +94,6 @@
 		</dependency>
 
 
-		<dependency>
-			<groupId>com.java6</groupId>
-			<artifactId>ASM_java5</artifactId>
-			<version>1.0</version>
-		</dependency>
 	</dependencies>
 
 	<build>
