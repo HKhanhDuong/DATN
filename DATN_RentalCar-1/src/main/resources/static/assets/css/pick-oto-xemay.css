@@ -93,10 +93,10 @@ form {
     gap: 10px;
   }
   
-  .updated-custom-col {
+/*   .updated-custom-col {
     width: 50%; Cả hai cột chiếm 50% chiều rộng
-    padding: 20px; /* Padding cho cột */
-  }
+    padding: 20px; Padding cho cột
+  } */
   
   .left-column {
     position: sticky; 

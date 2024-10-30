@@ -67,39 +67,119 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-// Xử lí modal giờ nhận trả xe
-var modal = document.getElementById("uniqueModal");
-var closeButton = document.querySelector(".unique-modal-close");
-// Đảm bảo modal ẩn khi tải trang
-document.addEventListener("DOMContentLoaded", function () {
-    modal.style.display = "none"; // Modal sẽ bị ẩn khi trang tải lần đầu
-});
-// Khi người dùng click vào "Nhận xe", mở modal
-document.querySelector('.form-item:nth-child(1) .wrap-date-time').addEventListener('click', function () {
-    modal.style.display = "flex"; // Hiển thị modal khi click vào "Nhận xe"
-});
-// Khi người dùng click vào "Trả xe", mở modal
-document.querySelector('.form-item:nth-child(3) .wrap-date-time').addEventListener('click', function () {
-    modal.style.display = "flex"; // Hiển thị modal khi click vào "Trả xe"
-});
-// Khi người dùng click vào nút "X", đóng modal
-closeButton.onclick = function () {
-    modal.style.display = "none"; // Ẩn modal khi bấm nút X
-}
-// Khi người dùng click ra ngoài modal, đóng modal
-window.onclick = function (event) {
-    if (event.target == modal) {
-        modal.style.display = "none"; // Ẩn modal khi click ra ngoài modal
+//tính tiền
+function calculateTotalPrice(rentStartDate, rentStartTime, rentEndDate, rentEndTime, dailyRent, discount = 0) {
+    // Chuyển đổi chuỗi ngày và giờ sang đối tượng Date
+    const startDateTime = new Date(`${rentStartDate}T${rentStartTime}`);
+    const endDateTime = new Date(`${rentEndDate}T${rentEndTime}`);
+
+    // Tính thời gian thuê theo giờ
+    const rentalHours = Math.ceil((endDateTime - startDateTime) / (1000 * 60 * 60));
+
+    // Giá bảo hiểm mỗi ngày
+    const dailyInsurance = dailyRent * 0.05;
+
+    let totalRent = 0;
+
+    if (rentalHours < 12) {
+        // Nếu thời gian thuê dưới 12 giờ
+        if (rentalHours <= 4) {
+            // Thuê dưới 4 giờ, tính giá là 1/4 giá 1 ngày
+            totalRent = dailyRent / 4;
+        } else {
+            // Thuê trên 4 giờ, tính giá 1/4 giá 1 ngày cộng thêm 20% của giá 1 ngày cho mỗi 2 giờ sau 4 giờ
+            const extraHours = rentalHours - 4;
+            const extraCharges = Math.ceil(extraHours / 2) * (dailyRent * 0.2);
+            totalRent = dailyRent / 4 + extraCharges;
+        }
+    } else {
+        // Nếu thời gian thuê từ 12 giờ trở lên, tính giá là 1 ngày
+        totalRent = dailyRent;
     }
+
+    // Tính tiền bảo hiểm theo thời gian thuê
+    const totalInsurance = (totalRent / dailyRent) * dailyInsurance;
+
+    // Tổng tiền trước giảm giá
+    const totalBeforeDiscount = totalRent + totalInsurance;
+
+    // Tính tổng tiền sau khi áp dụng giảm giá
+    const finalTotal = totalBeforeDiscount - discount;
+
+    return finalTotal;
 }
-// Khi nhấn "Lưu", cập nhật thông tin ngày và giờ
-document.getElementById('saveDateTime').addEventListener('click', function () {
-    var selectedDate = document.getElementById('modalDate').value;
-    var selectedTime = document.getElementById('modalTime').value;
-    // Cập nhật vào phần "Nhận xe" (hoặc "Trả xe" tùy thuộc vào sự kiện)
-    document.querySelector('.form-item:nth-child(1) .wrap-date .value').innerText = selectedDate;
-    document.querySelector('.form-item:nth-child(1) .wrap-time .value').innerText = selectedTime;
-    // Đóng modal sau khi lưu
-    modal.style.display = "none";
+
+// Ví dụ sử dụng
+const rentStartDate = "2024-10-01";
+const rentStartTime = "07:00";
+const rentEndDate = "2024-10-01";
+const rentEndTime = "15:00";
+const dailyRent = 1000;
+const discount = 100;
+
+const totalPrice = calculateTotalPrice(rentStartDate, rentStartTime, rentEndDate, rentEndTime, dailyRent, discount);
+console.log("Tổng tiền thuê:", totalPrice);
+
+
+
+
+
+
+
+
+////////////////////////////////////
+
+// Thêm event listener cho nút "Tiếp tục"
+saveDateTime.addEventListener("click", () => {
+    const pickUpDate = document.getElementById("modalPickUpDate").value;
+    const pickUpTime = document.getElementById("modalPickUpTime").value;
+    const returnDate = document.getElementById("modalReturnDate").value;
+    const returnTime = document.getElementById("modalReturnTime").value;
+    const address = document.getElementById("address-input").value;
+
+    const pickUpDateTime = `${pickUpDate} ${pickUpTime}`;
+    const returnDateTime = `${returnDate} ${returnTime}`;
+
+    // Kiểm tra nếu thời gian thuê dưới 2 giờ
+    const pickUp = new Date(pickUpDateTime);
+    const returnD = new Date(returnDateTime);
+    const diffInHours = (returnD - pickUp) / (1000 * 60 * 60);
+    if (diffInHours < 2) {
+        errorMessage.style.display = "block";
+        return;
+    } else {
+        errorMessage.style.display = "none";
+    }
+
+    // Gửi dữ liệu về backend bằng AJAX
+    fetch("/api/rental", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            pickUpDateTime: pickUpDateTime,
+            returnDateTime: returnDateTime,
+            address: address
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Xử lý kết quả từ backend
+        console.log(data);
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
+
+    pickUpDateTimeElem.textContent = pickUpDateTime;
+    returnDateTimeElem.textContent = returnDateTime;
+    uniqueModal.style.display = "none";
 });
+
+
+
+
+
+
 

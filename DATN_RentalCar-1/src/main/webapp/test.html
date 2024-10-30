@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Button to trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#rentalModal">
+        Thuê Xe
+    </button>
+
+    <!-- Rental Modal -->
+    <div class="modal fade" id="rentalModal" tabindex="-1" aria-labelledby="rentalModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rentalModalLabel">Form Thuê Xe</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="rentalForm">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Ngày bắt đầu</label>
+                                <input type="date" class="form-control" id="rentStartDate" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Giờ bắt đầu</label>
+                                <input type="time" class="form-control" id="rentStartTime" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Ngày kết thúc</label>
+                                <input type="date" class="form-control" id="rentEndDate" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Giờ kết thúc</label>
+                                <input type="time" class="form-control" id="rentEndTime" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Giá thuê 1 ngày</label>
+                                <input type="text" class="form-control" id="dailyRent" value="500000" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Phí bảo hiểm (5%)</label>
+                                <input type="text" class="form-control" id="dailyInsurance" readonly>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tổng tiền thuê</label>
+                            <input type="text" class="form-control" id="totalPrice" readonly>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" onclick="confirmRental()">Xác nhận thuê</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Tính phí bảo hiểm khi trang được load
+        window.onload = function() {
+            const dailyRent = parseFloat(document.getElementById("dailyRent").value);
+            const dailyInsurance = dailyRent * 0.05;
+            document.getElementById("dailyInsurance").value = dailyInsurance.toLocaleString('vi-VN') + ' VNĐ';
+        };
+
+        // Tính tổng tiền tự động khi thay đổi thời gian
+        const timeInputs = ['rentStartDate', 'rentStartTime', 'rentEndDate', 'rentEndTime'];
+        timeInputs.forEach(id => {
+            document.getElementById(id).addEventListener('change', calculateTotalPrice);
+        });
+
+        function calculateTotalPrice() {
+            const rentStartDate = document.getElementById("rentStartDate").value;
+            const rentStartTime = document.getElementById("rentStartTime").value;
+            const rentEndDate = document.getElementById("rentEndDate").value;
+            const rentEndTime = document.getElementById("rentEndTime").value;
+            const dailyRent = parseFloat(document.getElementById("dailyRent").value);
+
+            if (!rentStartDate || !rentStartTime || !rentEndDate || !rentEndTime) {
+                return;
+            }
+
+            const startDateTime = new Date(`${rentStartDate}T${rentStartTime}`);
+            const endDateTime = new Date(`${rentEndDate}T${rentEndTime}`);
+            const rentalHours = Math.ceil((endDateTime - startDateTime) / (1000 * 60 * 30)) * 0.5;
+            const dailyInsurance = dailyRent * 0.05;
+            let totalRent = 0;
+
+            if (rentalHours < 12) {
+                if (rentalHours <= 4) {
+                    totalRent = dailyRent / 4;
+                } else {
+                    const extraHours = rentalHours - 4;
+                    const extraCharges = Math.ceil(extraHours / 2) * (dailyRent * 0.2);
+                    totalRent = dailyRent / 4 + extraCharges;
+                }
+            } else {
+                totalRent = dailyRent;
+            }
+
+            const totalInsurance = (totalRent / dailyRent) * dailyInsurance;
+            const finalTotal = totalRent + totalInsurance;
+
+            document.getElementById("totalPrice").value = finalTotal.toLocaleString('vi-VN') + ' VNĐ';
+        }
+
+        function confirmRental() {
+            const rentStartDate = document.getElementById("rentStartDate").value;
+            const rentStartTime = document.getElementById("rentStartTime").value;
+            const rentEndDate = document.getElementById("rentEndDate").value;
+            const rentEndTime = document.getElementById("rentEndTime").value;
+
+            if (!rentStartDate || !rentStartTime || !rentEndDate || !rentEndTime) {
+                alert("Vui lòng nhập đầy đủ thông tin thời gian thuê xe!");
+                return;
+            }
+
+            const startDateTime = new Date(`${rentStartDate}T${rentStartTime}`);
+            const endDateTime = new Date(`${rentEndDate}T${rentEndTime}`);
+
+            if (startDateTime >= endDateTime) {
+                alert("Thời gian kết thúc phải sau thời gian bắt đầu!");
+                return;
+            }
+
+            if (confirm("Bạn có chắc chắn muốn thuê xe với các thông tin đã nhập?")) {
+                alert("Đã xác nhận thuê xe thành công!");
+                const modal = bootstrap.Modal.getInstance(document.getElementById('rentalModal'));
+                modal.hide();
+            }
+        }
+    </script>
+</body>
+</html>

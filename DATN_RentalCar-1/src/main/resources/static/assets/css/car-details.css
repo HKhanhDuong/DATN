@@ -1164,31 +1164,30 @@ h4 {
 }
 
 
-  /* modal thuê xe */
-.unique-modal {
-    display: none; /* Ẩn modal ban đầu */
-    position: fixed; /* Đặt modal cố định trên màn hình */
-    z-index: 1000; /* Đảm bảo modal nổi trên các thành phần khác */
+/* .unique-modal {
+    display: none; Ẩn modal ban đầu
+    position: fixed; Đặt modal cố định trên màn hình
+    z-index: 1000; Đảm bảo modal nổi trên các thành phần khác
     top: 0;
     left: 0;
-    width: 100%; /* Modal sẽ chiếm toàn bộ chiều rộng */
-    height: 100%; /* Modal sẽ chiếm toàn bộ chiều cao */
-    background-color: rgba(0, 0, 0, 0.7); /* Nền mờ */
-    display: flex; /* Sử dụng flex để căn giữa */
-    justify-content: center; /* Căn giữa theo chiều ngang */
-    align-items: center; /* Căn giữa theo chiều dọc */
+    width: 100%; Modal sẽ chiếm toàn bộ chiều rộng
+    height: 100%; Modal sẽ chiếm toàn bộ chiều cao
+    background-color: rgba(0, 0, 0, 0.7); Nền mờ
+    display: flex; Sử dụng flex để căn giữa
+    justify-content: center; Căn giữa theo chiều ngang
+    align-items: center; Căn giữa theo chiều dọc
 }
 
 .unique-modal-content {
     background-color: #fefefe;
-    border-radius: 10px; /* Bo tròn các góc */
+    border-radius: 10px; Bo tròn các góc
     padding: 30px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Hiệu ứng đổ bóng */
-    width: 40%; /* Độ rộng modal */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); Hiệu ứng đổ bóng
+    width: 40%; Độ rộng modal
     max-width: 600px;
     position: relative;
-    animation: fadeInModal 0.3s ease-in-out; /* Hiệu ứng xuất hiện */
-}
+    animation: fadeInModal 0.3s ease-in-out; Hiệu ứng xuất hiện
+} */
 
 @keyframes fadeInModal {
     from {
@@ -1261,4 +1260,160 @@ h4 {
 .btn-unique-save:hover {
     background-color: #218838; /* Đổi màu khi hover */
 }
+
+.unique-modal {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    /* Khung nội dung modal */
+    .unique-modal-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        max-width: 400px;
+        width: 100%;
+        text-align: left;
+    }
+
+    /* Định dạng container cho ngày và giờ */
+    .date-time-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .date-picker, .time-picker {
+        flex: 1;
+    }
+
+    .date-picker label, .time-picker label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    /* Căn chỉnh dropdown giờ để hiển thị cạnh ngày */
+    .time-picker select {
+        width: 80px;
+    }
+
+    .unique-modal-input {
+        width: 100%;
+        padding: 8px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    /* Định dạng nút */
+    .btn-unique-save {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-unique-save:hover {
+        background-color: #0056b3;
+    }
+
+    /* Tùy chỉnh nút đóng */
+    .unique-modal-close {
+        font-size: 24px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+    }
+    
+    
+        .promotion-radio__item {
+            cursor: pointer;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .promotion-radio__item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .promo-code-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .promo-code-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .promo-code-value {
+            font-weight: bold;
+            color: #5FCF86;
+        }
+
+        .promo-code-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .promo-code-info {
+            flex: 1;
+        }
+
+        .promo-code-status {
+            font-size: 0.8em;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .selected-promo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .selected-promo-code {
+            color: #5FCF86;
+            font-weight: bold;
+        }
+
+        .selected-promo-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .promo-text {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    
+
+
+
+
 

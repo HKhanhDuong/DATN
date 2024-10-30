@@ -4,7 +4,8 @@
     <title>Danh sách xe</title>
 </head>
 <body>
-		    <div th:fragment="list_vehicle" th:each="car : ${cars}" class="prod car">
+    <div th:fragment="list_vehicle" th:each="car : ${cars}">
+		    <div class="prod car">
 		        <div class="info-prod">
 		            <div class="three-column">
 		                <!-- Cột đầu tiên: Hình xe -->
@@ -70,6 +71,7 @@
 		            </div>
 		        </div>
 		    </div>
+		</div>
 		
 
 
