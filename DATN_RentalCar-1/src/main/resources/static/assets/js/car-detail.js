@@ -103,3 +103,52 @@ document.getElementById('saveDateTime').addEventListener('click', function () {
     modal.style.display = "none";
 });
 
+
+////////////////////////////////////////////
+
+
+// Hàm để lưu dữ liệu và gửi về backend
+const saveDataToBackend = async (pickUpDateTime, returnDateTime) => {
+    const customerName = document.getElementById("customer").value; // Lấy tên khách hàng từ input
+    const customerPhone = document.getElementById("customerPhone").value; // Lấy số điện thoại từ input
+
+    const dataToSend = {
+        pickUpDateTime: pickUpDateTime,
+        returnDateTime: returnDateTime,
+        customerName: customer,
+        customerPhone: customerPhone
+    };
+
+    try {
+        const response = await fetch('/api/save-rental', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dataToSend)
+        });
+
+        if (!response.ok) {
+            throw new Error('Error in saving data');
+        }
+
+        const result = await response.json();
+        console.log('Data saved successfully:', result);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+};
+
+// Sử dụng hàm khi bấm nút "Tiếp tục"
+saveDateTime.addEventListener("click", () => {
+    const pickUpDate = document.getElementById("modalPickUpDate").value;
+    const pickUpTime = document.getElementById("modalPickUpTime").value;
+    const returnDate = document.getElementById("modalReturnDate").value;
+    const returnTime = document.getElementById("modalReturnTime").value;
+
+    const pickUpDateTime = new Date(`${pickUpDate}T${pickUpTime}`);
+    const returnDateTime = new Date(`${returnDate}T${returnTime}`);
+
+    // Lưu thời gian vào backend
+    saveDataToBackend(pickUpDateTime, returnDateTime);
+});

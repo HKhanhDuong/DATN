@@ -21,6 +21,7 @@ public class AccountController {
 	private AccountRepo accountRepo;
 	@Autowired
 	private RoleRepo roleRepo;
+	
 	// Find all accounts
 		@GetMapping
 		public List<Account> getAllAccounts() {
@@ -39,12 +40,13 @@ public class AccountController {
 		@PostMapping
 		public ResponseEntity<String> save(@RequestBody Account account) {
 		    try {
+		    	System.out.println("---------------------"+ account);
 		        accountRepo.save(account);
 		        return ResponseEntity.ok("saved...");
 		    } catch (Exception e) {
 		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error saving account");
 		    }
-		} // Thêm dấu ngoặc đóng ở đây
+		}
 
 		
 		// Update account

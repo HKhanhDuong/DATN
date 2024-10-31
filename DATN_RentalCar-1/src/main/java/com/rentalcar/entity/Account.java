@@ -2,11 +2,10 @@ package com.rentalcar.entity;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import jakarta.persistence.*;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -52,6 +51,9 @@ public class Account {
     
     @Column(columnDefinition = "NVARCHAR")
     private String imageUrl;
+    
+    @OneToMany(mappedBy = "account")
+    private Set<Rental> rental;
 
     // Getters and Setters
 }

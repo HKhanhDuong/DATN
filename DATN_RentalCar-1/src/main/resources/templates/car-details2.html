@@ -10,8 +10,8 @@
 <link rel="stylesheet" href="/assets/css/style.css" />
 <link rel="stylesheet" href="/assets/css/responsive.css" />
 <link rel="stylesheet" href="/assets/css/car-details.css" />
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <!-- Search-option-->
 
 <title>Chi Tiết Ô Tô</title>
@@ -838,6 +838,7 @@
 						</div>
 					</div>
 					<br>
+					
 					<div class="rent-box" id="cardetail" style="position: relative;">
 						<div class="price">
 							<div class="price-discount" th:if="${car.percentDiscount != null and car.percentDiscount > 0}">
@@ -851,74 +852,180 @@
 
 							<!-- Tính giá sau khi giảm -->
 							<h4>
-								<!-- Giá đã giảm = giá gốc - (giá gốc * 14%) -->
-								<span th:text="${#numbers.formatInteger(car.dailyRate * (1 - 0.14), 3, 'POINT')}"></span>đ
-
-
+								<!-- Giá đã giảm = giá gốc - (giá gốc * % giảm giá) -->
+								<span th:text="${#numbers.formatInteger(car.dailyRate * ( 1 - (car.percentDiscount / 100)), 3, 'POINT')}"></span>đ
 								<span class="inner-h"> /ngày</span>
 							</h4>
 						</div>
-                        <div class="date-time-form ">
-                            <div class="form-item"><label>Nhận xe </label>
-                                <div class="wrap-date-time">
-                                    <div class="wrap-date"><span class="value">08/10/2024</span></div>
-                                    <div class="wrap-time"><span class="value">21:00</span></div>
-                                </div>
-                            </div>
-                            <div class="line"></div>
-                            <div class="form-item"><label>Trả xe</label>
-                                <div class="wrap-date-time">
-                                    <div class="wrap-date"><span class="value">09/10/2024</span></div>
-                                    <div class="wrap-time"><span class="value">20:00</span></div>
-                                </div>
-                            </div>
-                        </div>
-						<div class="dc-week-month rent-hour">
-							<div class="wrap-svg">
-								<svg width="44" height="44" viewBox="0 0 44 44" fill="none"
-									xmlns="http://www.w3.org/2000/svg">
-                                    <path
-										d="M22.5788 38.9584C30.9017 38.9584 37.6488 32.2113 37.6488 23.8884C37.6488 15.5654 30.9017 8.81836 22.5788 8.81836C14.2559 8.81836 7.50879 15.5654 7.50879 23.8884C7.50879 32.2113 14.2559 38.9584 22.5788 38.9584Z"
-										stroke="black" stroke-width="3" stroke-linecap="round"
-										stroke-linejoin="round">
-                                    </path>
-                                    <path d="M22.5791 5.04102V8.81768"
-										stroke="black" stroke-width="3" stroke-linecap="round"
-										stroke-linejoin="round"></path>
-                                    <path
-										d="M9.25 10.5586L11.2666 12.5753" stroke="black"
-										stroke-width="3" stroke-linecap="round"
-										stroke-linejoin="round"></path>
-                                    <path
-										d="M35.9072 10.5586L33.8906 12.5753" stroke="black"
-										stroke-width="3" stroke-linecap="round"
-										stroke-linejoin="round"></path>
-                                    <path
-										d="M22.5788 25.7767C23.6217 25.7767 24.4671 24.9312 24.4671 23.8883C24.4671 22.8454 23.6217 22 22.5788 22C21.5359 22 20.6904 22.8454 20.6904 23.8883C20.6904 24.9312 21.5359 25.7767 22.5788 25.7767Z"
-										stroke="black" stroke-width="3" stroke-linecap="round"
-										stroke-linejoin="round">
-                                    </path>
-                                    <path
-										d="M22.5791 23.8874L27.2908 19.1758" stroke="black"
-										stroke-width="3" stroke-linecap="round"
-										stroke-linejoin="round"></path>
-                                    <path d="M20.6904 5.04102H24.4671"
-										stroke="black" stroke-width="3" stroke-linecap="round"
-										stroke-linejoin="round"></path>
-                                </svg>
-							</div>
-							<p>
-								Chủ xe hỗ trợ thuê xe theo giờ.<span
-									class="text-primary pointer fontWeight-6">
-									Tìm&nbsp;hiểu&nbsp;thêm</span>
-							</p>
-						</div>
-						<div class="dropdown-form pointer ">
-							<label class="pointer">Địa điểm giao nhận xe</label>
-							<div class="wrap-form has-arrow">
-								<span class="value">Quận Bình Thạnh, TP. Hồ Chí Minh</span>
-							</div>
-						</div>
+						
+                        <div class="date-time-form" id="dateTimeForm">
+    <div class="form-item"><label>Nhận xe </label>
+        <div class="wrap-date-time">
+            <span class="value" id="pickUpDateTime">08-10-2024 | 21:00</span>
+        </div>
+    </div>
+    <hr>
+    <div class="form-item"><label>Trả xe</label>
+        <div class="wrap-date-time">
+            <span class="value" id="returnDateTime">09-10-2024 | 20:00</span>
+        </div>
+    </div>
+</div>
+
+<!-- modal -->
+<div id="uniqueModal" class="unique-modal" style="display: none;">
+    <div class="unique-modal-content">
+        <span class="unique-modal-close" id="closeModal">&times;</span>
+
+        <h2>Chọn ngày và giờ nhận xe</h2>
+        
+        <div class="date-time-container">
+            <div class="date-picker">
+                <label for="modalPickUpDate">Chọn ngày:</label> 
+                <input type="date" id="modalPickUpDate" class="unique-modal-input">
+            </div>
+            <div class="time-picker">
+                <label for="modalPickUpTime">Giờ:</label>
+                <select id="modalPickUpTime" class="unique-modal-input">
+                    <!-- Các tùy chọn giờ sẽ được tạo bằng JavaScript -->
+                </select>
+            </div>
+        </div>
+        
+        <h2>Chọn ngày và giờ trả xe</h2>
+        
+        <div class="date-time-container">
+            <div class="date-picker">
+                <label for="modalReturnDate">Chọn ngày:</label> 
+                <input type="date" id="modalReturnDate" class="unique-modal-input">
+            </div>
+            <div class="time-picker">
+                <label for="modalReturnTime">Giờ:</label>
+                <select id="modalReturnTime" class="unique-modal-input">
+                    <!-- Các tùy chọn giờ sẽ được tạo bằng JavaScript -->
+                </select>
+            </div>
+        </div>
+        
+        <button id="saveDateTime" class="btn-unique-save">Tiếp tục</button>
+        <p id="errorMessage" style="color: red; display: none;">Thời gian thuê phải tối thiểu là 2 giờ.</p>
+    </div>
+</div>
+
+<script>
+    const dateTimeForm = document.getElementById("dateTimeForm");
+    const uniqueModal = document.getElementById("uniqueModal");
+    const closeModal = document.getElementById("closeModal");
+    const saveDateTime = document.getElementById("saveDateTime");
+    const errorMessage = document.getElementById("errorMessage");
+    const pickUpDateTimeElem = document.getElementById("pickUpDateTime");
+    const returnDateTimeElem = document.getElementById("returnDateTime");
+
+    // Tạo các tùy chọn với khoảng thời gian 30 phút từ 6:00 đến 23:00
+    const create30MinIntervalOptions = (selectElement) => {
+        selectElement.innerHTML = '';
+        const time = new Date();
+        time.setHours(6, 0, 0, 0);
+
+        for (let i = 0; i <= 34; i++) {
+            const option = document.createElement("option");
+            option.value = time.toTimeString().slice(0, 5);
+            option.text = time.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+            selectElement.appendChild(option);
+            time.setMinutes(time.getMinutes() + 30);
+        }
+    };
+
+    // Làm tròn thời gian hiện tại đến 30 phút gần nhất
+    const roundToNext30Minutes = (date) => {
+        const minutes = date.getMinutes();
+        date.setMinutes(minutes < 30 ? 30 : 0);
+        date.setSeconds(0, 0);
+        if (minutes >= 30) date.setHours(date.getHours() + 1);
+        return date;
+    };
+
+    dateTimeForm.addEventListener("click", () => {
+        create30MinIntervalOptions(document.getElementById("modalPickUpTime"));
+        create30MinIntervalOptions(document.getElementById("modalReturnTime"));
+
+        const now = new Date();
+
+        // Đặt ngày và giờ mặc định cho nhận và trả xe
+        const pickUpDate = now.toISOString().slice(0, 10);
+        const pickUpTime = roundToNext30Minutes(new Date(now)).toTimeString().slice(0, 5);
+
+        const returnDateObj = new Date(now);
+        returnDateObj.setDate(returnDateObj.getDate() + 1);
+        const returnDate = returnDateObj.toISOString().slice(0, 10);
+        const returnTime = pickUpTime;
+
+        document.getElementById("modalPickUpDate").value = pickUpDate;
+        document.getElementById("modalPickUpTime").value = pickUpTime;
+
+        document.getElementById("modalReturnDate").value = returnDate;
+        document.getElementById("modalReturnTime").value = returnTime;
+
+        // Cập nhật hiển thị mặc định
+        pickUpDateTimeElem.textContent = formatDateTime(pickUpDate, pickUpTime);
+        returnDateTimeElem.textContent = formatDateTime(returnDate, returnTime);
+
+        uniqueModal.style.display = "flex";
+
+        // Thiết lập giới hạn ngày trong modal
+        document.getElementById("modalPickUpDate").min = pickUpDate;
+        document.getElementById("modalReturnDate").min = pickUpDate;
+    });
+
+    closeModal.addEventListener("click", () => {
+        uniqueModal.style.display = "none";
+    });
+
+    window.addEventListener("click", (event) => {
+        if (event.target == uniqueModal) {
+            uniqueModal.style.display = "none";
+        }
+    });
+
+    saveDateTime.addEventListener("click", () => {
+        const pickUpDate = document.getElementById("modalPickUpDate").value;
+        const pickUpTime = document.getElementById("modalPickUpTime").value;
+        const returnDate = document.getElementById("modalReturnDate").value;
+        const returnTime = document.getElementById("modalReturnTime").value;
+
+        const pickUpDateTime = new Date(`${pickUpDate}T${pickUpTime}`);
+        const returnDateTime = new Date(`${returnDate}T${returnTime}`);
+
+        const diffInHours = (returnDateTime - pickUpDateTime) / (1000 * 60 * 60);
+        if (diffInHours < 2) {
+            errorMessage.style.display = "block";
+            return;
+        } else {
+            errorMessage.style.display = "none";
+        }
+
+        const formatDateTime = (date, time) => {
+            const [year, month, day] = date.split("-");
+            return `${day}-${month}-${year} | ${time}`;
+        };
+
+        pickUpDateTimeElem.textContent = formatDateTime(pickUpDate, pickUpTime);
+        returnDateTimeElem.textContent = formatDateTime(returnDate, returnTime);
+
+        uniqueModal.style.display = "none";
+    });
+</script>
+
+
+
+						<div class="form-group">
+    <label for="address-input" class="form-label">Địa điểm giao nhận xe</label>
+    <div class="input-group">
+        <input type="text" id="address-input" class="form-control" placeholder="Nhập địa chỉ" aria-label="Nhập địa chỉ">
+    </div>
+</div>
+						
+						
 						<div class="line-page"></div>
 						<div class="price-container">
 							<div class="price-item">
@@ -941,7 +1048,7 @@
                                             </svg></span></span>
 								</p>
 								<p class="cost">
-									<span th:text="${#numbers.formatInteger(car.dailyRate * (1 - 0.14), 3, 'POINT')}"></span>
+									<span th:text="${#numbers.formatInteger(car.dailyRate * (1 - (car.percentDiscount / 100)), 3, 'POINT')}"></span>đ/ ngày <!-- Giá thuê theo ngày -->
 								</p>
 							</div>
 							<div class="price-item">
@@ -964,74 +1071,69 @@
                                             </svg></span></span>
 								</p>
 								<p class="cost">
-									<span>88.374đ/ ngày</span>
+									<span th:text="${#numbers.formatInteger(car.dailyRate * 0.14, 3, 'POINT')}"></span>đ/ ngày <!-- bảo hiểm thuê xe 1 ngày = Giá thuê theo ngày * 0,14 -->
 								</p>
 							</div>
 							<div class="line-page"></div>
 							<div class="price-item">
 								<p>Tổng cộng</p>
 								<p class="cost">
-								    <span th:text="${#numbers.formatInteger((car.dailyRate * (1 - 0.14)) + 88374, 3, 'POINT')}"></span> x 1 ngày
+								    <span th:text="${#numbers.formatInteger(car.dailyRate * (1 - (car.percentDiscount / 100)) + (car.dailyRate * 0.14), 3, 'POINT')}"></span>đ
 								</p>
 							</div>
 							<div class="line-page"></div>
-							<div class="promotion-radio">
-								<div class="promotion-radio__item">
-									<div class="custom-radio">
-										<input type="radio" id="default" name="promo" value="0"
-											checked=""><label for="default">
-											<div class="promo-text">
-												<div class="promo-text-main">
-													<div class="wrap-svg">
-														<svg width="24" height="24" viewBox="0 0 24 24"
-															fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path
-																d="M21.3 10.8394C21.69 10.8394 22 10.5294 22 10.1394V9.20938C22 5.10938 20.75 3.85938 16.65 3.85938H7.35C3.25 3.85937 2 5.10938 2 9.20938V9.67938C2 10.0694 2.31 10.3794 2.7 10.3794C3.6 10.3794 4.33 11.1094 4.33 12.0094C4.33 12.9094 3.6 13.6294 2.7 13.6294C2.31 13.6294 2 13.9394 2 14.3294V14.7994C2 18.8994 3.25 20.1494 7.35 20.1494H16.65C20.75 20.1494 22 18.8994 22 14.7994C22 14.4094 21.69 14.0994 21.3 14.0994C20.4 14.0994 19.67 13.3694 19.67 12.4694C19.67 11.5694 20.4 10.8394 21.3 10.8394ZM9 8.87938C9.55 8.87938 10 9.32938 10 9.87938C10 10.4294 9.56 10.8794 9 10.8794C8.45 10.8794 8 10.4294 8 9.87938C8 9.32938 8.44 8.87938 9 8.87938ZM15 15.8794C14.44 15.8794 13.99 15.4294 13.99 14.8794C13.99 14.3294 14.44 13.8794 14.99 13.8794C15.54 13.8794 15.99 14.3294 15.99 14.8794C15.99 15.4294 15.56 15.8794 15 15.8794ZM15.9 9.47937L9.17 16.2094C9.02 16.3594 8.83 16.4294 8.64 16.4294C8.45 16.4294 8.26 16.3594 8.11 16.2094C7.82 15.9194 7.82 15.4394 8.11 15.1494L14.84 8.41938C15.13 8.12938 15.61 8.12938 15.9 8.41938C16.19 8.70938 16.19 9.18937 15.9 9.47937Z"
-																fill="#F26A2B"></path>
-                                                        </svg>
-													</div>
-													<p>Chương trình giảm giá</p>
-												</div>
-												<p class="promo-text-sub">Giảm 120K trên đơn giá</p>
-											</div>
-											<p class="promo-price">
-												-<span>120 000đ</span>
-											</p>
-										</label>
-									</div>
-								</div>
-								<div class="promotion-radio__item">
-									<div class="custom-radio">
-										<input type="radio" id="code" name="promo" value="1"><label
-											for="code">
-											<div class="promo-text">
-												<div class="promo-text-main">
-													<div class="wrap-svg">
-														<svg width="24" height="24" viewBox="0 0 24 24"
-															fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path
-																d="M21.3 10.8394C21.69 10.8394 22 10.5294 22 10.1394V9.20938C22 5.10938 20.75 3.85938 16.65 3.85938H7.35C3.25 3.85937 2 5.10938 2 9.20938V9.67938C2 10.0694 2.31 10.3794 2.7 10.3794C3.6 10.3794 4.33 11.1094 4.33 12.0094C4.33 12.9094 3.6 13.6294 2.7 13.6294C2.31 13.6294 2 13.9394 2 14.3294V14.7994C2 18.8994 3.25 20.1494 7.35 20.1494H16.65C20.75 20.1494 22 18.8994 22 14.7994C22 14.4094 21.69 14.0994 21.3 14.0994C20.4 14.0994 19.67 13.3694 19.67 12.4694C19.67 11.5694 20.4 10.8394 21.3 10.8394ZM9 8.87938C9.55 8.87938 10 9.32938 10 9.87938C10 10.4294 9.56 10.8794 9 10.8794C8.45 10.8794 8 10.4294 8 9.87938C8 9.32938 8.44 8.87938 9 8.87938ZM15 15.8794C14.44 15.8794 13.99 15.4294 13.99 14.8794C13.99 14.3294 14.44 13.8794 14.99 13.8794C15.54 13.8794 15.99 14.3294 15.99 14.8794C15.99 15.4294 15.56 15.8794 15 15.8794ZM15.9 9.47937L9.17 16.2094C9.02 16.3594 8.83 16.4294 8.64 16.4294C8.45 16.4294 8.26 16.3594 8.11 16.2094C7.82 15.9194 7.82 15.4394 8.11 15.1494L14.84 8.41938C15.13 8.12938 15.61 8.12938 15.9 8.41938C16.19 8.70938 16.19 9.18937 15.9 9.47937Z"
-																fill="#5FCF86"></path>
-                                                        </svg>
-													</div>
-													<p>Mã khuyến mãi</p>
-												</div>
-											</div>
-											<div class="promo-price">
-												<div class="wrap-svg">
-													<svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-														xmlns="http://www.w3.org/2000/svg">
-                                                        <path
-															d="M14.8299 11.2897L10.5899 7.0497C10.497 6.95598 10.3864 6.88158 10.2645 6.83081C10.1427 6.78004 10.012 6.75391 9.87994 6.75391C9.74793 6.75391 9.61723 6.78004 9.49537 6.83081C9.37351 6.88158 9.26291 6.95598 9.16994 7.0497C8.98369 7.23707 8.87915 7.49052 8.87915 7.7547C8.87915 8.01889 8.98369 8.27234 9.16994 8.4597L12.7099 11.9997L9.16994 15.5397C8.98369 15.7271 8.87915 15.9805 8.87915 16.2447C8.87915 16.5089 8.98369 16.7623 9.16994 16.9497C9.26338 17.0424 9.3742 17.1157 9.49604 17.1655C9.61787 17.2152 9.74834 17.2405 9.87994 17.2397C10.0115 17.2405 10.142 17.2152 10.2638 17.1655C10.3857 17.1157 10.4965 17.0424 10.5899 16.9497L14.8299 12.7097C14.9237 12.6167 14.9981 12.5061 15.0488 12.3843C15.0996 12.2624 15.1257 12.1317 15.1257 11.9997C15.1257 11.8677 15.0996 11.737 15.0488 11.6151C14.9981 11.4933 14.9237 11.3827 14.8299 11.2897Z"
-															fill="#263D2A"></path>
-                                                    </svg>
-												</div>
-											</div>
-										</label>
-									</div>
-								</div>
-							</div>
-							<div class="line-page"></div>
+
+								<!-- Nút kích hoạt popup -->
+<div class="promotion-radio__item" data-bs-toggle="modal" data-bs-target="#promoModal">
+    <div class="custom-radio">
+        <input type="radio" id="code" name="promo" value="1">
+        <label for="code">
+            <div class="promo-text">
+                <div class="wrap-svg">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21.3 10.8394C21.69 10.8394 22 10.5294 22 10.1394V9.20938C22 5.10938 20.75 3.85938 16.65 3.85938H7.35C3.25 3.85937 2 5.10938 2 9.20938V9.67938C2 10.0694 2.31 10.3794 2.7 10.3794C3.6 10.3794 4.33 11.1094 4.33 12.0094C4.33 12.9094 3.6 13.6294 2.7 13.6294C2.31 13.6294 2 13.9394 2 14.3294V14.7994C2 18.8994 3.25 20.1494 7.35 20.1494H16.65C20.75 20.1494 22 18.8994 22 14.7994C22 14.4094 21.69 14.0994 21.3 14.0994C20.4 14.0994 19.67 13.3694 19.67 12.4694C19.67 11.5694 20.4 10.8394 21.3 10.8394ZM9 8.87938C9.55 8.87938 10 9.32938 10 9.87938C10 10.4294 9.56 10.8794 9 10.8794C8.45 10.8794 8 10.4294 8 9.87938C8 9.32938 8.44 8.87938 9 8.87938ZM15 15.8794C14.44 15.8794 13.99 15.4294 13.99 14.8794C13.99 14.3294 14.44 13.8794 14.99 13.8794C15.54 13.8794 15.99 14.3294 15.99 14.8794C15.99 15.4294 15.56 15.8794 15 15.8794ZM15.9 9.47937L9.17 16.2094C9.02 16.3594 8.83 16.4294 8.64 16.4294C8.45 16.4294 8.26 16.3594 8.11 16.2094C7.82 15.9194 7.82 15.4394 8.11 15.1494L14.84 8.41938C15.13 8.12938 15.61 8.12938 15.9 8.41938C16.19 8.70938 16.19 9.18937 15.9 9.47937Z" fill="#5FCF86"/>
+                    </svg>
+                </div>
+                <div id="selectedPromoDisplay">
+                    <p class="mb-0">Mã khuyến mãi</p>
+                    <div class="selected-promo" style="display: none;">
+                        <span class="selected-promo-code"></span>
+                        <span class="selected-promo-description"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="promo-price">
+                <div class="wrap-svg">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14.8299 11.2897L10.5899 7.0497C10.497 6.95598 10.3864 6.88158 10.2645 6.83081C10.1427 6.78004 10.012 6.75391 9.87994 6.75391C9.74793 6.75391 9.61723 6.78004 9.49537 6.83081C9.37351 6.88158 9.26291 6.95598 9.16994 7.0497C8.98369 7.23707 8.87915 7.49052 8.87915 7.7547C8.87915 8.01889 8.98369 8.27234 9.16994 8.4597L12.7099 11.9997L9.16994 15.5397C8.98369 15.7271 8.87915 15.9805 8.87915 16.2447C8.87915 16.5089 8.98369 16.7623 9.16994 16.9497C9.26338 17.0424 9.3742 17.1157 9.49604 17.1655C9.61787 17.2152 9.74834 17.2405 9.87994 17.2397C10.0115 17.2405 10.142 17.2152 10.2638 17.1655C10.3857 17.1157 10.4965 17.0424 10.5899 16.9497L14.8299 12.7097C14.9237 12.6167 14.9981 12.5061 15.0488 12.3843C15.0996 12.2624 15.1257 12.1317 15.1257 11.9997C15.1257 11.8677 15.0996 11.737 15.0488 11.6151C14.9981 11.4933 14.9237 11.3827 14.8299 11.2897Z" fill="#263D2A"/>
+                    </svg>
+                </div>
+            </div>
+        </label>
+    </div>
+</div>
+
+<!-- Modal Popup -->
+<div class="modal fade" id="promoModal" tabindex="-1" aria-labelledby="promoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="promoModalLabel">Chọn mã giảm giá</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="promoCodesList">
+                    <!-- Danh sách mã giảm giá sẽ được thêm vào đây -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+								
+								
+
+
+								<div class="line-page"></div>
 							<div class="price-item total">
 								<p>Thành tiền</p>
 								<p class="cost">
@@ -1039,7 +1141,7 @@
 								</p>
 							</div>
 						</div>
-						<a class="btn btn-primary btn--m width-100">
+						<a class="btn btn-primary btn--m width-100" onclick="calculateTotalRent">
 							<div class="wrap-svg">
 								<svg width="16" height="16" viewBox="0 0 16 16" fill="none"
 									xmlns="http://www.w3.org/2000/svg">
@@ -1050,20 +1152,8 @@
 							</div>CHỌN THUÊ
 						</a>
 					</div>
-					<!-- modal -->
-					<div id="uniqueModal" class="unique-modal">
-						<div class="unique-modal-content">
-							<span class="unique-modal-close">&times;</span>
-							<h2>Chọn ngày và giờ nhận xe</h2>
-							<label for="modalDate">Chọn ngày:</label> <input type="date"
-								id="modalDate" name="modalDate" class="unique-modal-input"><br>
-							<br> <label for="modalTime">Chọn giờ:</label> <input
-								type="time" id="modalTime" name="modalTime"
-								class="unique-modal-input"><br>
-							<br>
-							<button id="saveDateTime" class="btn-unique-save">Lưu</button>
-						</div>
-					</div>
+					
+					
 
 					<div class="surcharge">
 						<p class="title text-primary">Phụ phí có thể phát sinh</p>
@@ -1293,73 +1383,22 @@
 			</div>
 		</div>
 	</div>
-
-	<script>
-        flatpickr(".wrap-date-time .wrap-date", {
-            enableTime: true,
-            dateFormat: "d/m/Y H:i",
-            defaultDate: "08/10/2024 21:00",
-            minDate: "today",
-            locale: "vn", // Ngôn ngữ tiếng Việt
-        });
-
-        flatpickr(".wrap-date-time .wrap-time", {
-            enableTime: true,
-            dateFormat: "d/m/Y H:i",
-            defaultDate: "09/10/2024 20:00",
-            minDate: "today",
-            locale: "vn",
-        });
-        
-        document.addEventListener("DOMContentLoaded", function () {
-            var modal = document.getElementById("uniqueModal");
-            var closeButton = document.querySelector(".unique-modal-close");
-
-            // Đảm bảo modal ẩn khi tải trang
-            modal.style.display = "none";
-
-            // Khi người dùng click vào "Nhận xe", mở modal
-            document.querySelector('.form-item:nth-child(1) .wrap-date-time').addEventListener('click', function () {
-                console.log('Nhận xe clicked');
-                modal.style.display = "flex"; // Hiển thị modal khi click vào "Nhận xe"
-            });
-
-            // Khi người dùng click vào "Trả xe", mở modal
-            document.querySelector('.form-item:nth-child(3) .wrap-date-time').addEventListener('click', function () {
-                console.log('Trả xe clicked');
-                modal.style.display = "flex"; // Hiển thị modal khi click vào "Trả xe"
-            });
-
-            // Khi người dùng click vào nút "X", đóng modal
-            closeButton.onclick = function () {
-                modal.style.display = "none"; // Ẩn modal khi bấm nút X
-            };
-
-            // Khi người dùng click ra ngoài modal, đóng modal
-            window.onclick = function (event) {
-                if (event.target == modal) {
-                    modal.style.display = "none"; // Ẩn modal khi click ra ngoài modal
-                }
-            };
-        });
-
-        
-
-    </script>
+	
+		<ul>
+        <li th:each="discount : ${discounts}" th:text="${discount.discountCode}">Tên xe</li>
+    </ul>
 
 	<!-- Ion-Icon -->
 	<script type="module"
 		src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-	<script nomodule
-		src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+	<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 	<!-- jQuery -->
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<!-- Popper.js (Bootstrap requirement) -->
-	<script
-		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-	<!-- Bootstrap JS -->
-	<script
-		src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	
+	<!-- Bootstrap JS và Popper.js -->
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+
 	<!-- Flatpickr -->
 	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 	<!-- Swiper.js library -->
@@ -1371,8 +1410,67 @@
 <script src="/assets/js/Search-option.js"></script>
 	<!-- Car-details -->
 <script src="/assets/js/car-detail.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-
+<script th:inline="javascript">
+	// Danh sách mã giảm giá
+	const promoCodes = /*[[${discounts}]]*/ [];
+	
+	// Hiển thị danh sách mã giảm giá
+	function displayPromoCodes() {
+	    const promoList = document.getElementById('promoCodesList');
+	    promoList.innerHTML = '';
+	    
+	    promoCodes.forEach(promo => {
+	        const promoItem = document.createElement('div');
+	        promoItem.className = 'promo-code-item';
+	        promoItem.innerHTML = `
+	            <div class="promo-code-info">
+	                <div class="promo-code-value">${promo.discountCode}</div>
+	                <div class="promo-code-description">${promo.description}</div>
+	                <div value="${promo.discountPercentage}">Giảm: ${promo.discountPercentage}%</div>
+	            </div>
+	            <div class="promo-code-status">${promo.status}</div>
+	        `;
+	        
+	        promoItem.addEventListener('click', () => {
+	            applyPromoCode(promo);
+	        });
+	        
+	        promoList.appendChild(promoItem);
+	    });
+	}
+	
+	// Áp dụng mã giảm giá
+	function applyPromoCode(promo) {
+	    // Đánh dấu radio button là đã chọn
+	    document.getElementById('code').checked = true;
+	    
+	    // Cập nhật hiển thị mã đã chọn
+	    const selectedPromoDisplay = document.getElementById('selectedPromoDisplay');
+	    const selectedPromo = selectedPromoDisplay.querySelector('.selected-promo');
+	    const selectedPromoCode = selectedPromoDisplay.querySelector('.selected-promo-code');
+	    const selectedPromoDescription = selectedPromoDisplay.querySelector('.selected-promo-description');
+	    
+	    selectedPromoDisplay.querySelector('p').style.display = 'none';
+	    selectedPromo.style.display = 'flex';
+	    selectedPromoCode.textContent = promo.discountCode;
+	    selectedPromoDescription.textContent = `(Giảm ${promo.discountPercentage}%)`;
+	    
+	    // Đóng modal
+	    const modal = bootstrap.Modal.getInstance(document.getElementById('promoModal'));
+	    modal.hide();
+	    
+	    // Ở đây bạn có thể thêm logic để cập nhật giá tiền của đơn hàng
+	    console.log(`Áp dụng mã giảm giá: ${promo.discountCode} - ${promo.discountPercentage}%`);
+	}
+	
+	// Khởi tạo hiển thị mã giảm giá khi trang được load
+	document.addEventListener('DOMContentLoaded', () => {
+	    displayPromoCodes();
+	});
+</script>
+	
 </body>
 
 </html>

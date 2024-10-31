@@ -4,9 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.rentalcar.dao.AccountRepo;
 import com.rentalcar.dao.RentalRepo;
 import com.rentalcar.entity.Rental;
-
+import com.rentalcar.entity.Account;
+import com.rentalcar.entity.Discount;
+import com.rentalcar.dao.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +19,10 @@ public class RentalController {
 	
 	@Autowired
 	private RentalRepo rentalRepo;
+	@Autowired
+	private AccountRepo accountRepo;
+	@Autowired
+	private DiscountRepo discountRepo;
 		
 		
 		//tìm tất cả
@@ -25,7 +32,7 @@ public class RentalController {
 		}
 		
 		//tìm theo id xe
-		@GetMapping(value = "/findByID/{id}")
+		@GetMapping(value = "/{id}")
 		public ResponseEntity<Optional<Rental>> getByID(@PathVariable("id") Long id) {
 			if (!rentalRepo.existsById(id)) {
 				return ResponseEntity.notFound().build();
@@ -36,10 +43,36 @@ public class RentalController {
 		
 		//lưu
 		@PostMapping
-		public String save(@RequestBody Rental drivingLicense) {
-			rentalRepo.save(drivingLicense);
-			return "saved...";
+		public ResponseEntity<String> save(@RequestBody Rental rental) {
+			System.out.println("-----------"+ rentalRepo + "------------" + rental);
+			rentalRepo.save(rental);
+			return ResponseEntity.ok("saved...");
 		}
+		
+		@PostMapping("/save2")
+		public ResponseEntity<Rental> createRental(@RequestBody Rental rentalRequest) {
+			System.out.println("-----------"+ rentalRepo + "------------" + rentalRequest);
+		    // Kiểm tra account không null
+		    if (rentalRequest.getAccount() == null || rentalRequest.getAccount().getAccountId() == null) {
+		        throw new IllegalArgumentException("Account ID must not be null");
+		    }
+
+		    Account account = accountRepo.findById(rentalRequest.getAccount().getAccountId())
+		    		.orElseThrow(() -> new RuntimeException("accountID not found"));
+		    rentalRequest.setAccount(account);
+
+		    // Nếu discount có mặt trong request, lấy discount từ cơ sở dữ liệu
+		    if (rentalRequest.getDiscount() != null && rentalRequest.getDiscount().getDiscountId() != null) {
+		        Discount discount = discountRepo.findById(rentalRequest.getDiscount().getDiscountId())
+		        		.orElseThrow(() -> new RuntimeException("DiscountId not found"));
+		        rentalRequest.setDiscount(discount);
+		    }
+
+		    Rental savedRental = rentalRepo.save(rentalRequest);
+		    return ResponseEntity.ok(savedRental);
+		}
+
+
 		
 		@PutMapping(value = "/{id}")
 		public String update(@PathVariable("id") Long id, @RequestBody Rental rentalDetail) {

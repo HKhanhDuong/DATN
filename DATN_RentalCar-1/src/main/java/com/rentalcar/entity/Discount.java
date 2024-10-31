@@ -3,6 +3,7 @@ package com.rentalcar.entity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.Set;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -36,6 +37,9 @@ public class Discount {
 
     @Column(nullable = false, length = 50, columnDefinition = "NVARCHAR(50)")
     private String status;
+    
+    @OneToMany(mappedBy = "discount")
+    private Set<Rental> rental;
 
     // Getters and Setters
 }

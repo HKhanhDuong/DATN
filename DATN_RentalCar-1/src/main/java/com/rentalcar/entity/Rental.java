@@ -1,9 +1,7 @@
 package com.rentalcar.entity;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Date;
-
+import java.time.LocalDateTime; // Sử dụng LocalDateTime
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
@@ -23,16 +21,16 @@ public class Rental {
 
     @ManyToOne
     @JoinColumn(name = "accountId", nullable = false)
-    //@JsonIgnore
+    @JsonIgnore
     private Account account;
 
     @Column(nullable = false)
-    private Date rentalDate;
+    private LocalDateTime rentalDate; // Đổi sang LocalDateTime
 
     @Column(nullable = false)
-    private Date returnDate;
+    private LocalDateTime returnDate; // Đổi sang LocalDateTime
 
-    private Date actualReturnDate;
+    private LocalDateTime actualReturnDate; // Đổi sang LocalDateTime
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal totalCost;
@@ -42,12 +40,12 @@ public class Rental {
 
     @ManyToOne
     @JoinColumn(name = "discountId")
-    //@JsonIgnore
+    @JsonIgnore
     private Discount discount;
 
     @Column(nullable = false)
     private Boolean haveDriver;
 
-    // Getters and Setters
+    @Column(length = 255, columnDefinition = "NVARCHAR(255)")
+    private String rentalLocations;
 }
-
