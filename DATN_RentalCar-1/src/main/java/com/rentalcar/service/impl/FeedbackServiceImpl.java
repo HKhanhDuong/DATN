@@ -8,12 +8,18 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import com.rentalcar.dao.FeedbackRepo;
+import com.rentalcar.dto.FeedbackInfo;
 import com.rentalcar.entity.Feedback;
 import com.rentalcar.service.FeedbackService;
 
 @Service
 public class FeedbackServiceImpl implements FeedbackService{
 	@Autowired FeedbackRepo fbRepo;
+	
+	@Override
+	public List<FeedbackInfo> getCompletedRentalsWithFeedback() {
+        return fbRepo.findCompletedRentalsWithFeedback();
+    }
 
 	public <S extends Feedback> S save(S entity) {
 		return fbRepo.save(entity);

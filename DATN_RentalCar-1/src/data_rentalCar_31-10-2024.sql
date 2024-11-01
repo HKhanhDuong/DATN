@@ -70,11 +70,15 @@ SET IDENTITY_INSERT [dbo].[discounts] OFF
 GO
 SET IDENTITY_INSERT [dbo].[rentals] ON 
 GO
-INSERT [dbo].[rentals] ([rental_id], [actual_return_date], [have_driver], [ren_status], [rental_date], [rental_locations], [return_date], [total_cost], [account_id], [discount_id], [discount]) VALUES (3, CAST(N'2024-09-05T00:00:00.0000000' AS DateTime2), 1, N'Hoàn t?t', CAST(N'2024-09-01T00:00:00.0000000' AS DateTime2), NULL, CAST(N'2024-09-05T00:00:00.0000000' AS DateTime2), CAST(2000000.00 AS Numeric(10, 2)), 1, 1, NULL)
+INSERT [dbo].[rentals] ([rental_id], [actual_return_date], [have_driver], [ren_status], [rental_date], [rental_locations], [return_date], [total_cost], [account_id], [discount_id]) VALUES (2, CAST(N'2023-11-04T15:30:00.0000000' AS DateTime2), 1, N'hoan tat', CAST(N'2023-10-30T12:00:00.0000000' AS DateTime2), N'12345 Main St, Anytown USA', CAST(N'2023-11-05T12:00:00.0000000' AS DateTime2), CAST(1000.00 AS Numeric(10, 2)), 3, 2)
 GO
-INSERT [dbo].[rentals] ([rental_id], [actual_return_date], [have_driver], [ren_status], [rental_date], [rental_locations], [return_date], [total_cost], [account_id], [discount_id], [discount]) VALUES (4, NULL, 0, N'Ðang thuê', CAST(N'2024-09-10T00:00:00.0000000' AS DateTime2), NULL, CAST(N'2024-09-15T00:00:00.0000000' AS DateTime2), CAST(3000000.00 AS Numeric(10, 2)), 2, NULL, NULL)
+INSERT [dbo].[rentals] ([rental_id], [actual_return_date], [have_driver], [ren_status], [rental_date], [rental_locations], [return_date], [total_cost], [account_id], [discount_id]) VALUES (3, CAST(N'2023-11-04T15:30:00.0000000' AS DateTime2), 1, N'hoan tat', CAST(N'2023-10-30T12:00:00.0000000' AS DateTime2), N'12345 Main St, Anytown USA', CAST(N'2023-11-05T12:00:00.0000000' AS DateTime2), CAST(1000.00 AS Numeric(10, 2)), 3, 2)
 GO
-INSERT [dbo].[rentals] ([rental_id], [actual_return_date], [have_driver], [ren_status], [rental_date], [rental_locations], [return_date], [total_cost], [account_id], [discount_id], [discount]) VALUES (8, CAST(N'2024-09-05T00:00:00.0000000' AS DateTime2), 1, N'đang thuê', CAST(N'2024-09-10T00:00:00.0000000' AS DateTime2), N'abc', CAST(N'2024-09-10T00:00:00.0000000' AS DateTime2), CAST(30000000.00 AS Numeric(10, 2)), 3, 2, NULL)
+INSERT [dbo].[rentals] ([rental_id], [actual_return_date], [have_driver], [ren_status], [rental_date], [rental_locations], [return_date], [total_cost], [account_id], [discount_id]) VALUES (4, CAST(N'2023-11-04T15:30:00.0000000' AS DateTime2), 1, N'chua tra', CAST(N'2023-10-30T12:00:00.0000000' AS DateTime2), N'12345 Main St, Anytown USA', CAST(N'2023-11-05T12:00:00.0000000' AS DateTime2), CAST(1000.00 AS Numeric(10, 2)), 3, 2)
+GO
+INSERT [dbo].[rentals] ([rental_id], [actual_return_date], [have_driver], [ren_status], [rental_date], [rental_locations], [return_date], [total_cost], [account_id], [discount_id]) VALUES (5, CAST(N'2023-11-04T15:30:00.0000000' AS DateTime2), 1, N'chua tra', CAST(N'2023-10-30T12:00:00.0000000' AS DateTime2), N'12345 Main St, Anytown USA', CAST(N'2023-11-05T12:00:00.0000000' AS DateTime2), CAST(1000.00 AS Numeric(10, 2)), 3, 2)
+GO
+INSERT [dbo].[rentals] ([rental_id], [actual_return_date], [have_driver], [ren_status], [rental_date], [rental_locations], [return_date], [total_cost], [account_id], [discount_id]) VALUES (6, CAST(N'2023-11-04T15:30:00.0000000' AS DateTime2), 1, N'chua tra', CAST(N'2023-10-30T12:00:00.0000000' AS DateTime2), N'12345 Main St, Anytown USA', CAST(N'2023-11-05T12:00:00.0000000' AS DateTime2), CAST(1000.00 AS Numeric(10, 2)), 3, 2)
 GO
 SET IDENTITY_INSERT [dbo].[rentals] OFF
 GO
@@ -115,4 +119,20 @@ GO
 INSERT [dbo].[drivers] ([driver_id], [experience_years], [full_name], [image_url], [license_number], [phone_number], [status]) VALUES (2, 7, N'Nguyen Thi E', N'driver_image2.jpg', N'876543210', N'0909123765', N'B?n')
 GO
 SET IDENTITY_INSERT [dbo].[drivers] OFF
+GO
+SET IDENTITY_INSERT [dbo].[rental_vehicles] ON 
+GO
+INSERT [dbo].[rental_vehicles] ([rental_vehicle_id], [vehicle_type], [car_id], [driver_id], [motorbike_id], [rental_id]) VALUES (3, N'Car', 1, 1, NULL, 3)
+GO
+INSERT [dbo].[rental_vehicles] ([rental_vehicle_id], [vehicle_type], [car_id], [driver_id], [motorbike_id], [rental_id]) VALUES (4, N'Motorbike', NULL, NULL, 1, 2)
+GO
+SET IDENTITY_INSERT [dbo].[rental_vehicles] OFF
+GO
+SET IDENTITY_INSERT [dbo].[feedbacks] ON 
+GO
+INSERT [dbo].[feedbacks] ([feedbackid], [comment], [feedback_date], [rating], [rentalid]) VALUES (3, N'abc', CAST(N'2023-11-04' AS Date), 5, 2)
+GO
+INSERT [dbo].[feedbacks] ([feedbackid], [comment], [feedback_date], [rating], [rentalid]) VALUES (4, N'abc', CAST(N'2023-11-04' AS Date), 5, 3)
+GO
+SET IDENTITY_INSERT [dbo].[feedbacks] OFF
 GO

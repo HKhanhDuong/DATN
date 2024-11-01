@@ -14,8 +14,10 @@ import com.rentalcar.entity.Discount;
 import com.rentalcar.dao.DiscountRepo;
 import com.rentalcar.dao.CarRepo;
 import com.rentalcar.dao.MotorbikeRepo;
+import com.rentalcar.dto.FeedbackInfo;
 import com.rentalcar.entity.Car;
 import com.rentalcar.entity.Motorbike;
+import com.rentalcar.service.FeedbackService;
 
 
 @Controller
@@ -27,6 +29,8 @@ public class DetailVehicleController {
     private CarRepo carRepo;
 	@Autowired
     private DiscountRepo discountRepo;
+	@Autowired
+	private FeedbackService feedbackService;
 	
 	
 	@GetMapping("/car/detail/{id}")
@@ -55,6 +59,11 @@ public class DetailVehicleController {
         if (motorbike.isPresent()) {
         	model.addAttribute("motorbike", motorbike.get());
         	model.addAttribute("discounts", discounts);
+        	
+        	// Lấy thông tin feedback
+            List<FeedbackInfo> feedbacks = feedbackService.getCompletedRentalsWithFeedback();
+            System.out.println("--------------------------------------"+feedbacks);
+            model.addAttribute("feedbacks", feedbacks);
         } else {
             // Xử lý lỗi khi không tìm thấy xe
             model.addAttribute("error", "Không tìm thấy xe với ID này");

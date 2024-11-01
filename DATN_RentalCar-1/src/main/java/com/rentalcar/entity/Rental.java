@@ -21,7 +21,7 @@ public class Rental {
 
     @ManyToOne
     @JoinColumn(name = "accountId", nullable = false)
-    @JsonIgnore
+    //@JsonIgnore
     private Account account;
 
     @Column(nullable = false)
@@ -40,7 +40,7 @@ public class Rental {
 
     @ManyToOne
     @JoinColumn(name = "discountId")
-    @JsonIgnore
+    //@JsonIgnore
     private Discount discount;
 
     @Column(nullable = false)
