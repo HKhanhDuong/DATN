@@ -207,7 +207,10 @@
 									fill="#FFC634"></path>
                             </svg>
 						</div>
-						<span class="info">5.0</span> <span class="separator">•</span>
+						<span class="info" th:text="${#numbers.formatDecimal(averageRating, 1, 1)}"></span>
+						<span class="separator">•</span>
+
+
 						<!-- Icon Trip Count -->
 						<div class="icon-wrapper trip-count-icon">
 							<svg width="16" height="16" viewBox="0 0 16 16" fill="none"
@@ -227,11 +230,11 @@
 									fill="#5FCF86"></path>
                             </svg>
 						</div>
-						<span class="info">29 chuyến</span> <span class="separator">•</span>
-						<span class="info">Quận Bình Thạnh, TP. Hồ Chí Minh</span>
+						<span class="info" th:text="${motorbike.rentals}"></span> <span class="separator">•</span>
+						<span class="info" th:text="${formattedLocation}"></span>
 					</div>
 					<div class="car-tags">
-						<span class="tag-item automatic">Số tự động</span> <span
+						 <span
 							class="tag-item doorstep">Giao xe tận nơi</span> <span
 							class="tag-item fast-rent">Đặt xe nhanh</span> <span
 							class="tag-item no-mortgage">Miễn thế chấp</span> <span
@@ -608,10 +611,10 @@
 											fill="#FFC634"></path>
                                     </svg>
 								</div>
-								<p class="rate">4.6</p>
+								<span class="info" th:text="${#numbers.formatDecimal(averageRating, 1, 1)}"></span>
 							</div>
 							<span class="dot">•</span>
-							<p class="total-review">63 đánh giá</p>
+							<p class="total-review" th:text="${totalReviews} + ' đánh giá'"></p>
 						</div>
 <!-- feedback  -->
 						<div class="list-reviews">
