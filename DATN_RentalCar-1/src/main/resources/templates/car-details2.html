@@ -765,114 +765,236 @@
                 </select>
             </div>
         </div>
+        <!-- Add this inside the modal content -->
+		<p><strong>Tổng số thời gian chọn thuê:</strong> <span id="totalRentalHours">0</span> giờ</p>
         
         <button id="saveDateTime" class="btn-unique-save">Tiếp tục</button>
         <p id="errorMessage" style="color: red; display: none;">Thời gian thuê phải tối thiểu là 2 giờ.</p>
     </div>
 </div>
 
-<script>
-    const dateTimeForm = document.getElementById("dateTimeForm");
-    const uniqueModal = document.getElementById("uniqueModal");
-    const closeModal = document.getElementById("closeModal");
-    const saveDateTime = document.getElementById("saveDateTime");
-    const errorMessage = document.getElementById("errorMessage");
-    const pickUpDateTimeElem = document.getElementById("pickUpDateTime");
-    const returnDateTimeElem = document.getElementById("returnDateTime");
 
-    // Tạo các tùy chọn với khoảng thời gian 30 phút từ 6:00 đến 23:00
-    const create30MinIntervalOptions = (selectElement) => {
-        selectElement.innerHTML = '';
-        const time = new Date();
-        time.setHours(6, 0, 0, 0);
+<script th:inline="javascript">
+//DOM Elements
+const elements = {
+    form: document.getElementById("dateTimeForm"),
+    modal: document.getElementById("uniqueModal"),
+    closeBtn: document.getElementById("closeModal"),
+    saveBtn: document.getElementById("saveDateTime"),
+    errorMsg: document.getElementById("errorMessage"),
+    pickUpDateTime: document.getElementById("pickUpDateTime"),
+    returnDateTime: document.getElementById("returnDateTime"),
+    totalRentalHours: document.getElementById("totalRentalHours"),
+    modalInputs: {
+        pickUpDate: document.getElementById("modalPickUpDate"),
+        pickUpTime: document.getElementById("modalPickUpTime"),
+        returnDate: document.getElementById("modalReturnDate"),
+        returnTime: document.getElementById("modalReturnTime")
+    }
+};
 
-        for (let i = 0; i <= 34; i++) {
-            const option = document.createElement("option");
-            option.value = time.toTimeString().slice(0, 5);
-            option.text = time.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-            selectElement.appendChild(option);
-            time.setMinutes(time.getMinutes() + 30);
-        }
-    };
+// Constants
+const TIME_CONFIG = {
+    START_HOUR: 6,
+    END_HOUR: 23,
+    INTERVAL_MINUTES: 30,
+    MIN_RENTAL_HOURS: 2
+};
 
-    // Làm tròn thời gian hiện tại đến 30 phút gần nhất
-    const roundToNext30Minutes = (date) => {
-        const minutes = date.getMinutes();
-        date.setMinutes(minutes < 30 ? 30 : 0);
-        date.setSeconds(0, 0);
-        if (minutes >= 30) date.setHours(date.getHours() + 1);
-        return date;
-    };
+// Utility Functions
+const formatDateTime = (date, time) => {
+    const [year, month, day] = date.split("-");
+    return `${day}-${month}-${year} | ${time}`;
+};
 
-    dateTimeForm.addEventListener("click", () => {
-        create30MinIntervalOptions(document.getElementById("modalPickUpTime"));
-        create30MinIntervalOptions(document.getElementById("modalReturnTime"));
+const roundToNext30Minutes = (date) => {
+    const minutes = date.getMinutes();
+    const roundedDate = new Date(date);
+    roundedDate.setMinutes(minutes < 30 ? 30 : 0);
+    roundedDate.setSeconds(0, 0);
+    if (minutes >= 30) {
+        roundedDate.setHours(roundedDate.getHours() + 1);
+    }
+    return roundedDate;
+};
 
-        const now = new Date();
+const getTimeString = (date) => {
+    return date.toTimeString().slice(0, 5);
+};
 
-        // Đặt ngày và giờ mặc định cho nhận và trả xe
-        const pickUpDate = now.toISOString().slice(0, 10);
-        const pickUpTime = roundToNext30Minutes(new Date(now)).toTimeString().slice(0, 5);
+const create30MinIntervalOptions = (selectElement, selectedTime) => {
+    selectElement.innerHTML = '';
+    const time = new Date();
+    time.setHours(TIME_CONFIG.START_HOUR, 0, 0, 0);
+    const endTime = new Date();
+    endTime.setHours(TIME_CONFIG.END_HOUR, 0, 0, 0);
 
-        const returnDateObj = new Date(now);
-        returnDateObj.setDate(returnDateObj.getDate() + 1);
-        const returnDate = returnDateObj.toISOString().slice(0, 10);
-        const returnTime = pickUpTime;
+    while (time <= endTime) {
+        const option = document.createElement("option");
+        const timeString = getTimeString(time);
+        option.value = timeString;
+        option.text = time.toLocaleTimeString("en-GB", { 
+            hour: "2-digit", 
+            minute: "2-digit" 
+        });
+        option.selected = timeString === selectedTime;
+        selectElement.appendChild(option);
+        time.setMinutes(time.getMinutes() + TIME_CONFIG.INTERVAL_MINUTES);
+    }
+};
 
-        document.getElementById("modalPickUpDate").value = pickUpDate;
-        document.getElementById("modalPickUpTime").value = pickUpTime;
-
-        document.getElementById("modalReturnDate").value = returnDate;
-        document.getElementById("modalReturnTime").value = returnTime;
-
-        // Cập nhật hiển thị mặc định
-        pickUpDateTimeElem.textContent = formatDateTime(pickUpDate, pickUpTime);
-        returnDateTimeElem.textContent = formatDateTime(returnDate, returnTime);
-
-        uniqueModal.style.display = "flex";
-
-        // Thiết lập giới hạn ngày trong modal
-        document.getElementById("modalPickUpDate").min = pickUpDate;
-        document.getElementById("modalReturnDate").min = pickUpDate;
-    });
-
-    closeModal.addEventListener("click", () => {
-        uniqueModal.style.display = "none";
-    });
-
-    window.addEventListener("click", (event) => {
-        if (event.target == uniqueModal) {
-            uniqueModal.style.display = "none";
-        }
-    });
-
-    saveDateTime.addEventListener("click", () => {
-        const pickUpDate = document.getElementById("modalPickUpDate").value;
-        const pickUpTime = document.getElementById("modalPickUpTime").value;
-        const returnDate = document.getElementById("modalReturnDate").value;
-        const returnTime = document.getElementById("modalReturnTime").value;
-
-        const pickUpDateTime = new Date(`${pickUpDate}T${pickUpTime}`);
-        const returnDateTime = new Date(`${returnDate}T${returnTime}`);
-
+// Core Functions
+const updateTotalRentalHours = () => {
+    const { pickUpDate, pickUpTime, returnDate, returnTime } = elements.modalInputs;
+    
+    if (pickUpDate.value && pickUpTime.value && returnDate.value && returnTime.value) {
+        const pickUpDateTime = new Date(`${pickUpDate.value}T${pickUpTime.value}`);
+        const returnDateTime = new Date(`${returnDate.value}T${returnTime.value}`);
+        
         const diffInHours = (returnDateTime - pickUpDateTime) / (1000 * 60 * 60);
-        if (diffInHours < 2) {
-            errorMessage.style.display = "block";
-            return;
-        } else {
-            errorMessage.style.display = "none";
-        }
+        elements.totalRentalHours.textContent = diffInHours.toFixed(2);
+        return diffInHours;
+    }
+    
+    elements.totalRentalHours.textContent = "0";
+    return 0;
+};
 
-        const formatDateTime = (date, time) => {
-            const [year, month, day] = date.split("-");
-            return `${day}-${month}-${year} | ${time}`;
-        };
+const initializeModal = () => {
+    // Get current date and time
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    // Round current time to next 30 minutes
+    const roundedNow = roundToNext30Minutes(now);
+    const currentTime = getTimeString(roundedNow);
+    
+    // Set pickup date and time
+    const pickUpDate = now.toISOString().slice(0, 10);
+    elements.modalInputs.pickUpDate.value = pickUpDate;
+    elements.modalInputs.pickUpDate.min = pickUpDate;
+    
+    // Set return date and time
+    const returnDate = tomorrow.toISOString().slice(0, 10);
+    elements.modalInputs.returnDate.value = returnDate;
+    elements.modalInputs.returnDate.min = pickUpDate;
+    
+    // Create time options and select current time
+    create30MinIntervalOptions(elements.modalInputs.pickUpTime, currentTime);
+    create30MinIntervalOptions(elements.modalInputs.returnTime, currentTime);
+    
+    // Update display
+    elements.pickUpDateTime.textContent = formatDateTime(pickUpDate, currentTime);
+    elements.returnDateTime.textContent = formatDateTime(returnDate, currentTime);
+    
+    // Calculate initial rental hours
+    updateTotalRentalHours();
+};
 
-        pickUpDateTimeElem.textContent = formatDateTime(pickUpDate, pickUpTime);
-        returnDateTimeElem.textContent = formatDateTime(returnDate, returnTime);
+const updateDateTime = () => {
+    const { pickUpDate, pickUpTime, returnDate, returnTime } = elements.modalInputs;
+    
+    elements.pickUpDateTime.textContent = formatDateTime(pickUpDate.value, pickUpTime.value);
+    elements.returnDateTime.textContent = formatDateTime(returnDate.value, returnTime.value);
+};
 
-        uniqueModal.style.display = "none";
-    });
+// Event Handlers
+const handleSave = () => {
+    const diffInHours = updateTotalRentalHours();
+    
+    if (diffInHours < TIME_CONFIG.MIN_RENTAL_HOURS) {
+        elements.errorMsg.style.display = "block";
+        return;
+    }
+    
+    elements.errorMsg.style.display = "none";
+    updateDateTime();
+    elements.modal.style.display = "none";
+};
+
+// Event Listeners
+elements.form.addEventListener("click", () => {
+    initializeModal();
+    elements.modal.style.display = "flex";
+});
+
+elements.closeBtn.addEventListener("click", () => {
+    elements.modal.style.display = "none";
+});
+
+window.addEventListener("click", (event) => {
+    if (event.target === elements.modal) {
+        elements.modal.style.display = "none";
+    }
+});
+
+elements.saveBtn.addEventListener("click", handleSave);
+
+// Add change listeners for date/time inputs
+Object.values(elements.modalInputs).forEach(input => {
+    input.addEventListener("change", updateTotalRentalHours);
+});
+    	
+    //
+    
+ // Danh sách mã giảm giá
+	const promoCodes = /*[[${discounts}]]*/ [];
+	
+	// Hiển thị danh sách mã giảm giá
+	function displayPromoCodes() {
+	    const promoList = document.getElementById('promoCodesList');
+	    promoList.innerHTML = '';
+	    
+	    promoCodes.forEach(promo => {
+	        const promoItem = document.createElement('div');
+	        promoItem.className = 'promo-code-item';
+	        promoItem.innerHTML = `
+	            <div class="promo-code-info">
+	                <div class="promo-code-value">${promo.discountCode}</div>
+	                <div class="promo-code-description">${promo.description}</div>
+	                <div value="${promo.discountPercentage}">Giảm: ${promo.discountPercentage}%</div>
+	            </div>
+	            <div class="promo-code-status">${promo.status}</div>
+	        `;
+	        
+	        promoItem.addEventListener('click', () => {
+	            applyPromoCode(promo);
+	        });
+	        
+	        promoList.appendChild(promoItem);
+	    });
+	}
+	
+	// Áp dụng mã giảm giá
+	function applyPromoCode(promo) {
+	    // Đánh dấu radio button là đã chọn
+	    document.getElementById('code').checked = true;
+	    
+	    // Cập nhật hiển thị mã đã chọn
+	    const selectedPromoDisplay = document.getElementById('selectedPromoDisplay');
+	    const selectedPromo = selectedPromoDisplay.querySelector('.selected-promo');
+	    const selectedPromoCode = selectedPromoDisplay.querySelector('.selected-promo-code');
+	    const selectedPromoDescription = selectedPromoDisplay.querySelector('.selected-promo-description');
+	    
+	    selectedPromoDisplay.querySelector('p').style.display = 'none';
+	    selectedPromo.style.display = 'flex';
+	    selectedPromoCode.textContent = promo.discountCode;
+	    selectedPromoDescription.textContent = `(Giảm ${promo.discountPercentage}%)`;
+	    
+	    // Đóng modal
+	    const modal = bootstrap.Modal.getInstance(document.getElementById('promoModal'));
+	    modal.hide();
+	    
+	    // Ở đây bạn có thể thêm logic để cập nhật giá tiền của đơn hàng
+	    //console.log(`Áp dụng mã giảm giá: ${promo.discountCode} - ${promo.discountPercentage}%`);
+	}
+	
+	// Khởi tạo hiển thị mã giảm giá khi trang được load
+	document.addEventListener('DOMContentLoaded', () => {
+	    displayPromoCodes();
+	});
+	
 </script>
 
 
@@ -953,13 +1075,7 @@
                         <path d="M21.3 10.8394C21.69 10.8394 22 10.5294 22 10.1394V9.20938C22 5.10938 20.75 3.85938 16.65 3.85938H7.35C3.25 3.85937 2 5.10938 2 9.20938V9.67938C2 10.0694 2.31 10.3794 2.7 10.3794C3.6 10.3794 4.33 11.1094 4.33 12.0094C4.33 12.9094 3.6 13.6294 2.7 13.6294C2.31 13.6294 2 13.9394 2 14.3294V14.7994C2 18.8994 3.25 20.1494 7.35 20.1494H16.65C20.75 20.1494 22 18.8994 22 14.7994C22 14.4094 21.69 14.0994 21.3 14.0994C20.4 14.0994 19.67 13.3694 19.67 12.4694C19.67 11.5694 20.4 10.8394 21.3 10.8394ZM9 8.87938C9.55 8.87938 10 9.32938 10 9.87938C10 10.4294 9.56 10.8794 9 10.8794C8.45 10.8794 8 10.4294 8 9.87938C8 9.32938 8.44 8.87938 9 8.87938ZM15 15.8794C14.44 15.8794 13.99 15.4294 13.99 14.8794C13.99 14.3294 14.44 13.8794 14.99 13.8794C15.54 13.8794 15.99 14.3294 15.99 14.8794C15.99 15.4294 15.56 15.8794 15 15.8794ZM15.9 9.47937L9.17 16.2094C9.02 16.3594 8.83 16.4294 8.64 16.4294C8.45 16.4294 8.26 16.3594 8.11 16.2094C7.82 15.9194 7.82 15.4394 8.11 15.1494L14.84 8.41938C15.13 8.12938 15.61 8.12938 15.9 8.41938C16.19 8.70938 16.19 9.18937 15.9 9.47937Z" fill="#5FCF86"/>
                     </svg>
                 </div>
-                <div id="selectedPromoDisplay">
-                    <p class="mb-0">Mã khuyến mãi</p>
-                    <div class="selected-promo" style="display: none;">
-                        <span class="selected-promo-code"></span>
-                        <span class="selected-promo-description"></span>
-                    </div>
-                </div>
+                
             </div>
             <div class="promo-price">
                 <div class="wrap-svg">
@@ -968,6 +1084,13 @@
                     </svg>
                 </div>
             </div>
+          	<div id="selectedPromoDisplay">
+                <p class="mb-0">Mã khuyến mãi</p>
+                   	<div class="selected-promo" style="display: none;">
+                        <span class="selected-promo-code"></span>
+                        <span class="selected-promo-description"></span>
+                  	</div>
+              </div>
         </label>
     </div>
 </div>
@@ -1000,18 +1123,106 @@
 								</p>
 							</div>
 						</div>
-						<a class="btn btn-primary btn--m width-100" onclick="calculateTotalRent">
-							<div class="wrap-svg">
-								<svg width="16" height="16" viewBox="0 0 16 16" fill="none"
-									xmlns="http://www.w3.org/2000/svg">
-                                    <path
-										d="M12.9733 7.70015L8.46667 14.2668C8.29334 14.5268 8.01335 14.6668 7.71335 14.6668C7.62002 14.6668 7.52667 14.6535 7.43334 14.6268C7.05334 14.5068 6.79335 14.1668 6.79335 13.7735V10.0135C6.79335 9.86015 6.64667 9.72682 6.46667 9.72682L3.78001 9.6935C3.44001 9.6935 3.12668 9.50016 2.97335 9.20682C2.82668 8.92016 2.84668 8.5735 3.03335 8.30017L7.53335 1.7335C7.76001 1.40016 8.18001 1.25349 8.56668 1.37349C8.94668 1.49349 9.20668 1.83349 9.20668 2.22682V5.98683C9.20668 6.14017 9.35335 6.2735 9.53335 6.2735L12.22 6.30682C12.56 6.30682 12.8733 6.49349 13.0267 6.79349C13.1733 7.08016 13.1533 7.42682 12.9733 7.70015Z"
-										fill="#FFC634"></path>
-                                </svg>
-							</div>CHỌN THUÊ
-						</a>
-					</div>
+						
+						<!-- Button -->
+<a id="rentButton" class="btn btn-primary btn--m width-100" data-bs-toggle="modal" data-bs-target="#rentModal">
+    <div class="wrap-svg">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12.9733 7.70015L8.46667 14.2668C8.29334 14.5268 8.01335 14.6668 7.71335 14.6668C7.62002 14.6668 7.52667 14.6535 7.43334 14.6268C7.05334 14.5068 6.79335 14.1668 6.79335 13.7735V10.0135C6.79335 9.86015 6.64667 9.72682 6.46667 9.72682L3.78001 9.6935C3.44001 9.6935 3.12668 9.50016 2.97335 9.20682C2.82668 8.92016 2.84668 8.5735 3.03335 8.30017L7.53335 1.7335C7.76001 1.40016 8.18001 1.25349 8.56668 1.37349C8.94668 1.49349 9.20668 1.83349 9.20668 2.22682V5.98683C9.20668 6.14017 9.35335 6.2735 9.53335 6.2735L12.22 6.30682C12.56 6.30682 12.8733 6.49349 13.0267 6.79349C13.1733 7.08016 13.1533 7.42682 12.9733 7.70015Z" fill="#FFC634"></path>
+        </svg>
+    </div>
+    CHỌN THUÊ
+</a>
+
+<!-- Modal -->
+<div class="modal fade" id="rentModal" tabindex="-1" aria-labelledby="rentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rentModalLabel">Thông tin thuê xe</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <p><strong>Thời gian nhận xe:</strong> <span id="pickupTime"></span></p>
+                        <p><strong>Thời gian trả xe:</strong> <span id="returnTime"></span></p>
+                        <p><strong>Tổng số giờ thuê:</strong> <span id="rentalHours"></span></p>
+                        <p><strong>Địa chỉ:</strong> <span id="rentalAddress"></span></p>
+                        <p><strong>Mã giảm giá:</strong> <span id="promoCode"></span></p>
+                        <p><strong>Ghi chú:</strong> <span id="notes"></span></p> </div>
+                    <div class="col-md-4 text-center">
+                        <div class="qr-code-container border p-3" style="border-radius: 5px;">
+                            <img id="qrImage" src="" alt="Mã QR" class="img-fluid mb-3" />
+                            <p id="qrText"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="confirmRentButton">Xác nhận thuê</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const rentButton = document.getElementById("rentButton");
+    const rentModal = document.getElementById("rentModal"); // Get the modal element
+
+    if (!rentButton || !rentModal) return; // Check if both elements exist
+
+    rentButton.addEventListener("click", function() {
+      const pickupDT = document.getElementById("pickUpDateTime")?.textContent?.trim() || '';
+      const returnDT = document.getElementById("returnDateTime")?.textContent?.trim() || '';
+      const hours = document.getElementById("totalRentalHours")?.textContent?.trim() || '';
+      const address = document.getElementById("address-input")?.value?.trim() || '';
+      const notes = document.getElementById("notes-input")?.value?.trim() || ''; // Get notes from textarea
+      const selectedPromoCode = document.querySelector('.selected-promo-code')?.textContent?.trim() || '';
+      const selectedPromoDescription = document.querySelector('.selected-promo-description')?.textContent?.trim() || '';
+
+
+      if (!pickupDT || !returnDT || !hours || !address) {
+          alert("Vui lòng nhập đầy đủ thông tin trước khi tiếp tục!");
+          return; // Just return to prevent modal from showing
+      }
+
+      document.getElementById("pickupTime").textContent = pickupDT;
+      document.getElementById("returnTime").textContent = returnDT;
+      document.getElementById("rentalHours").textContent = hours;
+      document.getElementById("rentalAddress").textContent = address;
+      document.getElementById("promoCode").textContent = selectedPromoCode ? `${selectedPromoCode} - ${selectedPromoDescription}` : 'Không có';
+      document.getElementById("notes").textContent = notes;
+
+      // Set QR code info (replace with your actual logic)
+      const qrImageUrl = 'path_to_your_qr_code_image.png';
+      const qrTextValue = 'Mã QR: 123456789';
+      document.getElementById("qrImage").src = qrImageUrl;
+      document.getElementById("qrText").textContent = qrTextValue;
+
+
+    });
+
+
+    document.getElementById("confirmRentButton")?.addEventListener("click", function() {
+        // Add your confirmation logic here
+        alert("Bạn đã xác nhận thuê xe thành công!");
+
+        // Close the modal after confirmation
+        const modal = bootstrap.Modal.getInstance(rentModal); // Get the modal instance
+        modal.hide();
+
+
+
+    });
+});
+</script>
+
+
 					
+					</div>
 					
 
 					<div class="surcharge">
@@ -1271,65 +1482,6 @@
 <script src="/assets/js/car-detail.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-<script th:inline="javascript">
-	// Danh sách mã giảm giá
-	const promoCodes = /*[[${discounts}]]*/ [];
-	
-	// Hiển thị danh sách mã giảm giá
-	function displayPromoCodes() {
-	    const promoList = document.getElementById('promoCodesList');
-	    promoList.innerHTML = '';
-	    
-	    promoCodes.forEach(promo => {
-	        const promoItem = document.createElement('div');
-	        promoItem.className = 'promo-code-item';
-	        promoItem.innerHTML = `
-	            <div class="promo-code-info">
-	                <div class="promo-code-value">${promo.discountCode}</div>
-	                <div class="promo-code-description">${promo.description}</div>
-	                <div value="${promo.discountPercentage}">Giảm: ${promo.discountPercentage}%</div>
-	            </div>
-	            <div class="promo-code-status">${promo.status}</div>
-	        `;
-	        
-	        promoItem.addEventListener('click', () => {
-	            applyPromoCode(promo);
-	        });
-	        
-	        promoList.appendChild(promoItem);
-	    });
-	}
-	
-	// Áp dụng mã giảm giá
-	function applyPromoCode(promo) {
-	    // Đánh dấu radio button là đã chọn
-	    document.getElementById('code').checked = true;
-	    
-	    // Cập nhật hiển thị mã đã chọn
-	    const selectedPromoDisplay = document.getElementById('selectedPromoDisplay');
-	    const selectedPromo = selectedPromoDisplay.querySelector('.selected-promo');
-	    const selectedPromoCode = selectedPromoDisplay.querySelector('.selected-promo-code');
-	    const selectedPromoDescription = selectedPromoDisplay.querySelector('.selected-promo-description');
-	    
-	    selectedPromoDisplay.querySelector('p').style.display = 'none';
-	    selectedPromo.style.display = 'flex';
-	    selectedPromoCode.textContent = promo.discountCode;
-	    selectedPromoDescription.textContent = `(Giảm ${promo.discountPercentage}%)`;
-	    
-	    // Đóng modal
-	    const modal = bootstrap.Modal.getInstance(document.getElementById('promoModal'));
-	    modal.hide();
-	    
-	    // Ở đây bạn có thể thêm logic để cập nhật giá tiền của đơn hàng
-	    console.log(`Áp dụng mã giảm giá: ${promo.discountCode} - ${promo.discountPercentage}%`);
-	}
-	
-	// Khởi tạo hiển thị mã giảm giá khi trang được load
-	document.addEventListener('DOMContentLoaded', () => {
-	    displayPromoCodes();
-	});
-</script>
-	
 </body>
 
 </html>

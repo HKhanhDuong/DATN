@@ -87,5 +87,8 @@ public class Car {
     @DecimalMax("100.00")
     @Column(precision = 5, scale = 2)
     private BigDecimal percentDiscount;
+    
+    private String carType;
+    
 }	
 

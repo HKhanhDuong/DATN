@@ -40,7 +40,7 @@ public class AccountController {
 		@PostMapping
 		public ResponseEntity<String> save(@RequestBody Account account) {
 		    try {
-		    	System.out.println("---------------------"+ account);
+		    	System.out.println(account);
 		        accountRepo.save(account);
 		        return ResponseEntity.ok("saved...");
 		    } catch (Exception e) {
@@ -77,10 +77,5 @@ public class AccountController {
 			}
 		}
 		
-		// Fetch all roles
-		@GetMapping("/roles")
-		public List<Role> getAllRoles() {
-			return roleRepo.findAll(); // Assuming roleRepo is defined and injected
-		}
 	
 }
