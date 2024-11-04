@@ -19,6 +19,10 @@ import com.rentalcar.entity.Car;
 import com.rentalcar.entity.Motorbike;
 import com.rentalcar.service.FeedbackService;
 
+import com.rentalcar.entity.Account;
+import com.rentalcar.service.AccountService;
+import com.rentalcar.service.SessionService;
+
 
 @Controller
 public class DetailVehicleController {
@@ -31,6 +35,10 @@ public class DetailVehicleController {
     private DiscountRepo discountRepo;
 	@Autowired
 	private FeedbackService feedbackService;
+	@Autowired
+    private AccountService accountService;
+    @Autowired
+    private SessionService session;
 	
 	
 	@GetMapping("/car/detail/{id}")
@@ -67,6 +75,10 @@ public class DetailVehicleController {
 	        // Tính tổng số người đã đánh giá
 	        int totalReviews = feedbacks.size(); // Số lượng feedback
 	        model.addAttribute("totalReviews", totalReviews);
+	        
+	      //lấy account từ session
+	        Account loggedAcc = session.get("user");
+	        model.addAttribute("loggedAcc", loggedAcc);
             
         } else {
             // Xử lý lỗi khi không tìm thấy xe
@@ -112,6 +124,11 @@ public class DetailVehicleController {
 	        // Tính tổng số người đã đánh giá
 	        int totalReviews = feedbacks.size(); // Số lượng feedback
 	        model.addAttribute("totalReviews", totalReviews);
+	        
+	        //lấy account từ session
+	        Account loggedAcc = session.get("user");
+	        model.addAttribute("loggedAcc", loggedAcc);
+	        
 	    } else {
 	        // Xử lý lỗi khi không tìm thấy xe
 	        model.addAttribute("error", "Không tìm thấy xe với ID này");
@@ -129,6 +146,7 @@ public class DetailVehicleController {
 	    }
 	    return location; // Trả về giá trị gốc nếu không tìm thấy 'TP'
 	}
-
+	
+	
 }
 

@@ -1145,12 +1145,31 @@ Object.values(elements.modalInputs).forEach(input => {
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-8">
+                    	<p><strong>Họ Tên:</strong> 
+						    <span th:text="${loggedAcc != null && loggedAcc.fullName != null && loggedAcc.fullName != '' ? loggedAcc.fullName : 'Chưa có tên'}" id="fullName"></span>
+						</p>
+                        <p><strong>SĐT:</strong> 
+						    <span th:text="${loggedAcc != null && loggedAcc.phoneNumber != null && loggedAcc.phoneNumber != '' ? loggedAcc.phoneNumber : 'Chưa có số điện thoại'}" id="sdt"></span>
+						</p>					
                         <p><strong>Thời gian nhận xe:</strong> <span id="pickupTime"></span></p>
                         <p><strong>Thời gian trả xe:</strong> <span id="returnTime"></span></p>
                         <p><strong>Tổng số giờ thuê:</strong> <span id="rentalHours"></span></p>
                         <p><strong>Địa chỉ:</strong> <span id="rentalAddress"></span></p>
                         <p><strong>Mã giảm giá:</strong> <span id="promoCode"></span></p>
-                        <p><strong>Ghi chú:</strong> <span id="notes"></span></p> </div>
+                        <p><strong>Ghi chú:</strong> <span id="notes"></span></p>
+
+                        <div class="mb-3">
+                            <label>Hình thức thanh toán:</label> <br>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="paymentOption" id="prepay" value="prepay" checked>
+                                <label class="form-check-label" for="prepay">Trả trước</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="paymentOption" id="postpay" value="postpay">
+                                <label class="form-check-label" for="postpay">Trả sau</label>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-md-4 text-center">
                         <div class="qr-code-container border p-3" style="border-radius: 5px;">
                             <img id="qrImage" src="" alt="Mã QR" class="img-fluid mb-3" />
@@ -1167,28 +1186,35 @@ Object.values(elements.modalInputs).forEach(input => {
     </div>
 </div>
 
-<script>
+<script th:inline="javascript">
 document.addEventListener('DOMContentLoaded', function() {
     const rentButton = document.getElementById("rentButton");
-    const rentModal = document.getElementById("rentModal"); // Get the modal element
-
-    if (!rentButton || !rentModal) return; // Check if both elements exist
+    const rentModal = document.getElementById("rentModal");
+    
+    if (!rentButton || !rentModal) return; 
 
     rentButton.addEventListener("click", function() {
+    	
+      const phoneNumber = document.getElementById('sdt').textContent.trim();
       const pickupDT = document.getElementById("pickUpDateTime")?.textContent?.trim() || '';
       const returnDT = document.getElementById("returnDateTime")?.textContent?.trim() || '';
       const hours = document.getElementById("totalRentalHours")?.textContent?.trim() || '';
       const address = document.getElementById("address-input")?.value?.trim() || '';
-      const notes = document.getElementById("notes-input")?.value?.trim() || ''; // Get notes from textarea
+      const notes = document.getElementById("notes-input")?.value?.trim() || '';
       const selectedPromoCode = document.querySelector('.selected-promo-code')?.textContent?.trim() || '';
       const selectedPromoDescription = document.querySelector('.selected-promo-description')?.textContent?.trim() || '';
-
+	  
+      if (phoneNumber == 'Chưa có số điện thoại') {
+    	  alert("Vui lòng đăng nhập để tiếp tục.");
+          window.location.href = "/login";
+          return;
+      }
 
       if (!pickupDT || !returnDT || !hours || !address) {
           alert("Vui lòng nhập đầy đủ thông tin trước khi tiếp tục!");
-          return; // Just return to prevent modal from showing
+          return; 
       }
-
+	  
       document.getElementById("pickupTime").textContent = pickupDT;
       document.getElementById("returnTime").textContent = returnDT;
       document.getElementById("rentalHours").textContent = hours;
@@ -1196,30 +1222,24 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById("promoCode").textContent = selectedPromoCode ? `${selectedPromoCode} - ${selectedPromoDescription}` : 'Không có';
       document.getElementById("notes").textContent = notes;
 
-      // Set QR code info (replace with your actual logic)
       const qrImageUrl = 'path_to_your_qr_code_image.png';
       const qrTextValue = 'Mã QR: 123456789';
       document.getElementById("qrImage").src = qrImageUrl;
       document.getElementById("qrText").textContent = qrTextValue;
-
+    
 
     });
 
 
     document.getElementById("confirmRentButton")?.addEventListener("click", function() {
-        // Add your confirmation logic here
         alert("Bạn đã xác nhận thuê xe thành công!");
 
-        // Close the modal after confirmation
-        const modal = bootstrap.Modal.getInstance(rentModal); // Get the modal instance
+        const modal = bootstrap.Modal.getInstance(rentModal);
         modal.hide();
-
-
 
     });
 });
 </script>
-
 
 					
 					</div>
@@ -1453,10 +1473,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			</div>
 		</div>
 	</div>
-	
-		<ul>
-        <li th:each="discount : ${discounts}" th:text="${discount.discountCode}">Tên xe</li>
-    </ul>
 
 	<!-- Ion-Icon -->
 	<script type="module"

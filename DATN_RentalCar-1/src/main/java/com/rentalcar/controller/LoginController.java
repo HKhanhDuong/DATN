@@ -31,7 +31,7 @@ public class LoginController {
     // Phương thức POST để xử lý đăng nhập
     @PostMapping
     public String login(@RequestParam("email") String email, @RequestParam("password") String password, Model model) {
-        Account account = accountService.findByEmail(email);  // Gọi accountService thay vì acountService
+        Account account = accountService.findByEmail(email);  // Gọi accountService
 
         if (account != null && account.getPasswordHash().equals(password)) {  // Nên thay thế bằng cơ chế mã hóa mật khẩu như BCrypt
             session.set("user", account);
@@ -42,7 +42,7 @@ public class LoginController {
             if (this.checkAdmin(account)) {
                 session.set("userAdmin", "admin");
             } else {
-                session.set("userAdmin", "Dez phải admin");
+                session.set("userAdmin", "customer");
             }
             
             System.out.println("userAdmin: " + session.get("userAdmin"));
