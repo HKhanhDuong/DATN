@@ -6,6 +6,10 @@ import com.rentalcar.dto.FeedbackInfo;
 
 public interface FeedbackService {
 
-	List<FeedbackInfo> getCompletedRentalsWithFeedback();
+	List<FeedbackInfo> getCompletedRentalsWithFeedbackMotorbike(Long motorbikeId);
+
+	List<FeedbackInfo> getCompletedRentalsWithFeedbackCar(Long carId);
+
+	
 
 }

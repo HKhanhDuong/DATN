@@ -17,9 +17,15 @@ public class FeedbackServiceImpl implements FeedbackService{
 	@Autowired FeedbackRepo fbRepo;
 	
 	@Override
-	public List<FeedbackInfo> getCompletedRentalsWithFeedback() {
-        return fbRepo.findCompletedRentalsWithFeedback();
-    }
+	public List<FeedbackInfo> getCompletedRentalsWithFeedbackMotorbike(Long motorbikeId) {
+	    return fbRepo.getCompletedRentalsWithFeedbackMotorbike(motorbikeId);  // Truyền motorbikeId vào
+	}
+
+	@Override
+	public List<FeedbackInfo> getCompletedRentalsWithFeedbackCar(Long carId) {
+	    return fbRepo.getCompletedRentalsWithFeedbackCar(carId);  // Truyền carId vào repository method
+	}
+
 
 	public <S extends Feedback> S save(S entity) {
 		return fbRepo.save(entity);

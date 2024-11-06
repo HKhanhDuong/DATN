@@ -1195,7 +1195,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     rentButton.addEventListener("click", function() {
     	
-      const phoneNumber = document.getElementById('sdt').textContent.trim();
+      const fullName = document.getElementById('fullName').textContent.trim();
       const pickupDT = document.getElementById("pickUpDateTime")?.textContent?.trim() || '';
       const returnDT = document.getElementById("returnDateTime")?.textContent?.trim() || '';
       const hours = document.getElementById("totalRentalHours")?.textContent?.trim() || '';
@@ -1204,7 +1204,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const selectedPromoCode = document.querySelector('.selected-promo-code')?.textContent?.trim() || '';
       const selectedPromoDescription = document.querySelector('.selected-promo-description')?.textContent?.trim() || '';
 	  
-      if (phoneNumber == 'Chưa có số điện thoại') {
+      if (fullName == 'Chưa có tên') {
     	  alert("Vui lòng đăng nhập để tiếp tục.");
           window.location.href = "/login";
           return;

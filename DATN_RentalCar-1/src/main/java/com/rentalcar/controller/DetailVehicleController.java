@@ -41,7 +41,7 @@ public class DetailVehicleController {
     private SessionService session;
 	
 	
-	@GetMapping("/car/detail/{id}")
+    @GetMapping("/car/detail/{id}")
     public String getCarById(@PathVariable Long id, Model model) {
         Optional<Car> car = carRepo.findById(id);
         List<Discount> discounts = discountRepo.findAll();
@@ -49,37 +49,38 @@ public class DetailVehicleController {
         if (car.isPresent()) {
             model.addAttribute("car", car.get());  // Truyền đối tượng car vào model
             model.addAttribute("discounts", discounts);
-            
-         // Lấy thông tin feedback
-            List<FeedbackInfo> feedbacks = feedbackService.getCompletedRentalsWithFeedback();
-            System.out.println("--------------------------------------"+feedbacks);
+
+            // Lấy phản hồi dựa trên carId
+            List<FeedbackInfo> feedbacks = feedbackService.getCompletedRentalsWithFeedbackCar(id);  // Truyền carId
+            System.out.println("--------------------------------------" + feedbacks);
             model.addAttribute("feedbacks", feedbacks);
+
+            // Tính tổng rating và giá trị trung bình
+            double totalRating = feedbacks.stream()
+                                          .mapToDouble(FeedbackInfo::getRating)  // Giả sử FeedbackInfo có phương thức getRating
+                                          .sum();
+            double averageRating = feedbacks.isEmpty() ? 0 : totalRating / feedbacks.size();
+            System.out.println("--------------------------------------" + averageRating);
             
-         // Tính tổng rating và giá trị trung bình
-	        double totalRating = feedbacks.stream()
-	                                      .mapToDouble(FeedbackInfo::getRating) // Giả sử FeedbackInfo có phương thức getRating
-	                                      .sum();
-	        double averageRating = feedbacks.isEmpty() ? 0 : totalRating / feedbacks.size(); // Chia cho số lượng feedbacks
-	        System.out.println("--------------------------------------" + averageRating);
-	        // Thêm giá trị vào model
-	        model.addAttribute("averageRating", averageRating);
-	        model.addAttribute("totalFeedbacks", feedbacks.size()); // Thêm tổng số feedbacks vào model nếu cần
-	        
-	        // Lấy vehicleLocation
-	        String vehicleLocation = car.get().getVehicleLocation();
-	        
-	        // Trích xuất và định dạng vehicleLocation
-	        String formattedLocation = formatVehicleLocation(vehicleLocation);
-	        model.addAttribute("formattedLocation", formattedLocation);
-	        
-	        // Tính tổng số người đã đánh giá
-	        int totalReviews = feedbacks.size(); // Số lượng feedback
-	        model.addAttribute("totalReviews", totalReviews);
-	        
-	      //lấy account từ session
-	        Account loggedAcc = session.get("user");
-	        model.addAttribute("loggedAcc", loggedAcc);
+            // Thêm giá trị vào model
+            model.addAttribute("averageRating", averageRating);
+            model.addAttribute("totalFeedbacks", feedbacks.size());  // Thêm tổng số feedbacks vào model nếu cần
             
+            // Lấy vehicleLocation
+            String vehicleLocation = car.get().getVehicleLocation();
+            
+            // Trích xuất và định dạng vehicleLocation
+            String formattedLocation = formatVehicleLocation(vehicleLocation);
+            model.addAttribute("formattedLocation", formattedLocation);
+            
+            // Tính tổng số người đã đánh giá
+            int totalReviews = feedbacks.size();
+            model.addAttribute("totalReviews", totalReviews);
+
+            // Lấy account từ session
+            Account loggedAcc = session.get("user");
+            model.addAttribute("loggedAcc", loggedAcc);
+
         } else {
             // Xử lý lỗi khi không tìm thấy xe
             model.addAttribute("error", "Không tìm thấy xe với ID này");
@@ -98,45 +99,38 @@ public class DetailVehicleController {
 	    if (motorbike.isPresent()) {
 	        model.addAttribute("motorbike", motorbike.get());
 	        model.addAttribute("discounts", discounts);
-	        
-	        // Lấy thông tin feedback
-	        List<FeedbackInfo> feedbacks = feedbackService.getCompletedRentalsWithFeedback();
-	        System.out.println("--------------------------------------" + feedbacks);
+
+	        // Lấy phản hồi cụ thể của xe máy theo ID
+	        List<FeedbackInfo> feedbacks = feedbackService.getCompletedRentalsWithFeedbackMotorbike(id); // Truyền ID xe máy
 	        model.addAttribute("feedbacks", feedbacks);
-	        
-	        // Tính tổng rating và giá trị trung bình
+
+	        // Tính tổng số điểm và giá trị trung bình
 	        double totalRating = feedbacks.stream()
-	                                      .mapToDouble(FeedbackInfo::getRating) // Giả sử FeedbackInfo có phương thức getRating
+	                                      .mapToDouble(FeedbackInfo::getRating)
 	                                      .sum();
-	        double averageRating = feedbacks.isEmpty() ? 0 : totalRating / feedbacks.size(); // Chia cho số lượng feedbacks
-	        System.out.println("--------------------------------------" + averageRating);
-	        // Thêm giá trị vào model
+	        double averageRating = feedbacks.isEmpty() ? 0 : totalRating / feedbacks.size();
 	        model.addAttribute("averageRating", averageRating);
-	        model.addAttribute("totalFeedbacks", feedbacks.size()); // Thêm tổng số feedbacks vào model nếu cần
-	        
-	        // Lấy vehicleLocation
+	        model.addAttribute("totalFeedbacks", feedbacks.size());
+
+	        // Thêm thông tin địa điểm của xe
 	        String vehicleLocation = motorbike.get().getVehicleLocation();
-	        
-	        // Trích xuất và định dạng vehicleLocation
 	        String formattedLocation = formatVehicleLocation(vehicleLocation);
 	        model.addAttribute("formattedLocation", formattedLocation);
-	        
-	        // Tính tổng số người đã đánh giá
-	        int totalReviews = feedbacks.size(); // Số lượng feedback
-	        model.addAttribute("totalReviews", totalReviews);
-	        
-	        //lấy account từ session
+
+	        // Thêm tổng số lượng đánh giá
+	        model.addAttribute("totalReviews", feedbacks.size());
+
+	        // Lấy tài khoản từ session
 	        Account loggedAcc = session.get("user");
 	        model.addAttribute("loggedAcc", loggedAcc);
-	        
 	    } else {
-	        // Xử lý lỗi khi không tìm thấy xe
 	        model.addAttribute("error", "Không tìm thấy xe với ID này");
-	        return "error-page";  // Trả về trang lỗi
+	        return "error-page";
 	    }
 
-	    return "motorbikes-details";  // Trả về trang chi tiết xe
+	    return "motorbikes-details";
 	}
+
 	
 	// Phương thức để định dạng vehicleLocation
 	private String formatVehicleLocation(String location) {
