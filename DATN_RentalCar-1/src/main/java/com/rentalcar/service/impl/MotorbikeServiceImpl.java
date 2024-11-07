@@ -149,6 +149,13 @@ public class MotorbikeServiceImpl implements MotorbikeService{
 		motorbikeRepo.deleteAll();
 	}
 	
+	@Override
+	public void selectAllModel() {
+		motorbikeRepo.findAllModels();
+	}
 	
-	
+	@Override
+	public void selectAllMake() {
+		motorbikeRepo.findAllMakes();
+	}
 }

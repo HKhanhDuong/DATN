@@ -6,5 +6,9 @@ import com.rentalcar.entity.Motorbike;
 
 public interface MotorbikeService {
 
+	void selectAllModel();
+
+	void selectAllMake();
+
 
 }

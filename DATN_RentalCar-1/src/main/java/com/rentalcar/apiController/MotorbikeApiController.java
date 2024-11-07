@@ -91,4 +91,14 @@ public class MotorbikeApiController {
         motorbikeRepo.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+    
+    @GetMapping("/models")
+	public List<String> getMotorbikeModels() {
+		return motorbikeRepo.findAllModels();
+	}
+    
+    @GetMapping("/makes")
+	public List<String> getMotorbikeMakes() {
+		return motorbikeRepo.findAllMakes();
+	}
 }
