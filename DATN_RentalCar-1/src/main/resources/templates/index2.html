@@ -1258,7 +1258,9 @@
 	
 							<!-- Tên xe -->
 							<div th:text="${car.make + ' ' + car.model + ' ' + car.year}"
-								class="product-title"></div>
+								class="product-title">
+							</div>
+
 	
 							<!-- Địa điểm -->
 							<div class="product-location">
@@ -1278,9 +1280,9 @@
 							<div class="product-bottom">
 								<div class="product-ship">Chưa có chuyển</div>
 								<div class="product-price">
-									<div th:text="${car.dailyRate * 1.1}" class="old-price"></div>
+									<!--<div th:text="${car.dailyRate * 1.1}" class="old-price"></div> -->
 									<!-- giá cũ -->
-									<div th:text="${car.dailyRate}" class="new-price"></div>
+									<div th:text="${#numbers.formatInteger(car.dailyRate , 3, 'POINT')}" class="new-price"></div>
 									<!-- giá mới -->
 									<span>/</span>
 									<p>ngày</p>
@@ -1361,7 +1363,7 @@
 							<div class="product-img">
 								<img th:src="@{'/assets/images/motorbike/' + ${#strings.arraySplit(motorbike.imageUrl, ',')[0]}}" alt="" />
 					
-								<div class="product-discount">Giảm 9%</div>
+								<!-- <div class="product-discount">Giảm 9%</div>  -->
 								<div class="product-rents">
 									<span class="product-rent">Miễn thế chấp
 										<svg width="16" height="16" viewBox="0 0 16 16" fill="none"
@@ -1390,8 +1392,8 @@
 							<div class="product-bottom">
 								<div class="product-ship">Chưa có chuyển</div>
 								<div class="product-price">
-									<div th:text="${motorbike.dailyRate * 1.1}" class="old-price"></div>
-									<div th:text="${motorbike.dailyRate}" class="new-price"></div>
+									<!-- <div th:text="${motorbike.dailyRate * 1.1}" class="old-price"></div>  -->
+									<div th:text="${#numbers.formatInteger(motorbike.dailyRate , 3, 'POINT')}" class="new-price"></div>
 									<span>/</span>
 									<p>ngày</p>
 								</div>
