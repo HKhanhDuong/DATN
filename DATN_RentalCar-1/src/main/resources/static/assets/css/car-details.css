@@ -764,21 +764,21 @@ h4 {
 }
 
 .btn-primary {
-    background-color: #22c55e;
-    color: white;
-    text-align: center;
-    padding: 15px 0;
-    font-size: 16px;
-    font-weight: 700;
-    border-radius: 8px;
-    text-decoration: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background-color: rgb(0, 128, 255) !important;
+    color: white !important;
+    text-align: center !important;
+    padding: 15px 0 !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
+    text-decoration: none !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
 }
 
 .btn-primary:hover {
-    background-color: #16a34a;
+    background-color: rgb(0, 128, 192) !important;
 }
 
 .btn-primary .wrap-svg {
@@ -912,6 +912,7 @@ h4 {
     margin-bottom: 16px; 
 }
 .car-header h3 {
+	padding:4px;
     font-size: 40px; 
     font-weight: bold;
     margin: 0; 
@@ -1412,6 +1413,23 @@ h4 {
             gap: 10px;
         }
     
+/*modal thanh toán*/
+#rentModalLabel {
+    text-align: center;
+    width: 100%;
+}
+.left-align-info p {
+    text-align: left !important;
+    margin-bottom: 8px !important; /* Điều chỉnh khoảng cách giữa các dòng */
+}
+
+.left-align-info strong {
+    font-weight: bold !important;
+}
+
+.left-align-info span {
+    display: inline-block !important;
+}
 
 
 

@@ -20,7 +20,7 @@ import com.rentalcar.entity.Motorbike;
 
 
 @RestController
-@RequestMapping("/motorbikes")
+@RequestMapping("/api/motorbikes")
 public class MotorbikeApiController {
 
     private final MotorbikeRepo motorbikeRepo;
