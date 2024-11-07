@@ -594,7 +594,6 @@
     </div>
 </div>
 
-
 <script th:inline="javascript">
 //DOM Elements
 const elements = {
@@ -613,6 +612,7 @@ const elements = {
         returnTime: document.getElementById("modalReturnTime")
     }
 };
+
 
 // Constants
 const TIME_CONFIG = {
@@ -713,6 +713,8 @@ const initializeModal = () => {
     updateTotalRentalHours();
 };
 
+initializeModal();
+
 const updateDateTime = () => {
     const { pickUpDate, pickUpTime, returnDate, returnTime } = elements.modalInputs;
     
@@ -756,67 +758,8 @@ elements.saveBtn.addEventListener("click", handleSave);
 Object.values(elements.modalInputs).forEach(input => {
     input.addEventListener("change", updateTotalRentalHours);
 });
-    	
-    //
-    
- // Danh sách mã giảm giá
-	const promoCodes = /*[[${discounts}]]*/ [];
-	
-	// Hiển thị danh sách mã giảm giá
-	function displayPromoCodes() {
-	    const promoList = document.getElementById('promoCodesList');
-	    promoList.innerHTML = '';
-	    
-	    promoCodes.forEach(promo => {
-	        const promoItem = document.createElement('div');
-	        promoItem.className = 'promo-code-item';
-	        promoItem.innerHTML = `
-	            <div class="promo-code-info">
-	                <div class="promo-code-value">${promo.discountCode}</div>
-	                <div class="promo-code-description">${promo.description}</div>
-	                <div value="${promo.discountPercentage}">Giảm: ${promo.discountPercentage}%</div>
-	            </div>
-	            <div class="promo-code-status">${promo.status}</div>
-	        `;
-	        
-	        promoItem.addEventListener('click', () => {
-	            applyPromoCode(promo);
-	        });
-	        
-	        promoList.appendChild(promoItem);
-	    });
-	}
-	
-	// Áp dụng mã giảm giá
-	function applyPromoCode(promo) {
-	    // Đánh dấu radio button là đã chọn
-	    document.getElementById('code').checked = true;
-	    
-	    // Cập nhật hiển thị mã đã chọn
-	    const selectedPromoDisplay = document.getElementById('selectedPromoDisplay');
-	    const selectedPromo = selectedPromoDisplay.querySelector('.selected-promo');
-	    const selectedPromoCode = selectedPromoDisplay.querySelector('.selected-promo-code');
-	    const selectedPromoDescription = selectedPromoDisplay.querySelector('.selected-promo-description');
-	    
-	    selectedPromoDisplay.querySelector('p').style.display = 'none';
-	    selectedPromo.style.display = 'flex';
-	    selectedPromoCode.textContent = promo.discountCode;
-	    selectedPromoDescription.textContent = `(Giảm ${promo.discountPercentage}%)`;
-	    
-	    // Đóng modal
-	    const modal = bootstrap.Modal.getInstance(document.getElementById('promoModal'));
-	    modal.hide();
-	    
-	    // Ở đây bạn có thể thêm logic để cập nhật giá tiền của đơn hàng
-	    //console.log(`Áp dụng mã giảm giá: ${promo.discountCode} - ${promo.discountPercentage}%`);
-	}
-	
-	// Khởi tạo hiển thị mã giảm giá khi trang được load
-	document.addEventListener('DOMContentLoaded', () => {
-	    displayPromoCodes();
-	});
-	
 </script>
+
 
 
 
@@ -873,16 +816,90 @@ Object.values(elements.modalInputs).forEach(input => {
                                             </svg></span></span>
 								</p>
 								<p class="cost">
-									<span th:text="${#numbers.formatInteger(car.dailyRate * 0.14, 3, 'POINT')}"></span>đ/ ngày <!-- bảo hiểm thuê xe 1 ngày = Giá thuê theo ngày * 0,14 -->
+									<span th:text="${#numbers.formatInteger(car.dailyRate * (1 - car.percentDiscount / 100) * 0.14, 3, 'POINT')}"></span>đ/ ngày <!-- bảo hiểm thuê xe 1 ngày = Giá thuê theo ngày * 0,14 -->
 								</p>
 							</div>
-							<div class="line-page"></div>
 							<div class="price-item">
-								<p>Tổng cộng</p>
-								<p class="cost">
-								    <span th:text="${#numbers.formatInteger(car.dailyRate * (1 - (car.percentDiscount / 100)) + (car.dailyRate * 0.14), 3, 'POINT')}"></span>đ
-								</p>
-							</div>
+    <input type="checkbox" id="driver" name="driver" value="have driver">
+    <label class="df-align-center" for="driver">Thêm tài xế: </label>
+    <p class="cost">
+        <span th:text="${#numbers.formatInteger(car.dailyRate * (1 - car.percentDiscount / 100) * 0.1 + 400000, 3, 'POINT')}"></span>đ/ ngày
+    </p>
+</div>
+
+<div class="line-page"></div>
+<div class="price-item">
+    <p>Tổng cộng</p>
+    <p class="cost">
+        <span id="dailyRateDisplay"></span>
+    </p>
+</div>
+
+<script th:inline="javascript">
+const VAT_PERCENTAGE = 0.14;
+let carDailyRate = /*[[${car.dailyRate}]]*/ 0;
+let carPercentDiscount = /*[[${car.percentDiscount}]]*/ 0;
+const hoursElement = document.getElementById("totalRentalHours");
+const driverCheckbox = document.getElementById("driver");
+
+// Hàm tính toán giá thuê
+function calculateRentalRate(dailyRate, percentDiscount, hours) {
+  if (dailyRate == null || percentDiscount == null) {
+    return "N/A";
+  }
+
+  const baseDailyRate = dailyRate * (1 - (percentDiscount / 100));
+  console.log("Base Daily Rate: ", baseDailyRate);
+  let rentalRate;
+  const fullDays = Math.floor(hours / 24);
+  const remainingHours = hours % 24;
+
+  rentalRate = baseDailyRate * fullDays;
+
+  if (remainingHours > 0) {
+    if (remainingHours <= 4) {
+      rentalRate += baseDailyRate * 0.4;
+    } else if (remainingHours <= 12) {
+      rentalRate += baseDailyRate * 0.4 + (Math.floor((remainingHours - 4) / 2) * baseDailyRate * 0.2);
+      if (rentalRate > (fullDays + 1) * baseDailyRate) rentalRate = (fullDays + 1) * baseDailyRate;
+    } else {
+      rentalRate += baseDailyRate;
+    }
+  }
+  console.log("Rental Rate: ", rentalRate);
+
+  // Kiểm tra xem có tài xế hay không
+  if (driverCheckbox.checked) {
+    return rentalRate + (rentalRate * VAT_PERCENTAGE) + (400000 * fullDays);
+  } else {
+    return rentalRate + (rentalRate * VAT_PERCENTAGE);
+  }
+}
+
+// Cập nhật giá thuê
+function updateRentalRate() {
+  const hours = parseFloat(hoursElement.textContent) || 0;
+  const rentalRate = calculateRentalRate(carDailyRate, carPercentDiscount, hours);
+  document.getElementById("dailyRateDisplay").textContent = typeof rentalRate === 'number' ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(rentalRate) : rentalRate;
+}
+
+// Theo dõi sự thay đổi của checkbox và cập nhật giá thuê khi thay đổi
+driverCheckbox.addEventListener("change", function() {
+    updateRentalRate();  // Cập nhật giá thuê khi thay đổi trạng thái checkbox
+});
+
+// Sử dụng MutationObserver để theo dõi thay đổi của hoursElement
+const observer = new MutationObserver(updateRentalRate);
+observer.observe(hoursElement, { childList: true, characterData: true, subtree: true });
+
+// Khởi tạo giá trị ban đầu
+updateRentalRate();
+</script>
+
+
+
+
+							
 							<div class="line-page"></div>
 
 								<!-- Nút kích hoạt popup -->
@@ -912,6 +929,66 @@ Object.values(elements.modalInputs).forEach(input => {
                         <span class="selected-promo-description"></span>
                   	</div>
               </div>
+              
+              <script th:inline="javascript">
+              // Danh sách mã giảm giá
+		          	const promoCodes = /*[[${discounts}]]*/ [];
+		          	
+		          	// Hiển thị danh sách mã giảm giá
+		          	function displayPromoCodes() {
+		          	    const promoList = document.getElementById('promoCodesList');
+		          	    promoList.innerHTML = '';
+		          	    
+		          	    promoCodes.forEach(promo => {
+		          	        const promoItem = document.createElement('div');
+		          	        promoItem.className = 'promo-code-item';
+		          	        promoItem.innerHTML = `
+		          	            <div class="promo-code-info">
+		          	                <div class="promo-code-value">${promo.discountCode}</div>
+		          	                <div class="promo-code-description">${promo.description}</div>
+		          	                <div value="${promo.discountPercentage}">Giảm: ${promo.discountPercentage}%</div>
+		          	            </div>
+		          	            <div class="promo-code-status">${promo.status}</div>
+		          	        `;
+		          	        
+		          	        promoItem.addEventListener('click', () => {
+		          	            applyPromoCode(promo);
+		          	        });
+		          	        
+		          	        promoList.appendChild(promoItem);
+		          	    });
+		          	}
+		          	
+		          	// Áp dụng mã giảm giá
+		          	function applyPromoCode(promo) {
+		          	    // Đánh dấu radio button là đã chọn
+		          	    document.getElementById('code').checked = true;
+		          	    
+		          	    // Cập nhật hiển thị mã đã chọn
+		          	    const selectedPromoDisplay = document.getElementById('selectedPromoDisplay');
+		          	    const selectedPromo = selectedPromoDisplay.querySelector('.selected-promo');
+		          	    const selectedPromoCode = selectedPromoDisplay.querySelector('.selected-promo-code');
+		          	    const selectedPromoDescription = selectedPromoDisplay.querySelector('.selected-promo-description');
+		          	    
+		          	    selectedPromoDisplay.querySelector('p').style.display = 'none';
+		          	    selectedPromo.style.display = 'flex';
+		          	    selectedPromoCode.textContent = promo.discountCode;
+		          	    selectedPromoDescription.textContent = `(Giảm ${promo.discountPercentage}%)`;
+		          	    
+		          	    // Đóng modal
+		          	    const modal = bootstrap.Modal.getInstance(document.getElementById('promoModal'));
+		          	    modal.hide();
+		          	    
+		          	    // Ở đây bạn có thể thêm logic để cập nhật giá tiền của đơn hàng
+		          	    //console.log(`Áp dụng mã giảm giá: ${promo.discountCode} - ${promo.discountPercentage}%`);
+		          	}
+		          	
+		          	// Khởi tạo hiển thị mã giảm giá khi trang được load
+		          	document.addEventListener('DOMContentLoaded', () => {
+		          	    displayPromoCodes();
+		          	});
+              </script>
+              
         </label>
     </div>
 </div>
@@ -1067,7 +1144,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-
 					
 					</div>
 					
@@ -1202,6 +1278,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		</div>
 	</div>
+	
 	<!-- footer -->
 	<div class="footer">
 		<div class="container">
@@ -1322,9 +1399,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	<!-- Search option JS -->
 <script src="/assets/js/Search-option.js"></script>
 	<!-- Car-details -->
-<script src="/assets/js/car-detail.js"></script>
+<script th:inline="javascript" src="/assets/js/car-detail.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 </body>
-
 </html>
