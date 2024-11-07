@@ -12,7 +12,7 @@
 				<!-- Cột đầu tiên: Hình xe -->
 				<div class="col car-image">
 					<a th:title="${car.model}">
-						<img th:src="'/assets/images/car/' + ${car.imageUrl}" width="100%" height="auto" th:alt="${car.model}">
+						<img th:src="@{'/assets/images/car/' + ${#strings.arraySplit(car.imageUrl, ',')[0]}}">
 					</a>
 				</div>
 
@@ -72,7 +72,7 @@
 				<!-- Cột đầu tiên: Hình xe máy -->
 				<div class="col motorbike-image">
 					<a th:title="${motorbike.model}">
-						<img th:src="'/assets/images/motorbike/' + ${motorbike.imageUrl}" width="100%" height="auto" th:alt="${motorbike.model}">
+						<img th:src="@{'/assets/images/motorbike/' + ${#strings.arraySplit(motorbike.imageUrl, ',')[0]}}">
 					</a>
 				</div>
 
