@@ -73,7 +73,6 @@ public class RentalController {
 		}
 
 
-		
 		@PutMapping(value = "/{id}")
 		public String update(@PathVariable("id") Long id, @RequestBody Rental rentalDetail) {
 		    // Tìm xe cần cập nhật
@@ -88,6 +87,8 @@ public class RentalController {
 			RentalUpdate.setRenStatus(rentalDetail.getRenStatus());
 			RentalUpdate.setDiscount(rentalDetail.getDiscount());
 			RentalUpdate.setHaveDriver(rentalDetail.getHaveDriver());
+			RentalUpdate.setRentalLocations(rentalDetail.getRentalLocations());
+			RentalUpdate.setNotes(rentalDetail.getNotes());
 			
 			if (rentalDetail.getRentalDate() != null) {
 			    RentalUpdate.setRentalDate(rentalDetail.getRentalDate());
@@ -103,7 +104,14 @@ public class RentalController {
 			}
 			if (rentalDetail.getRenStatus() != null && !rentalDetail.getRenStatus().isEmpty()) {
 			    RentalUpdate.setRenStatus(rentalDetail.getRenStatus());
-			}
+			    
+			}if (rentalDetail.getRentalLocations() != null && !rentalDetail.getRentalLocations().isEmpty()) {
+			    RentalUpdate.setRentalLocations(rentalDetail.getRentalLocations());
+			    
+			}if (rentalDetail.getNotes() != null && !rentalDetail.getNotes().isEmpty()) {
+			    RentalUpdate.setNotes(rentalDetail.getNotes());
+			    
+			} 
 
 		    // Lưu đối tượng xe đã cập nhật
 			rentalRepo.save(RentalUpdate);

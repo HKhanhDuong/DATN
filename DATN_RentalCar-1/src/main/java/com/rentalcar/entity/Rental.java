@@ -48,4 +48,7 @@ public class Rental {
 
     @Column(length = 255, columnDefinition = "NVARCHAR(255)")
     private String rentalLocations;
+    
+    @Column(length = 255, columnDefinition = "NVARCHAR(255)")
+    private String notes;
 }

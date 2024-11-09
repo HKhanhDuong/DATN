@@ -140,7 +140,6 @@ public class DetailVehicleController {
 	    }
 	    return location; // Trả về giá trị gốc nếu không tìm thấy 'TP'
 	}
-	
-	
+
 }
 

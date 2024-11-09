@@ -831,7 +831,7 @@ Object.values(elements.modalInputs).forEach(input => {
 <div class="price-item">
     <p>Tổng cộng</p>
     <p class="cost">
-        <span id="dailyRateDisplay"></span>
+        <span value="0" id="dailyRateDisplay"></span>
     </p>
 </div>
 
@@ -841,6 +841,8 @@ let carDailyRate = /*[[${car.dailyRate}]]*/ 0;
 let carPercentDiscount = /*[[${car.percentDiscount}]]*/ 0;
 const hoursElement = document.getElementById("totalRentalHours");
 const driverCheckbox = document.getElementById("driver");
+
+let currentDiscountPercentage = 0; //"finalRentRate"
 
 // Hàm tính toán giá thuê
 function calculateRentalRate(dailyRate, percentDiscount, hours) {
@@ -870,7 +872,7 @@ function calculateRentalRate(dailyRate, percentDiscount, hours) {
 
   // Kiểm tra xem có tài xế hay không
   if (driverCheckbox.checked) {
-    return rentalRate + (rentalRate * VAT_PERCENTAGE) + (400000 * fullDays);
+    return rentalRate + (rentalRate * VAT_PERCENTAGE) + ((400000 + (rentalRate * 0.1)) * fullDays);
   } else {
     return rentalRate + (rentalRate * VAT_PERCENTAGE);
   }
@@ -879,8 +881,10 @@ function calculateRentalRate(dailyRate, percentDiscount, hours) {
 // Cập nhật giá thuê
 function updateRentalRate() {
   const hours = parseFloat(hoursElement.textContent) || 0;
-  const rentalRate = calculateRentalRate(carDailyRate, carPercentDiscount, hours);
+  const rentalRate = calculateRentalRate(carDailyRate, carPercentDiscount, hours); 
+  
   document.getElementById("dailyRateDisplay").textContent = typeof rentalRate === 'number' ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(rentalRate) : rentalRate;
+ 
 }
 
 // Theo dõi sự thay đổi của checkbox và cập nhật giá thuê khi thay đổi
@@ -913,7 +917,6 @@ updateRentalRate();
                         <path d="M21.3 10.8394C21.69 10.8394 22 10.5294 22 10.1394V9.20938C22 5.10938 20.75 3.85938 16.65 3.85938H7.35C3.25 3.85937 2 5.10938 2 9.20938V9.67938C2 10.0694 2.31 10.3794 2.7 10.3794C3.6 10.3794 4.33 11.1094 4.33 12.0094C4.33 12.9094 3.6 13.6294 2.7 13.6294C2.31 13.6294 2 13.9394 2 14.3294V14.7994C2 18.8994 3.25 20.1494 7.35 20.1494H16.65C20.75 20.1494 22 18.8994 22 14.7994C22 14.4094 21.69 14.0994 21.3 14.0994C20.4 14.0994 19.67 13.3694 19.67 12.4694C19.67 11.5694 20.4 10.8394 21.3 10.8394ZM9 8.87938C9.55 8.87938 10 9.32938 10 9.87938C10 10.4294 9.56 10.8794 9 10.8794C8.45 10.8794 8 10.4294 8 9.87938C8 9.32938 8.44 8.87938 9 8.87938ZM15 15.8794C14.44 15.8794 13.99 15.4294 13.99 14.8794C13.99 14.3294 14.44 13.8794 14.99 13.8794C15.54 13.8794 15.99 14.3294 15.99 14.8794C15.99 15.4294 15.56 15.8794 15 15.8794ZM15.9 9.47937L9.17 16.2094C9.02 16.3594 8.83 16.4294 8.64 16.4294C8.45 16.4294 8.26 16.3594 8.11 16.2094C7.82 15.9194 7.82 15.4394 8.11 15.1494L14.84 8.41938C15.13 8.12938 15.61 8.12938 15.9 8.41938C16.19 8.70938 16.19 9.18937 15.9 9.47937Z" fill="#5FCF86"/>
                     </svg>
                 </div>
-                
             </div>
             <div class="promo-price">
                 <div class="wrap-svg">
@@ -924,75 +927,173 @@ updateRentalRate();
             </div>
           	<div id="selectedPromoDisplay">
                 <p class="mb-0">Mã khuyến mãi</p>
-                   	<div class="selected-promo" style="display: none;">
-                        <span class="selected-promo-code"></span>
-                        <span class="selected-promo-description"></span>
-                  	</div>
-              </div>
+                <div class="selected-promo" style="display: none;">
+                    <span class="selected-promo-code"></span>
+                    <span class="selected-promo-description"></span>
+                    <span class="promo-cancel" style="cursor: pointer; color: red; margin-left: 20px;">&times;</span>
+                </div>
+            </div>
+
+            <script th:inline="javascript">
+            
+            const promoCodes = /*[[${discounts}]]*/ [];
+
+          //Hàm tính tổng: giá thuê - mã giảm giá
+          function calculateTotalRate(rentalRate, hours) {
+              rentalRate = calculateRentalRate(carDailyRate, carPercentDiscount, hours); 
+              let totalRate = rentalRate;
               
-              <script th:inline="javascript">
-              // Danh sách mã giảm giá
-		          	const promoCodes = /*[[${discounts}]]*/ [];
-		          	
-		          	// Hiển thị danh sách mã giảm giá
-		          	function displayPromoCodes() {
-		          	    const promoList = document.getElementById('promoCodesList');
-		          	    promoList.innerHTML = '';
-		          	    
-		          	    promoCodes.forEach(promo => {
-		          	        const promoItem = document.createElement('div');
-		          	        promoItem.className = 'promo-code-item';
-		          	        promoItem.innerHTML = `
-		          	            <div class="promo-code-info">
-		          	                <div class="promo-code-value">${promo.discountCode}</div>
-		          	                <div class="promo-code-description">${promo.description}</div>
-		          	                <div value="${promo.discountPercentage}">Giảm: ${promo.discountPercentage}%</div>
-		          	            </div>
-		          	            <div class="promo-code-status">${promo.status}</div>
-		          	        `;
-		          	        
-		          	        promoItem.addEventListener('click', () => {
-		          	            applyPromoCode(promo);
-		          	        });
-		          	        
-		          	        promoList.appendChild(promoItem);
-		          	    });
-		          	}
-		          	
-		          	// Áp dụng mã giảm giá
-		          	function applyPromoCode(promo) {
-		          	    // Đánh dấu radio button là đã chọn
-		          	    document.getElementById('code').checked = true;
-		          	    
-		          	    // Cập nhật hiển thị mã đã chọn
-		          	    const selectedPromoDisplay = document.getElementById('selectedPromoDisplay');
-		          	    const selectedPromo = selectedPromoDisplay.querySelector('.selected-promo');
-		          	    const selectedPromoCode = selectedPromoDisplay.querySelector('.selected-promo-code');
-		          	    const selectedPromoDescription = selectedPromoDisplay.querySelector('.selected-promo-description');
-		          	    
-		          	    selectedPromoDisplay.querySelector('p').style.display = 'none';
-		          	    selectedPromo.style.display = 'flex';
-		          	    selectedPromoCode.textContent = promo.discountCode;
-		          	    selectedPromoDescription.textContent = `(Giảm ${promo.discountPercentage}%)`;
-		          	    
-		          	    // Đóng modal
-		          	    const modal = bootstrap.Modal.getInstance(document.getElementById('promoModal'));
-		          	    modal.hide();
-		          	    
-		          	    // Ở đây bạn có thể thêm logic để cập nhật giá tiền của đơn hàng
-		          	    //console.log(`Áp dụng mã giảm giá: ${promo.discountCode} - ${promo.discountPercentage}%`);
-		          	}
-		          	
-		          	// Khởi tạo hiển thị mã giảm giá khi trang được load
-		          	document.addEventListener('DOMContentLoaded', () => {
-		          	    displayPromoCodes();
-		          	});
-              </script>
+              totalRate -= (totalRate * currentDiscountPercentage) / 100; 
+              return totalRate;
+          }  
+
+          // Hàm hiển thị danh sách mã giảm giá
+          function displayPromoCodes() {
+              const promoList = document.getElementById('promoCodesList');
+              promoList.innerHTML = '';
               
+              promoCodes.forEach(promo => {
+                  const promoItem = document.createElement('div');
+                  promoItem.className = 'promo-code-item';
+                  promoItem.innerHTML = `
+                      <div class="promo-code-info">
+                          <div class="promo-code-value">${promo.discountCode}</div>
+                          <div class="promo-code-description">${promo.description}</div>
+                          <div id="discountPercentage" value="${promo.discountPercentage}">Giảm: ${promo.discountPercentage}%</div>
+                      </div>
+                      <div class="promo-code-status">${promo.status}</div>
+                  `;
+                  
+                  promoItem.addEventListener('click', () => {
+                      applyPromoCode(promo);
+                  });
+                  
+                  promoList.appendChild(promoItem);
+              });
+          }
+
+          // Hàm tính toán tổng giá
+          function updateTotalPriceWithDiscount(discountPercentage) {
+              const hoursElement = document.getElementById("totalRentalHours");
+              const hours = parseFloat(hoursElement.textContent) || 0;
+              const rentalRate = calculateRentalRate(carDailyRate, carPercentDiscount, hours); 
+              
+              // Nếu có mã giảm giá, tính toán giảm giá, nếu không thì giữ nguyên giá gốc
+              const discountAmount = discountPercentage > 0 ? (rentalRate * discountPercentage) / 100 : 0;
+              const totalRate = rentalRate - discountAmount;
+
+              // Cập nhật tổng giá vào giao diện
+              console.log("Discount Amount:", discountAmount);
+              console.log("Total Price After Discount:", totalRate);
+
+              // Hiển thị tổng giá mới
+              const totalRateElement = document.getElementById('totalRatePrice');
+              if (totalRateElement) {
+                  totalRateElement.textContent = typeof totalRate === 'number' ? 
+                      new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(totalRate) : totalRate;
+              }
+          }
+
+          // Hàm áp dụng mã giảm giá
+          function applyPromoCode(promo) {
+              document.getElementById('code').checked = true;
+
+              const selectedPromoDisplay = document.getElementById('selectedPromoDisplay');
+              const selectedPromo = selectedPromoDisplay.querySelector('.selected-promo');
+              const selectedPromoCode = selectedPromoDisplay.querySelector('.selected-promo-code');
+              const selectedPromoDescription = selectedPromoDisplay.querySelector('.selected-promo-description');
+
+              console.log("Selected Discount Percentage:", promo.discountPercentage);
+
+              selectedPromoDisplay.querySelector('p').style.display = 'none';
+              selectedPromo.style.display = 'flex';
+              selectedPromoCode.textContent = promo.discountCode;
+              selectedPromoDescription.textContent = `(Giảm ${promo.discountPercentage}%)`;
+
+              // Gọi hàm tính tổng giá với discountPercentage
+              updateTotalPriceWithDiscount(promo.discountPercentage);
+
+              const modal = bootstrap.Modal.getInstance(document.getElementById('promoModal'));
+              modal.hide();
+          }
+
+          // Hàm hủy bỏ mã giảm giá
+          function cancelPromoCode() {
+              document.getElementById('code').checked = false;
+
+              const selectedPromoDisplay = document.getElementById('selectedPromoDisplay');
+              selectedPromoDisplay.querySelector('p').style.display = 'block';
+              const selectedPromo = selectedPromoDisplay.querySelector('.selected-promo');
+              selectedPromo.style.display = 'none';
+
+              selectedPromo.querySelector('.selected-promo-code').textContent = '';
+              selectedPromo.querySelector('.selected-promo-description').textContent = '';
+              
+              // Cập nhật lại giá gốc khi không có mã giảm giá
+              updateTotalPriceWithDiscount(0);
+          }
+
+          // Khi tài liệu HTML đã sẵn sàng
+          document.addEventListener('DOMContentLoaded', () => {
+              displayPromoCodes();
+              
+              // Thiết lập MutationObserver để theo dõi thay đổi giờ thuê
+              const dailyRateDisplay = document.getElementById("dailyRateDisplay");
+              if (dailyRateDisplay) {
+                  const observer = new MutationObserver((mutations) => {
+                      // Lấy giá trị discount hiện tại
+                      const selectedPromo = document.querySelector('.selected-promo');
+                      let currentDiscount = 0;
+                      
+                      if (selectedPromo && selectedPromo.style.display !== 'none') {
+                          const discountText = document.querySelector('.selected-promo-description').textContent;
+                          currentDiscount = parseInt(discountText.match(/\d+/)[0]) || 0;
+                      }
+                      
+                      // Cập nhật giá với discount hiện tại
+                      updateTotalPriceWithDiscount(currentDiscount);
+                  });
+
+                  // Cấu hình observer để theo dõi nội dung và cả cây con
+                  observer.observe(dailyRateDisplay, { 
+                      childList: true, 
+                      characterData: true, 
+                      subtree: true 
+                  });
+              }
+
+              // Khởi tạo giá ban đầu
+              updateTotalPriceWithDiscount(0);
+              
+              // Thêm sự kiện cho nút hủy mã giảm giá
+              const promoCancelBtn = document.querySelector('.promo-cancel');
+              if (promoCancelBtn) {
+                  promoCancelBtn.addEventListener('click', cancelPromoCode);
+              }
+
+              const driverCheckbox = document.getElementById('driverCheckbox');
+              if (driverCheckbox) {
+                driverCheckbox.addEventListener("change", function() {
+                  const selectedPromo = document.querySelector('.selected-promo');
+                  let currentDiscount = 0;
+                  
+                  if (selectedPromo && selectedPromo.style.display !== 'none') {
+                    const discountText = document.querySelector('.selected-promo-description').textContent;
+                    currentDiscount = parseInt(discountText.match(/\d+/)[0]) || 0;
+                  }
+                  
+                  updateTotalPriceWithDiscount(currentDiscount);
+                });
+              }
+             
+          });
+</script>
+
+
         </label>
     </div>
 </div>
-
+                    
 <!-- Modal Popup -->
 <div class="modal fade" id="promoModal" tabindex="-1" aria-labelledby="promoModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -1014,12 +1115,19 @@ updateRentalRate();
 
 
 								<div class="line-page"></div>
+								
 							<div class="price-item total">
-								<p>Thành tiền</p>
-								<p class="cost">
-									<span th:text="${#numbers.formatDecimal((car.dailyRate * 1.1) * (1 - 0.14) + 88374, 0, 3)}"></span>
-								</p>
+							    <p>Thành tiền</p>
+							    <p class="cost">
+							        <span id="totalRatePrice"></span>
+							    </p>
 							</div>
+							
+							<script type="text/javascript">
+							
+				                
+							</script>
+
 						</div>
 						
 						<!-- Button -->
@@ -1056,30 +1164,40 @@ updateRentalRate();
     <p><strong>Tổng số giờ thuê:</strong> <span id="rentalHours"></span></p>
     <p><strong>Địa chỉ:</strong> <span id="rentalAddress"></span></p>
     <p><strong>Mã giảm giá:</strong> <span id="promoCode"></span></p>
-    <p><strong>Ghi chú:</strong> <span id="notes"></span><br /><br />
-	<textarea rows="6" style="width:70%; resize: vertical;" placeholder="Nhập nội dung.."></textarea>
-
+    <p><span id="notes">Ghi Chú</span><br />
+	<textarea id="notes-input" rows="6" style="width:70%; resize: vertical;" placeholder="Nhập nội dung.."></textarea>
+    </p>
+	<br> <hr>
+	<p><strong>Tổng thanh toán: </strong> <span value="0" id="finalRentRate" class="float-end text-danger fw-bold"></span></p>
 
     </p>
 </div>
 
                     <div class="col-md-4 text-center">
-                    <label>Hình thức thanh toán:</label> <br>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="paymentOption" id="prepay" value="prepay" checked>
-                                <label class="form-check-label" for="prepay">Trả trước</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="paymentOption" id="postpay" value="postpay">
-                                <label class="form-check-label" for="postpay">Trả sau</label>
-                            </div>
-                            <br>
-                            <br>
-                        <div a class="qr-code-container border p-3" style="border-radius: 5px;">
-                            <img  id="qrImage" src="/assets/images/qr-code.jpg" alt="Mã QR" class="img-fluid mb-3" />
-                            <p id="qrText"></p>
-                        </div>
-                    </div>
+					    <label>Hình thức thanh toán:</label> <br>
+					    <div class="form-check form-check-inline">
+					        <input class="form-check-input" type="radio" name="paymentOption" id="prepay" value="prepay" checked>
+					        <label class="form-check-label" for="prepay">Trả trước</label>
+					    </div>
+					    <div class="form-check form-check-inline">
+					        <input class="form-check-input" type="radio" name="paymentOption" id="postpay" value="postpay">
+					        <label class="form-check-label" for="postpay">Trả sau</label>
+					    </div>
+					    <br><br>
+					
+					    <div id="postpayMessage" style="display: none;">
+					        <p class="text-warning">Lưu ý: Bạn sẽ thanh toán sau khi trả xe. Hãy chắc chắn rằng bạn đã hoàn tất việc trả xe đúng giờ.</p>
+					    </div>
+					
+					    <div class="qr-code-container border p-3" style="border-radius: 5px;">
+					        <img id="qrImage" src="${qrImageUrl}" alt="Mã QR" class="img-fluid mb-3" />
+					        <hr>
+					        <br>
+					        <p class="text-muted fs-5">Ghi Chú:</p>
+					        <p id="qrText" class="text-muted fs-6"></p>
+					    </div>
+					</div>
+
                 </div>
             </div>
             <div class="modal-footer">
@@ -1092,59 +1210,146 @@ updateRentalRate();
 
 <script th:inline="javascript">
 document.addEventListener('DOMContentLoaded', function() {
-    const rentButton = document.getElementById("rentButton");
-    const rentModal = document.getElementById("rentModal");
-    
-    if (!rentButton || !rentModal) return; 
+    // Helper Functions
+    const getElement = id => document.getElementById(id);
+    const getValue = (id, defaultValue = '') => getElement(id)?.value?.trim() || defaultValue;
+    const getText = (id, defaultValue = '') => getElement(id)?.textContent?.trim() || defaultValue;
 
-    rentButton.addEventListener("click", function() {
-    	
-      const fullName = document.getElementById('fullName').textContent.trim();
-      const pickupDT = document.getElementById("pickUpDateTime")?.textContent?.trim() || '';
-      const returnDT = document.getElementById("returnDateTime")?.textContent?.trim() || '';
-      const hours = document.getElementById("totalRentalHours")?.textContent?.trim() || '';
-      const address = document.getElementById("address-input")?.value?.trim() || '';
-      const notes = document.getElementById("notes-input")?.value?.trim() || '';
-      const selectedPromoCode = document.querySelector('.selected-promo-code')?.textContent?.trim() || '';
-      const selectedPromoDescription = document.querySelector('.selected-promo-description')?.textContent?.trim() || '';
-	  
-      if (fullName == 'Chưa có tên') {
-    	  alert("Vui lòng đăng nhập để tiếp tục.");
-          window.location.href = "/login";
-          return;
-      }
+    // Constants
+    const BANK_INFO = {
+        BANK_ID: "MB",
+        ACCOUNT_NO: "3666116122004",
+        ACCOUNT_NAME: "RENTALCAR"
+    };
 
-      if (!pickupDT || !returnDT || !hours || !address) {
-          alert("Vui lòng nhập đầy đủ thông tin trước khi tiếp tục!");
-          return; 
-      }
-	  
-      document.getElementById("pickupTime").textContent = pickupDT;
-      document.getElementById("returnTime").textContent = returnDT;
-      document.getElementById("rentalHours").textContent = hours;
-      document.getElementById("rentalAddress").textContent = address;
-      document.getElementById("promoCode").textContent = selectedPromoCode ? `${selectedPromoCode} - ${selectedPromoDescription}` : 'Không có';
-      document.getElementById("notes").textContent = notes;
+    // Elements
+    const elements = {
+        rentButton: getElement("rentButton"),
+        rentModal: getElement("rentModal"),
+        prepayRadio: getElement("prepay"),
+        postpayRadio: getElement("postpay"),
+        qrContainer: document.querySelector(".qr-code-container"),
+        postpayMessage: getElement("postpayMessage")
+    };
 
-      const qrImageUrl = 'path_to_your_qr_code_image.png';
-      const qrTextValue = 'Mã QR: 123456789';
-      document.getElementById("qrImage").src = qrImageUrl;
-      document.getElementById("qrText").textContent = qrTextValue;
-    
+    // Payment type handlers
+    function togglePaymentUI(showQR) {
+        elements.qrContainer.style.display = showQR ? "block" : "none";
+        elements.postpayMessage.style.display = showQR ? "none" : "block";
+    }
 
+    elements.prepayRadio?.addEventListener("change", () => togglePaymentUI(true));
+    elements.postpayRadio?.addEventListener("change", () => togglePaymentUI(false));
+
+    // Generate booking code
+    function generateBookingCode(carId, accId, fullName, pickUpDateTime, hours) {
+        const normalizedName = fullName
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/\s+/g, "")
+            .toUpperCase();
+        
+        const pickUpFormatted = moment(pickUpDateTime).format("YYMMDD");
+        const carIdString = String(carId).padStart(4, '0');
+        const roundedHours = Math.floor(Number(hours));
+
+        return `RC${carIdString}A${accId}${normalizedName}${pickUpFormatted}T${roundedHours}`;
+    }
+
+    // Rent button handler
+    elements.rentButton?.addEventListener("click", function() {
+        const logAccId = /*[[${loggedAcc != null ? loggedAcc.accountId : 0}]]*/ 0;
+        const carId = /*[[${car.carId}]]*/ 0;
+        
+        // Validate user login
+        if (getText('fullName') === 'Chưa có tên') {
+            alert("Vui lòng đăng nhập để tiếp tục.");
+            window.location.href = "/login";
+            return;
+        }
+
+        // Collect form data
+        const rentalData = {
+            pickupDT: getText("pickUpDateTime"),
+            returnDT: getText("returnDateTime"),
+            hours: getText("totalRentalHours"),
+            address: getValue("address-input"),
+            notes: getValue("notes-input")
+        };
+
+        // Validate required fields
+        if (!rentalData.pickupDT || !rentalData.returnDT || !rentalData.hours || !rentalData.address) {
+            alert("Vui lòng nhập đầy đủ thông tin trước khi tiếp tục!");
+            return;
+        }
+
+        // Get promotion code info
+        const selectedPromoCode = document.querySelector('.selected-promo-code');
+        const selectedPromoDescription = document.querySelector('.selected-promo-description');
+        const promoText = selectedPromoCode && selectedPromoDescription ? 
+                         `${selectedPromoCode.textContent} - ${selectedPromoDescription.textContent}` : 
+                         'Không có';
+
+        // Update modal content
+        getElement("pickupTime").textContent = rentalData.pickupDT;
+        getElement("returnTime").textContent = rentalData.returnDT;
+        getElement("rentalHours").textContent = rentalData.hours;
+        getElement("finalRentRate").textContent = getText("totalRatePrice");
+        getElement("rentalAddress").textContent = rentalData.address;
+        getElement("promoCode").textContent = promoText;
+
+        // Generate QR Code
+        const bookingCode = generateBookingCode(
+            carId,
+            logAccId,
+            getText('fullName'),
+            new Date(`${getValue("modalPickUpDate")} ${getValue("modalPickUpTime")} GMT+07:00`),
+            rentalData.hours
+        );
+
+        const amount = Number(getText("totalRatePrice").replace(/\D/g, ""));
+        const qrUrl = `https://img.vietqr.io/image/${BANK_INFO.BANK_ID}-${BANK_INFO.ACCOUNT_NO}-compact2.png?amount=${amount}&addInfo=${bookingCode}&accountName=${BANK_INFO.ACCOUNT_NAME}`;
+
+        getElement("qrImage").src = qrUrl;
+        getElement("qrText").textContent = bookingCode;
     });
 
+    // Confirm rental handler
+    getElement("confirmRentButton")?.addEventListener("click", function() {
+        const rentalData = {
+            accountId: /*[[${loggedAcc != null ? loggedAcc.accountId : 0}]]*/ 0,
+            carId: /*[[${car.carId}]]*/ 0,
+            fullName: getText('fullName'),
+            phoneNumber: getText('sdt'),
+            pickupDateTime: new Date(`${getValue("modalPickUpDate")} ${getValue("modalPickUpTime")} GMT+07:00`),
+            returnDateTime: new Date(`${getValue("modalReturnDate")} ${getValue("modalReturnTime")} GMT+07:00`),
+            rentalHours: getText("rentalHours"),
+            rentalAddress: getText("rentalAddress"),
+            promoCode: getText("promoCode"),
+            notes: getValue("notes-input"),
+            finalRentRate: Number(getText("totalRatePrice").replace(/\D/g, "")),
+            paymentOption: document.querySelector('input[name="paymentOption"]:checked').value
+        };
 
-    document.getElementById("confirmRentButton")?.addEventListener("click", function() {
+     // Log thông tin ra console
+	    console.log('Car ID:', rentalData.carId);
+	    console.log('Pickup DateTime:', rentalData.pickupDateTime);
+	    console.log('Return DateTime:', rentalData.returnDateTime);
+	    console.log('Rental Hours:', rentalData.rentalHours);
+	    console.log('Rental Address:', rentalAddress);
+	    console.log('Promo Code:', rentalData.promoCode);
+	    console.log('Notes:', rentalData.notes);
+	    console.log('Final Rent Rate:', rentalData.finalRentRate);
+	    console.log('Payment Option:', rentalData.paymentOption);
+	    
+        // Instead of API call, showing success message
         alert("Bạn đã xác nhận thuê xe thành công!");
-
-        const modal = bootstrap.Modal.getInstance(rentModal);
-        modal.hide();
-
+        bootstrap.Modal.getInstance(elements.rentModal).hide();
     });
 });
 </script>
-					
+
+		
 					</div>
 					
 
@@ -1401,6 +1606,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	<!-- Car-details -->
 <script th:inline="javascript" src="/assets/js/car-detail.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
+//
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+</div>
 </body>
 </html>
