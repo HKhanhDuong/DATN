@@ -10,7 +10,10 @@ import com.rentalcar.entity.Rental;
 import com.rentalcar.entity.Account;
 import com.rentalcar.entity.Discount;
 import com.rentalcar.dao.*;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -41,13 +44,19 @@ public class RentalController {
 			}
 		}
 		
-		//lưu
 		@PostMapping
-		public ResponseEntity<String> save(@RequestBody Rental rental) {
-			System.out.println("-----------"+ rentalRepo + "------------" + rental);
-			rentalRepo.save(rental);
-			return ResponseEntity.ok("saved...");
+		public ResponseEntity<Object> save(@RequestBody Rental rental) {
+		    System.out.println("-----------" + rentalRepo + "------------" + rental);
+		    rentalRepo.save(rental);
+
+		    // Trả về đối tượng JSON thay vì chuỗi
+		    Map<String, String> response = new HashMap<>();
+		    response.put("message", "saved...");
+		    response.put("status", "success");
+
+		    return ResponseEntity.ok(response);  // Trả về đối tượng JSON
 		}
+
 		
 		@PostMapping("/save2")
 		public ResponseEntity<Rental> createRental(@RequestBody Rental rentalRequest) {
