@@ -7,7 +7,7 @@
 	<!-- Fill Ô tô -->
 	<div th:fragment="list_vehicle">
 		<div class="prod car" th:each="car : ${cars}"
-			th:attr="data-model=${car.model}, data-brand=${car.make}">
+			th:attr="data-model=${car.model}, data-brand=${car.make}, data-price=${car.dailyRate}">
 
 			<div class="info-prod">
 				<div class="three-column">
@@ -88,7 +88,7 @@
 
 		<!-- Fill Xe Máy -->
 		<div class="prod motorbike" th:each="motorbike : ${motorbikes}"
-			th:attr="data-model=${motorbike.model}, data-brand=${motorbike.make}">
+			th:attr="data-model=${motorbike.model}, data-brand=${motorbike.make}, data-price=${motorbike.dailyRate}">
 			<div class="info-prod">
 				<div class="three-column">
 					<!-- Cột đầu tiên: Hình xe máy -->
