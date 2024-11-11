@@ -1,6 +1,7 @@
 package com.rentalcar.entity;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMax;
@@ -80,4 +81,7 @@ public class Motorbike {
     private BigDecimal percentDiscount;
     
     private String motorbikeType;
+    
+    @OneToMany(mappedBy = "motorbike")
+    private Set<RentalVehicle> rentalVehicle;
 }

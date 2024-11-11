@@ -40,10 +40,16 @@ public class RentalVehicleController {
 		}
 
 		// lưu
+//		@PostMapping
+//		public String save(@RequestBody RentalVehicle rentalVehicle) {
+//			rentalvehicleRepo.save(rentalVehicle);
+//			return "Saved!!!";
+//		}
+		
 		@PostMapping
-		public String save(@RequestBody RentalVehicle rentalVehicle) {
-			rentalvehicleRepo.save(rentalVehicle);
-			return "Saved!!!";
+		public ResponseEntity<RentalVehicle> save(@RequestBody RentalVehicle rentalVehicle) {
+		    RentalVehicle savedRentalVehicle = rentalvehicleRepo.save(rentalVehicle);
+		    return ResponseEntity.ok(savedRentalVehicle);
 		}
 
 		@PutMapping(value = "/{id}")

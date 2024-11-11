@@ -44,17 +44,39 @@ public class RentalController {
 			}
 		}
 		
+//		@PostMapping
+//		public ResponseEntity<Object> save(@RequestBody Rental rental) {
+//		    System.out.println("-----------" + rentalRepo + "------------" + rental);
+//		    rentalRepo.save(rental);
+//
+//		    // Trả về đối tượng JSON thay vì chuỗi
+//		    Map<String, String> response = new HashMap<>();
+//		    response.put("message", "saved...");
+//		    response.put("status", "success");
+//
+//		    return ResponseEntity.ok(response);  // Trả về đối tượng JSON
+//		}
+		
 		@PostMapping
-		public ResponseEntity<Object> save(@RequestBody Rental rental) {
-		    System.out.println("-----------" + rentalRepo + "------------" + rental);
-		    rentalRepo.save(rental);
+		public ResponseEntity<Rental> save(@RequestBody Rental rentalRequest) {
+		    // Kiểm tra account không null
+		    if (rentalRequest.getAccount() == null || rentalRequest.getAccount().getAccountId() == null) {
+		        throw new IllegalArgumentException("Account ID must not be null");
+		    }
 
-		    // Trả về đối tượng JSON thay vì chuỗi
-		    Map<String, String> response = new HashMap<>();
-		    response.put("message", "saved...");
-		    response.put("status", "success");
+		    Account account = accountRepo.findById(rentalRequest.getAccount().getAccountId())
+		            .orElseThrow(() -> new RuntimeException("accountID not found"));
+		    rentalRequest.setAccount(account);
 
-		    return ResponseEntity.ok(response);  // Trả về đối tượng JSON
+		    // Nếu discount có mặt trong request, lấy discount từ cơ sở dữ liệu
+		    if (rentalRequest.getDiscount() != null && rentalRequest.getDiscount().getDiscountId() != null) {
+		        Discount discount = discountRepo.findById(rentalRequest.getDiscount().getDiscountId())
+		                .orElseThrow(() -> new RuntimeException("DiscountId not found"));
+		        rentalRequest.setDiscount(discount);
+		    }
+
+		    Rental savedRental = rentalRepo.save(rentalRequest);
+		    return ResponseEntity.ok(savedRental);
 		}
 
 		

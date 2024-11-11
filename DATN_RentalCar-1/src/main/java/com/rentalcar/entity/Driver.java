@@ -2,6 +2,7 @@ package com.rentalcar.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -35,6 +36,9 @@ public class Driver {
 
     @Column(length = 255, columnDefinition = "NVARCHAR(255)")
     private String imageUrl;
+    
+    @OneToMany(mappedBy = "driver")
+    private Set<RentalVehicle> rentalVehicle;
 
     // Getters and Setters
 }

@@ -2,6 +2,7 @@ package com.rentalcar.entity;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -89,6 +90,9 @@ public class Car {
     private BigDecimal percentDiscount;
     
     private String carType;
+    
+    @OneToMany(mappedBy = "car")
+    private Set<RentalVehicle> rentalVehicle;
     
 }	
 

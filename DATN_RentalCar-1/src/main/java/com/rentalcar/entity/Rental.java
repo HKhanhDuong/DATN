@@ -2,6 +2,8 @@ package com.rentalcar.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime; // Sử dụng LocalDateTime
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
@@ -51,4 +53,7 @@ public class Rental {
     
     @Column(length = 255, columnDefinition = "NVARCHAR(255)")
     private String notes;
+    
+    @OneToMany(mappedBy = "rental")
+    private Set<RentalVehicle> rentalVehicle;
 }

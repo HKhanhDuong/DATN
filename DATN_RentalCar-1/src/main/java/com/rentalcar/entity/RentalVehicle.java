@@ -2,6 +2,7 @@ package com.rentalcar.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Set;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -36,6 +37,7 @@ public class RentalVehicle {
     @ManyToOne
     @JoinColumn(name = "driverId")
     private Driver driver;
+    
 
     // Getters and Setters
 }
