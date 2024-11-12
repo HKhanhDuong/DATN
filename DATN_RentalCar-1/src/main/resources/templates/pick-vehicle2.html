@@ -185,7 +185,7 @@
 							class="option-arrow"></span>
 					</div>
 				</div>
-				
+
 				<button class="btn search-btn">Tìm kiếm</button>
 			</div>
 
@@ -231,24 +231,26 @@
 					<div class="d-flex">
 						<div class="dropdown-wrapper">
 							<div class="rc-select rc-select-single rc-select-show-arrow">
-								<div class="rc-select-selector">
+								<div class="rc-select-selector" id="sorting-dropdown">
 									<span class="rc-select-selection-search"> <input
-										autocomplete="off" type="search"
-										class="rc-select-selection-search-input" id="sorting-dropdown"
-										readonly />
+										autocomplete="off" type="search" readonly />
 									</span> <span class="rc-select-selection-item" id="sorting-text"
-										title="Từ thấp đến cao">Từ thấp đến cao</span>
-									<!-- Thêm biểu tượng SVG vào đây -->
+										title="Từ thấp đến cao"> Từ thấp đến cao </span>
 									<svg stroke="currentColor" fill="currentColor" stroke-width="0"
-										viewBox="0 0 24 24" height="1em" width="1em"
-										xmlns="http://www.w3.org/2000/svg">
-                    <path
-											d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>
-                  </svg>
+										viewBox="0 0 24 24" height="1em" width="1em">
+					<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>
+				</svg>
 								</div>
+							</div>
+							<div class="dropdown-menu" id="sorting-menu"
+								style="display: none;">
+								<div class="dropdown-item" data-sort="asc">Từ thấp đến cao</div>
+								<div class="dropdown-item" data-sort="desc">Từ cao đến
+									thấp</div>
 							</div>
 						</div>
 					</div>
+
 				</div>
 
 				<!-- module list Sản phẩm -->

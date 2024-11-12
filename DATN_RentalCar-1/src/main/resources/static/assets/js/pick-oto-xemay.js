@@ -2,19 +2,20 @@ document.addEventListener('DOMContentLoaded', () => {
 	// Lấy các nút Xe Con và Xe Máy
 	const carBtn = document.querySelector('.car-btn');
 	const motorbikeBtn = document.querySelector('.motorbike-btn');
-	const carList = document.querySelectorAll('.prod.car'); // Các sản phẩm xe con
-	const motorbikeList = document.querySelectorAll('.prod.motorbike'); // Các sản phẩm xe máy
-	
+	const carList = document.querySelectorAll('.prod.car');
+	const motorbikeList = document.querySelectorAll('.prod.motorbike');
+	const sortingDropdown = document.getElementById('sorting-dropdown');
+	const sortingText = document.getElementById('sorting-text');
+	const sortingMenu = document.querySelector('.dropdown-menu');
 
-
+	// Lưu trữ các lựa chọn người dùng
 	let selectedModel = 'Vui lòng chọn';
 	let selectedBrand = 'Vui lòng chọn';
 	let selectedGearType = 'Vui lòng chọn';
 	let selectedCity = 'Vui lòng chọn';
 	let selectedDistrict = 'Vui lòng chọn';
 
-
-	// Biến lưu API cho từng loại xe
+	// URL API cho các loại xe
 	const apiUrls = {
 		car: {
 			model: '/api/car/models',
@@ -26,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	};
 
-	// Hàm hiển thị các sản phẩm và ẩn sản phẩm không cần thiết
+	// Hàm hiển thị và ẩn sản phẩm
 	const showProductList = (productsToShow, productsToHide) => {
 		productsToHide.forEach(product => product.style.display = 'none');
 		productsToShow.forEach(product => product.style.display = 'block');
@@ -38,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		button.classList.add('active');
 	};
 
-	// Hàm thiết lập dropdown với dữ liệu từ API
+	// Thiết lập dropdown với dữ liệu từ API
 	const setupDropdown = (id, apiUrl) => {
 		const arrow = document.getElementById(id);
 		if (!arrow) return;
@@ -57,15 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			try {
 				const response = await fetch(apiUrl);
 				if (!response.ok) throw new Error('Network response was not ok');
-
 				const options = await response.json();
 				dropdown.innerHTML = '';
-				if (options.length === 0) {
-					const noOptionsMessage = document.createElement('div');
-					noOptionsMessage.textContent = 'Không có tùy chọn nào';
-					dropdown.appendChild(noOptionsMessage);
-					return;
-				}
 
 				options.forEach(option => {
 					const optionElement = document.createElement('div');
@@ -73,24 +67,15 @@ document.addEventListener('DOMContentLoaded', () => {
 					optionElement.textContent = option;
 					dropdown.appendChild(optionElement);
 
-					// Cập nhật giá trị khi click vào tùy chọn
 					optionElement.addEventListener('click', () => {
-						selectedText.textContent = option;  // Cập nhật giá trị trong dropdown
-						if (id === 'car-type') {
-							selectedModel = option;
-						} else if (id === 'car-brand') {
-							selectedBrand = option;
-						} else if (id === 'gear-type') {
-							selectedGearType = option;
-						} else if (id === 'city') {
-							selectedCity = option;
-						} else if (id === 'district') {
-							selectedDistrict = option;
-						}
+						selectedText.textContent = option;
+						if (id === 'car-type') selectedModel = option;
+						else if (id === 'car-brand') selectedBrand = option;
+						else if (id === 'gear-type') selectedGearType = option;
+						else if (id === 'city') selectedCity = option;
+						else if (id === 'district') selectedDistrict = option;
 						dropdown.style.display = 'none';
 					});
-
-
 				});
 			} catch (error) {
 				console.error('Failed to fetch options:', error);
@@ -103,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
 			dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
 		});
 	};
-
 
 	// Cập nhật dropdown theo loại xe đã chọn
 	const updateDropdowns = (vehicleType) => {
@@ -140,92 +124,77 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Hàm lọc xe theo các điều kiện mà người dùng đã chọn
 	const filterVehicles = () => {
-		console.log("Hàm filterVehicles đã được gọi!");
-
 		const searchQuery = document.querySelector('.search-box input').value.toLowerCase();
 		const vehicleType = carBtn.classList.contains('active') ? 'car' : 'motorbike';
 
-		console.log("searchQuery:", searchQuery);
-		console.log("selectedModel:", selectedModel);
-		console.log("selectedBrand:", selectedBrand);
-		console.log("selectedGearType:", selectedGearType);
-		console.log("selectedCity:", selectedCity);
-		console.log("selectedDistrict:", selectedDistrict);
-
-		// Bắt đầu lọc sản phẩm theo các điều kiện đã chọn
 		const productList = Array.from(vehicleType === 'car' ? carList : motorbikeList);
-		const matchedProducts = [];
-
-		productList.forEach(product => {
-			const productName = product.querySelector('.car-title, .motorbike-title').textContent;
+		const matchedProducts = productList.filter(product => {
+			const productName = product.querySelector('.car-title, .motorbike-title').textContent.toLowerCase();
 			const productModel = product.getAttribute('data-model');
-			const productBrand = product.getAttribute('data-brand');	
+			const productBrand = product.getAttribute('data-brand');
 			const productGearType = product.getAttribute('data-gear');
 			const productCity = product.getAttribute('data-city');
 			const productDistrict = product.getAttribute('data-district');
 
-			// Kiểm tra các điều kiện lọc, chỉ lọc nếu giá trị không phải "Vui lòng chọn"
-			const matchesSearchQuery = searchQuery === '' || productName.toLowerCase().includes(searchQuery);
-			const matchesModel = selectedModel !== 'Vui lòng chọn' ? selectedModel.toLowerCase() === productModel.toLowerCase() : true;
-			const matchesBrand = selectedBrand !== 'Vui lòng chọn' ? selectedBrand.toLowerCase() === productBrand.toLowerCase() : true;
-			const matchesGearType = selectedGearType !== 'Vui lòng chọn' ? selectedGearType.toLowerCase() === productGearType.toLowerCase() : true;
-			const matchesCity = selectedCity !== 'Vui lòng chọn' ? selectedCity.toLowerCase() === productCity.toLowerCase() : true;
-			const matchesDistrict = selectedDistrict !== 'Vui lòng chọn' ? selectedDistrict.toLowerCase() === productDistrict.toLowerCase() : true;
+			const matchesSearchQuery = searchQuery === '' || productName.includes(searchQuery);
+			const matchesModel = selectedModel === 'Vui lòng chọn' || selectedModel.toLowerCase() === productModel.toLowerCase();
+			const matchesBrand = selectedBrand === 'Vui lòng chọn' || selectedBrand.toLowerCase() === productBrand.toLowerCase();
+			const matchesGearType = selectedGearType === 'Vui lòng chọn' || selectedGearType.toLowerCase() === productGearType.toLowerCase();
+			const matchesCity = selectedCity === 'Vui lòng chọn' || selectedCity.toLowerCase() === productCity.toLowerCase();
+			const matchesDistrict = selectedDistrict === 'Vui lòng chọn' || selectedDistrict.toLowerCase() === productDistrict.toLowerCase();
 
-			// Log để kiểm tra điều kiện lọc
-			console.log("matchesSearchQuery:", matchesSearchQuery);
-			console.log("matchesModel:", matchesModel);
-			console.log("matchesBrand:", matchesBrand);
-			console.log("matchesGearType:", matchesGearType);
-			console.log("matchesCity:", matchesCity);
-			console.log("matchesDistrict:", matchesDistrict);
-
-			// Nếu tất cả các điều kiện lọc đều thỏa mãn, thêm sản phẩm vào danh sách khớp
-			if (matchesSearchQuery && matchesModel && matchesBrand && matchesGearType && matchesCity && matchesDistrict) {
-				matchedProducts.push(product); // Thêm sản phẩm vào danh sách khớp
-			}
+			return matchesSearchQuery && matchesModel && matchesBrand && matchesGearType && matchesCity && matchesDistrict;
 		});
 
-		// Nếu không có sản phẩm nào khớp, ẩn tất cả
-		if (matchedProducts.length === 0) {
-			showProductList([], productList); // Ẩn tất cả sản phẩm
-			console.log("Không có sản phẩm nào khớp với các tiêu chí");
-		} else {
-			showProductList(matchedProducts, productList.filter(product => !matchedProducts.includes(product)));
-			console.log('Sản phẩm khớp với các tiêu chí:', matchedProducts);
-		}
+		showProductList(matchedProducts, productList.filter(product => !matchedProducts.includes(product)));
 	};
 
-
-
-	// Sự kiện khi nhấn vào nút "Tìm kiếm"
+	// Xử lý sự kiện khi nhấn vào nút "Tìm kiếm"
 	document.querySelector('.search-btn').addEventListener('click', (event) => {
 		event.preventDefault();
-		console.log("Nút tìm kiếm được click");
 		filterVehicles();
 	});
 
-	
-	
+	// Xử lý dropdown sắp xếp
+	sortingDropdown.addEventListener('click', () => {
+		sortingMenu.style.display = sortingMenu.style.display === 'none' ? 'block' : 'none';
+	});
+
+	sortingMenu.addEventListener('click', (event) => {
+		if (event.target.classList.contains('dropdown-item')) {
+			const selectedSort = event.target.getAttribute('data-sort');
+			sortingText.textContent = event.target.textContent;
+			sortingMenu.style.display = 'none';
+
+			// Gọi hàm sắp xếp sản phẩm
+			sortProducts(selectedSort);
+		}
+	});
+
+	// Hàm sắp xếp sản phẩm
+	const sortProducts = (order) => {
+		const productList = Array.from(document.querySelectorAll('.prod'));
+		productList.sort((a, b) => {
+			const priceA = parseFloat(a.getAttribute('data-price'));
+			const priceB = parseFloat(b.getAttribute('data-price'));
+			return order === 'asc' ? priceA - priceB : priceB - priceA;
+		});
+
+		const container = document.querySelector('.product-container');
+		productList.forEach(product => container.appendChild(product));
+	};
+
 	// Xử lý chọn ngày
 	const startDateBtn = document.getElementById('start-date-btn');
 	const endDateBtn = document.getElementById('end-date-btn');
 
-	if (startDateBtn) {
-		startDateBtn.addEventListener('click', () => alert('Chọn ngày bắt đầu'));
-	}
-
-	if (endDateBtn) {
-		endDateBtn.addEventListener('click', () => alert('Chọn ngày kết thúc'));
-	}
+	if (startDateBtn) startDateBtn.addEventListener('click', () => alert('Chọn ngày bắt đầu'));
+	if (endDateBtn) endDateBtn.addEventListener('click', () => alert('Chọn ngày kết thúc'));
 
 	// Xử lý cuộn trang
 	window.addEventListener('scroll', () => {
 		const rightColumn = document.querySelector('.right-column');
-		if (window.scrollY > 0) {
-			rightColumn.classList.add('scrolled');
-		} else {
-			rightColumn.classList.remove('scrolled');
-		}
+		if (window.scrollY > 0) rightColumn.classList.add('scrolled');
+		else rightColumn.classList.remove('scrolled');
 	});
 });
