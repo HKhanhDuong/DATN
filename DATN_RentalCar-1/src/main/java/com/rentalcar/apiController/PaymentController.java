@@ -36,9 +36,9 @@ public class PaymentController {
 		
 		//lưu
 		@PostMapping
-		public String save(@RequestBody Payment payment) {
-			paymentRepo.save(payment);
-			return "saved...";
+		public ResponseEntity<Payment> save(@RequestBody Payment payment) {
+			Payment savePayment = paymentRepo.save(payment);
+			return ResponseEntity.ok(savePayment);
 		}
 		
 		@PutMapping(value = "/{id}")

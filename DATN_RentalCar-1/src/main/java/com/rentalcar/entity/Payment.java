@@ -20,9 +20,9 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentID;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "rentalID", nullable = false)
-    @JsonIgnore
+    //@JsonIgnore
     private Rental rental;
 
     @Column(nullable = false)

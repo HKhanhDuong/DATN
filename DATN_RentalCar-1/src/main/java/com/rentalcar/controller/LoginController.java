@@ -1,12 +1,17 @@
 package com.rentalcar.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.rentalcar.entity.Account;
 import com.rentalcar.entity.Role;
@@ -53,6 +58,38 @@ public class LoginController {
             return "login"; // Hiển thị lại trang đăng nhập kèm thông báo lỗi
         }
     }
+    
+
+ // Phương thức xử lý login cho nextjs
+    @PostMapping(value = "/nextjs",consumes = "application/x-www-form-urlencoded", produces = "application/json")
+    @ResponseBody
+    public Map<String, Object> login(@RequestParam("email") String email,
+                                     @RequestParam("password") String password) {
+
+        Map<String, Object> response = new HashMap<>();
+        Account account = accountService.findByEmail(email);
+
+        if (account != null && account.getPasswordHash().equals(password)) {
+            session.set("user", account);
+            if (checkAdmin(account)) {
+                session.set("userAdmin", "admin");
+            } else {
+                session.set("userAdmin", "customer");
+            }
+
+            // Trả về thông báo đăng nhập thành công
+            response.put("status", "success");
+            response.put("message", "Login successful");
+            response.put("redirectUrl", "/home"); // URL để điều hướng
+        } else {
+            response.put("status", "error");
+            response.put("message", "Email hoặc mật khẩu không hợp lệ");
+        }
+
+        return response;  // Trả về Map dưới dạng JSON
+    }
+
+
     
     public Boolean checkAdmin(Account account) { // Hàm để Check admin
         for (Role roleDetail : account.getRoles()) {

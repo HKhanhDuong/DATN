@@ -56,4 +56,7 @@ public class Rental {
     
     @OneToMany(mappedBy = "rental")
     private Set<RentalVehicle> rentalVehicle;
+    
+    @OneToMany(mappedBy = "rental")
+    private Set<Payment> payment;
 }

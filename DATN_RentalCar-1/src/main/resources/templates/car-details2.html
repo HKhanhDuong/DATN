@@ -1212,207 +1212,251 @@ updateRentalRate();
 <script th:inline="javascript">
 document.addEventListener('DOMContentLoaded', () => {
   // Constants
-  const BANK_INFO = {
-    BANK_ID: "MB",
-    ACCOUNT_NO: "3666116122004",
-    ACCOUNT_NAME: "RENTALCAR"
+  const CONSTANTS = {
+    BANK: {
+      ID: "MB",
+      ACCOUNT_NO: "3666116122004",
+      ACCOUNT_NAME: "RENTALCAR"
+    },
+    RENTAL: {
+      MIN_HOURS: 2,
+      MAX_DAYS: 30,
+      get MAX_HOURS() { return this.MAX_DAYS * 24; }
+    },
+    ADDRESS: {
+      MIN_LENGTH: 10,
+      MAX_LENGTH: 200
+    },
+    NOTES_MAX_LENGTH: 500,
+    API_ENDPOINTS: {
+      RENTAL: 'http://localhost:8080/api/rental',
+      RENTAL_VEHICLE: 'http://localhost:8080/api/rental-vehicle',
+      RENTAL_PAYMENT: 'http://localhost:8080/api/payment'
+    }
   };
-  const MIN_RENTAL_HOURS = 2, MAX_RENTAL_DAYS = 30, MAX_RENTAL_HOURS = MAX_RENTAL_DAYS * 24;
-  const ADDRESS_CONSTRAINTS = { MIN_LENGTH: 10, MAX_LENGTH: 200 };
-  const NOTES_MAX_LENGTH = 500;
 
   // Helper Functions
-  const getElement = id => document.getElementById(id);
-  const getValue = (id, defaultValue = '') => getElement(id)?.value.trim() || defaultValue;
-  const getText = (id, defaultValue = '') => getElement(id)?.textContent.trim() || defaultValue;
-  const formatDisplayDate = isoString => moment(isoString).format('YYYY-MM-DD HH:mm:ss');
+  const DOM = {
+    get: id => document.getElementById(id),
+    getValue: (id, defaultValue = '') => DOM.get(id)?.value.trim() || defaultValue,
+    getText: (id, defaultValue = '') => DOM.get(id)?.textContent.trim() || defaultValue,
+    formatDate: isoString => moment(isoString).format('YYYY-MM-DD HH:mm:ss')
+  };
 
   class RentalFormHandler {
     constructor() {
-      this.cacheElements();
+      this.initializeElements();
       this.initializeEventListeners();
     }
 
-    cacheElements() {
+    initializeElements() {
       this.elements = {
-        rentButton: getElement("rentButton"),
-        rentModal: getElement("rentModal"),
-        prepayRadio: getElement("prepay"),
-        postpayRadio: getElement("postpay"),
+        rentButton: DOM.get("rentButton"),
+        rentModal: DOM.get("rentModal"),
+        prepayRadio: DOM.get("prepay"),
+        postpayRadio: DOM.get("postpay"),
         qrContainer: document.querySelector(".qr-code-container"),
-        postpayMessage: getElement("postpayMessage"),
-        driverCheckbox: getElement("driver"),
-        confirmRentButton: getElement("confirmRentButton"),
-        qrImage: getElement("qrImage"),
-        qrText: getElement("qrText")
+        postpayMessage: DOM.get("postpayMessage"),
+        driverCheckbox: DOM.get("driver"),
+        confirmRentButton: DOM.get("confirmRentButton"),
+        qrImage: DOM.get("qrImage"),
+        qrText: DOM.get("qrText")
       };
     }
 
     initializeEventListeners() {
-      this.elements.prepayRadio?.addEventListener("change", () => this.togglePaymentUI(true));
-      this.elements.postpayRadio?.addEventListener("change", () => this.togglePaymentUI(false));
-      this.elements.rentButton?.addEventListener("click", () => this.handleRentButtonClick());
-      this.elements.confirmRentButton?.addEventListener("click", () => this.handleConfirmRent());
+      const { prepayRadio, postpayRadio, rentButton, confirmRentButton } = this.elements;
+      prepayRadio?.addEventListener("change", () => this.togglePaymentUI(true));
+      postpayRadio?.addEventListener("change", () => this.togglePaymentUI(false));
+      rentButton?.addEventListener("click", () => this.handleRentButtonClick());
+      confirmRentButton?.addEventListener("click", () => this.handleConfirmRent());
     }
 
     togglePaymentUI(showQR) {
-      this.elements.qrContainer.style.display = showQR ? "block" : "none";
-      this.elements.postpayMessage.style.display = showQR ? "none" : "block";
+      const { qrContainer, postpayMessage } = this.elements;
+      qrContainer.style.display = showQR ? "block" : "none";
+      postpayMessage.style.display = showQR ? "none" : "block";
     }
 
     validateDateTime(pickupDT, returnDT) {
       const pickup = new Date(pickupDT);
       const return_ = new Date(returnDT);
-      if (pickup < new Date()) throw new Error("Thời gian đặt xe không thể ở quá khứ");
-      if (return_ <= pickup) throw new Error("Thời gian trả xe phải sau thời gian đặt xe");
+      const now = new Date();
       const diffHours = (return_ - pickup) / 3600000;
-      if (diffHours < MIN_RENTAL_HOURS || diffHours > MAX_RENTAL_HOURS) {
-        throw new Error(`Thời gian thuê từ ${MIN_RENTAL_HOURS} giờ đến ${MAX_RENTAL_DAYS} ngày`);
+
+      if (pickup < now) {
+        throw new Error("Thời gian đặt xe không thể ở quá khứ");
+      }
+      if (return_ <= pickup) {
+        throw new Error("Thời gian trả xe phải sau thời gian đặt xe");
+      }
+      if (diffHours < CONSTANTS.RENTAL.MIN_HOURS || diffHours > CONSTANTS.RENTAL.MAX_HOURS) {
+        throw new Error(
+          `Thời gian thuê từ ${CONSTANTS.RENTAL.MIN_HOURS} giờ đến ${CONSTANTS.RENTAL.MAX_DAYS} ngày`
+        );
       }
     }
 
     validateAddress(address) {
-      const { MIN_LENGTH, MAX_LENGTH } = ADDRESS_CONSTRAINTS;
-      if (address.length < MIN_LENGTH || address.length > MAX_LENGTH) {
+      const { MIN_LENGTH, MAX_LENGTH } = CONSTANTS.ADDRESS;
+      if (!address || address.length < MIN_LENGTH || address.length > MAX_LENGTH) {
         throw new Error(`Địa chỉ từ ${MIN_LENGTH} đến ${MAX_LENGTH} ký tự`);
       }
     }
 
     validateRentalData(data) {
-      if (!data.account.accountId) throw new Error("Vui lòng đăng nhập để tiếp tục");
+      if (!data.account.accountId) {
+        throw new Error("Vui lòng đăng nhập để tiếp tục");
+      }
       this.validateDateTime(data.rentalDate, data.returnDate);
       this.validateAddress(data.rentalLocations);
-      if (data.notes && data.notes.length > NOTES_MAX_LENGTH) {
-        throw new Error(`Ghi chú không quá ${NOTES_MAX_LENGTH} ký tự`);
+      if (data.notes && data.notes.length > CONSTANTS.NOTES_MAX_LENGTH) {
+        throw new Error(`Ghi chú không quá ${CONSTANTS.NOTES_MAX_LENGTH} ký tự`);
       }
     }
 
     generateBookingCode(carId, accId, fullName, pickupDateTime, rentalHours) {
-      const normalizedName = fullName.normalize("NFD").replace(/[\u0300-\u036f\s]/g, "").toUpperCase();
+      const normalizedName = fullName
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f\s]/g, "")
+        .toUpperCase();
       const pickupFormatted = moment(pickupDateTime).format("YYMMDD");
       return `RC${String(carId).padStart(4, '0')}A${accId}${normalizedName}${pickupFormatted}T${Math.floor(rentalHours)}`;
     }
 
     collectRentalData() {
       const logAccId = /*[[${loggedAcc != null ? loggedAcc.accountId : 0}]]*/ 0;
-      const carId = /*[[${car.carId}]]*/ 0;
+      
       return {
         account: { accountId: logAccId },
-        rentalDate: new Date(`${getValue("modalPickUpDate")} ${getValue("modalPickUpTime")} GMT+07:00`).toISOString(),
-        returnDate: new Date(`${getValue("modalReturnDate")} ${getValue("modalReturnTime")} GMT+07:00`).toISOString(),
-        totalCost: Number(getText("totalRatePrice").replace(/\D/g, "")),
+        rentalDate: new Date(`${DOM.getValue("modalPickUpDate")} ${DOM.getValue("modalPickUpTime")} GMT+07:00`).toISOString(),
+        returnDate: new Date(`${DOM.getValue("modalReturnDate")} ${DOM.getValue("modalReturnTime")} GMT+07:00`).toISOString(),
+        totalCost: Number(DOM.getText("totalRatePrice").replace(/\D/g, "")),
         renStatus: "PENDING",
-        discount: { discountId: Number(getValue("hiddenDiscountValue")) || 0 },
+        discount: { discountId: Number(DOM.getValue("hiddenDiscountValue")) || 0 },
         haveDriver: this.elements.driverCheckbox.checked,
-        rentalLocations: getValue("address-input"),
-        notes: getValue("notes-input")
+        rentalLocations: DOM.getValue("address-input"),
+        notes: DOM.getValue("notes-input")
       };
     }
 
     updateModalContent(rentalData) {
-      getElement("pickupTime").textContent = formatDisplayDate(rentalData.rentalDate);
-      getElement("returnTime").textContent = formatDisplayDate(rentalData.returnDate);
-      getElement("finalRentRate").textContent = getText("totalRatePrice");
-      getElement("rentalAddress").textContent = rentalData.rentalLocations;
+      DOM.get("pickupTime").textContent = DOM.formatDate(rentalData.rentalDate);
+      DOM.get("returnTime").textContent = DOM.formatDate(rentalData.returnDate);
+      DOM.get("finalRentRate").textContent = DOM.getText("totalRatePrice");
+      DOM.get("rentalAddress").textContent = rentalData.rentalLocations;
+    }
+
+    async makeApiRequest(endpoint, data, errorMessage) {
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || errorMessage);
+        }
+
+        return await response.json();
+      } catch (error) {
+        throw new Error(`${errorMessage}: ${error.message}`);
+      }
     }
 
     async postRentalVehicle(rentalId, carId) {
-        try {
-            const rentalVehicleData = {
-                rental: {
-                    rentalId: rentalId // Sử dụng rentalId đã được lưu
-                },
-                car: {
-                    carId: carId
-                },
-                motorbike: null, // Mặc định là null vì bạn đang chọn loại xe là "car"
-                vehicleType: "car",
-                driver: null
-            };
+      const rentalVehicleData = {
+        rental: { rentalId },
+        car: { carId },
+        motorbike: null,
+        vehicleType: "car",
+        driver: null
+      };
 
-            // Gửi POST request cho `rentalVehicle`
-            const response = await fetch('http://localhost:8080/api/rental-vehicle', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(rentalVehicleData),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || "Có lỗi xảy ra khi lưu thông tin rentalVehicle");
-            }
-
-            const result = await response.json();
-            console.log("Rental Vehicle Data:", result);
-
-            alert("Đăng ký thông tin xe thuê thành công!");
-        } catch (error) {
-            alert(`Lỗi: ${error.message}`);
-        }
+      return this.makeApiRequest(
+        CONSTANTS.API_ENDPOINTS.RENTAL_VEHICLE,
+        rentalVehicleData,
+        "Có lỗi xảy ra khi lưu thông tin rentalVehicle"
+      );
     }
 
+    async postRentalPayment(rentalId, amount, paymentMethod) {
+      const paymentData = {
+        rental: { rentalId },
+        paymentDate: new Date().toISOString().split('T')[0],
+        amount,
+        paymentMethod
+      };
+
+      return this.makeApiRequest(
+        CONSTANTS.API_ENDPOINTS.RENTAL_PAYMENT,
+        paymentData,
+        "Có lỗi xảy ra khi lưu thông tin thanh toán"
+      );
+    }
 
     async handleRentButtonClick() {
-      const fullName = getText('fullName');
+      const fullName = DOM.getText('fullName');
       if (fullName === 'Chưa có tên') {
         alert("Vui lòng đăng nhập để tiếp tục.");
         window.location.href = "/login";
         return;
       }
 
-      const rentalData = this.collectRentalData();
-      this.updateModalContent(rentalData);
-      const bookingCode = this.generateBookingCode(
-        rentalData.carId || 0,
-        rentalData.account.accountId || 0,
-        fullName || 'User',
-        rentalData.rentalDate,
-        getText("totalRentalHours")
-      );
+      try {
+        const rentalData = this.collectRentalData();
+        this.updateModalContent(rentalData);
+        const bookingCode = this.generateBookingCode(
+          rentalData.carId || 0,
+          rentalData.account.accountId || 0,
+          fullName || 'User',
+          rentalData.rentalDate,
+          DOM.getText("totalRentalHours")
+        );
 
-      this.elements.qrImage.src = `https://img.vietqr.io/image/${BANK_INFO.BANK_ID}-${BANK_INFO.ACCOUNT_NO}-compact2.png?amount=${rentalData.totalCost}&addInfo=${bookingCode}&accountName=${BANK_INFO.ACCOUNT_NAME}`;
-      this.elements.qrText.textContent = bookingCode;
+        const { BANK } = CONSTANTS;
+        this.elements.qrImage.src = 
+          `https://img.vietqr.io/image/${BANK.ID}-${BANK.ACCOUNT_NO}-compact2.png?amount=${rentalData.totalCost}&addInfo=${bookingCode}&accountName=${BANK.ACCOUNT_NAME}`;
+        this.elements.qrText.textContent = bookingCode;
+      } catch (error) {
+        alert(error.message);
+      }
     }
 
     async handleConfirmRent() {
-    	  try {
-    	    const rentalData = this.collectRentalData();
-    	    this.validateRentalData(rentalData);
+      if (!confirm("Hãy chắc chắn rằng bạn đã thanh toán nếu chọn trả trước!")) {
+	    return;
+	  }
+    	
+      try {
+        const rentalData = this.collectRentalData();
+        this.validateRentalData(rentalData);
 
-    	    // Gửi POST request lưu thông tin thuê xe
-    	    const rentalResponse = await fetch('http://localhost:8080/api/rental', {
-    	      method: 'POST',
-    	      headers: {
-    	        'Content-Type': 'application/json',
-    	      },
-    	      body: JSON.stringify(rentalData),
-    	    });
+        // Save rental information
+        const rental = await this.makeApiRequest(
+          CONSTANTS.API_ENDPOINTS.RENTAL,
+          rentalData,
+          "Có lỗi xảy ra khi lưu thông tin thuê xe"
+        );
 
-    	    if (!rentalResponse.ok) {
-    	      const errorData = await rentalResponse.json();
-    	      throw new Error(errorData.message || "Có lỗi xảy ra khi lưu thông tin thuê xe");
-    	    }
+        const carId = /*[[${car.carId}]]*/ 0;
+        await this.postRentalVehicle(rental.rentalId, carId);
 
-    	    // Lấy lại rentalId từ phản hồi
-    	    const rental = await rentalResponse.json();
-    	    const { rentalId } = rental;
+        // Process payment
+        const paymentMethod = this.elements.prepayRadio.checked ? "prePayment" : "postPayment";
+        await this.postRentalPayment(rental.rentalId, rentalData.totalCost, paymentMethod);
 
-    	    // Lấy carId từ biến Thymeleaf
-    	    const carId = /*[[${car.carId}]]*/ 0;
-
-    	    // Thực hiện POST cho rentalVehicle
-    	    await this.postRentalVehicle(rentalId, carId);
-
-    	    alert("Đăng ký thuê xe và thông tin xe thành công!");
-    	    bootstrap.Modal.getInstance(this.elements.rentModal).hide();
-    	  } catch (error) {
-    	    alert(error.message);
-    	  }
-    	}
+        alert("Đăng ký thuê xe thành công!");
+        bootstrap.Modal.getInstance(this.elements.rentModal).hide();
+      } catch (error) {
+        alert(error.message);
+      }
+    }
   }
 
+  // Initialize the form handler
   new RentalFormHandler();
 });
 </script>
