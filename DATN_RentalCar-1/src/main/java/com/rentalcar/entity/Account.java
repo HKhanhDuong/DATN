@@ -49,7 +49,7 @@ public class Account {
     
     private Date dateOfBirth;
     
-    @Column(columnDefinition = "NVARCHAR")
+    @Column(columnDefinition = "NVARCHAR(500)", length = 500)
     private String imageUrl;
     
     @OneToMany(mappedBy = "account")

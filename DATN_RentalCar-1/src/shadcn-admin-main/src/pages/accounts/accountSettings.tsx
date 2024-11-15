@@ -32,7 +32,8 @@ interface Account {
   email: string;
   phoneNumber: string;
   username: string;
-  password: string; // Đổi tên passwordHash thành password
+  passwordHash?: string;
+  password?: string;
   roles: Role[];
   address: string | null;
   dateOfBirth: string | null;
@@ -48,7 +49,16 @@ interface ApiResponse {
   size: number;
 }
 
+interface UploadResponse {
+  imageUrl: string;
+  fileName: string;
+  contentType: string;
+  size: string;
+}
+
 const API_URL = "http://localhost:8080/api/account";
+
+const BASE_URL = "http://localhost:8080";
 
 const AccountSettings: React.FC = () => {
   // State management
@@ -59,11 +69,12 @@ const AccountSettings: React.FC = () => {
     email: "",
     phoneNumber: "",
     username: "",
+    passwordHash: "",
     password: "",
     roles: [],
     address: "",
     dateOfBirth: "",
-    imageUrl: null,
+    imageUrl: "",
     rental: [],
   });
 
@@ -136,7 +147,12 @@ const AccountSettings: React.FC = () => {
       const response = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(accountData),
+        body: JSON.stringify({
+          ...accountData,
+          passwordHash: accountData.password,
+          password: undefined,
+          imageUrl: accountData.imageUrl || "user.jpg"
+        }),
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -158,26 +174,23 @@ const AccountSettings: React.FC = () => {
       const response = await fetch(`${API_URL}/${accountData.accountId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(accountData),
+        body: JSON.stringify({
+          ...accountData,
+          imageUrl: accountData.imageUrl || "user.jpg"
+        }),
       });
       
-      // Kiểm tra response type
-      const contentType = response.headers.get("content-type");
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
-      // Chỉ parse JSON nếu response là JSON
+      const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
         const updatedAccount = await response.json();
         setAccounts(accounts.map(account => 
           account.accountId === updatedAccount.accountId ? updatedAccount : account
         ));
       } else {
-        // Nếu response không phải JSON, có thể là text
-        const text = await response.text();
-        console.log('Response text:', text);
-        // Vẫn cập nhật UI nếu response.ok
         setAccounts(accounts.map(account => 
           account.accountId === accountData.accountId ? accountData : account
         ));
@@ -219,23 +232,54 @@ const AccountSettings: React.FC = () => {
       return;
     }
 
-    // Chuyển đổi dateOfBirth sang định dạng yyyy-MM-dd
-    const formattedDateOfBirth = formData.dateOfBirth
-      ? moment(formData.dateOfBirth).format('YYYY-MM-DD')
-      : null;
-
-    const updatedFormData = {
-      ...formData,
-      dateOfBirth: formattedDateOfBirth,
-    };
-
     setLoading(true);
     try {
-      if (isEditing) {
-        await updateAccount(updatedFormData);
-      } else {
-        await createAccount(updatedFormData);
+      // Bước 1: Upload ảnh nếu có ảnh mới được chọn
+      let finalImageUrl = formData.imageUrl;
+      if (selectedImage) {
+        const imageFormData = new FormData();
+        imageFormData.append("file", selectedImage);
+        imageFormData.append("type", "account"); // Xác định loại thư mục theo loại ảnh có trong uploadImage API !!!
+
+        const uploadResponse = await fetch("http://localhost:8080/api/uploadImg", {
+          method: "POST",
+          body: imageFormData,
+        });
+
+        if (!uploadResponse.ok) {
+          const errorData = await uploadResponse.json();
+          throw new Error(errorData.message || "Lỗi khi upload ảnh");
+        }
+
+        const uploadResult: UploadResponse = await uploadResponse.json();
+        // Lấy đường dẫn ảnh từ response
+        finalImageUrl = uploadResult.imageUrl.split("/uploads")[1];
       }
+
+      // Bước 2: Chuẩn bị dữ liệu account với imageUrl đã có
+      const formattedDateOfBirth = formData.dateOfBirth
+        ? moment(formData.dateOfBirth).format('YYYY-MM-DD')
+        : null;
+
+      const accountData = {
+        ...formData,
+        dateOfBirth: formattedDateOfBirth,
+        imageUrl: finalImageUrl || "user.jpg" // Sử dụng đường dẫn tương đối
+      };
+
+      // Bước 3: Lưu thông tin account
+      if (isEditing) {
+        await updateAccount(accountData);
+      } else {
+        await createAccount(accountData);
+      }
+
+      // Xóa file ảnh đã chọn sau khi hoàn tất
+      setSelectedImage(null);
+      
+      // Refresh danh sách tài khoản
+      await fetchAccounts();
+      
     } catch (error) {
       showNotification(
         `Lỗi khi ${isEditing ? "cập nhật" : "thêm"} tài khoản: ${error.message}`,
@@ -279,13 +323,15 @@ const AccountSettings: React.FC = () => {
       email: "",
       phoneNumber: "",
       username: "",
+      passwordHash: "",
       password: "",
       roles: [],
       address: "",
       dateOfBirth: "",
-      imageUrl: null,
+      imageUrl: "",
       rental: [],
     });
+    setSelectedImage(null);
     setFormErrors({});
     setIsEditing(false);
   };
@@ -314,313 +360,317 @@ const AccountSettings: React.FC = () => {
     { id: 3, name: 'driver', description: 'Tài xế lái xe' }
   ];
 
-  // Sửa lại hàm xử lý ảnh
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  // Thêm state để lưu file ảnh đã chọn
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
 
-    try {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData({ ...formData, imageUrl: reader.result as string });
-      };
-      reader.readAsDataURL(file);
-    } catch (error) {
-      showNotification("Lỗi khi xử lý ảnh", "error");
+  // Sửa lại hàm xử lý khi chọn ảnh
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImage(file); // Lưu file để upload sau
+      // Tạo URL tạm thời để preview ảnh
+      setFormData(prev => ({ 
+        ...prev, 
+        imageUrl: URL.createObjectURL(file)
+      }));
     }
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6 max-w-8xl">
-      {showAlert && (
-        <Alert variant={alertType === "success" ? "default" : "destructive"}>
-          <AlertTitle>{alertType === "success" ? "Thành công" : "Lỗi"}</AlertTitle>
-          <AlertDescription>{alertMessage}</AlertDescription>
-        </Alert>
-      )}
+    <div className="h-screen overflow-y-auto">
+      <div className="container mx-auto p-6 space-y-6 max-w-8xl">
+        {showAlert && (
+          <Alert variant={alertType === "success" ? "default" : "destructive"}>
+            <AlertTitle>{alertType === "success" ? "Thành công" : "Lỗi"}</AlertTitle>
+            <AlertDescription>{alertMessage}</AlertDescription>
+          </Alert>
+        )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">
-            {isEditing ? "Chỉnh sửa tài khoản" : "Thêm mới tài khoản"}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="flex justify-center mb-6">
-              <div className="relative">
-                {formData.imageUrl ? (
-                  <img
-                    src={formData.imageUrl}
-                    alt="Profile"
-                    className="w-32 h-32 rounded-full object-cover"
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold">
+              {isEditing ? "Chỉnh sửa tài khoản" : "Thêm mới tài khoản"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="flex justify-center mb-6">
+                <div className="relative">
+                  {formData.imageUrl ? (
+                    <img
+                      src={selectedImage 
+                        ? URL.createObjectURL(selectedImage) 
+                        : `${BASE_URL}/uploads/${formData.imageUrl}`}
+                      alt="Profile"
+                      className="w-32 h-32 rounded-full object-cover"
+                    />
+                  ) : (
+                    <UserCircle2 className="w-32 h-32" />
+                  )}
+                  <label
+                    htmlFor="image-upload"
+                    className="absolute bottom-0 right-0 p-1 bg-primary text-white rounded-full cursor-pointer hover:bg-primary/90"
+                  >
+                    <Camera className="w-4 h-4" />
+                    <input
+                      id="image-upload"
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                    />
+                  </label>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Form fields */}
+                <div className="space-y-2">
+                  <Label htmlFor="fullName">Họ và tên</Label>
+                  <Input
+                    id="fullName"
+                    value={formData.fullName}
+                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                    className={formErrors.fullName ? "border-red-500" : ""}
                   />
-                ) : (
-                  <UserCircle2 className="w-32 h-32" />
-                )}
-                <label
-                  htmlFor="image-upload"
-                  className="absolute bottom-0 right-0 p-1 bg-primary text-white rounded-full cursor-pointer hover:bg-primary/90"
-                >
-                  <Camera className="w-4 h-4" />
-                  <input
-                    id="image-upload"
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleImageChange}
+                  {formErrors.fullName && (
+                    <p className="text-red-500 text-sm">{formErrors.fullName}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className={formErrors.email ? "border-red-500" : ""}
                   />
-                </label>
+                  {formErrors.email && (
+                    <p className="text-red-500 text-sm">{formErrors.email}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="phoneNumber">Số điện thoại</Label>
+                  <Input
+                    id="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="username">Tên đăng nhập</Label>
+                  <Input
+                    id="username"
+                    value={formData.username}
+                    onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                    className={formErrors.username ? "border-red-500" : ""}
+                  />
+                  {formErrors.username && (
+                    <p className="text-red-500 text-sm">{formErrors.username}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="password">Mật khẩu</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    className={formErrors.password ? "border-red-500" : ""}
+                  />
+                  {formErrors.password && (
+                    <p className="text-red-500 text-sm">{formErrors.password}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="address">Địa chỉ</Label>
+                  <Input
+                    id="address"
+                    value={formData.address || ""}
+                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="dateOfBirth">Ngày sinh</Label>
+                  <Input
+                    id="dateOfBirth"
+                    type="date"
+                    value={formData.dateOfBirth || ""}
+                    onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="role">Vai trò</Label>
+                  <Select
+                    value={formData.roles[0]?.roleId.toString() || ""}
+                    onValueChange={(value) => {
+                      const selectedRole = ROLES.find(role => role.id.toString() === value);
+                      if (selectedRole) {
+                        setFormData({
+                          ...formData,
+                          roles: [{
+                            roleId: selectedRole.id,
+                            roleName: selectedRole.name,
+                            description: selectedRole.description
+                          }]
+                        });
+                      }
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Chọn vai trò" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ROLES.map((role) => (
+                        <SelectItem key={role.id} value={role.id.toString()}>
+                          {role.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {formErrors.roles && (
+                    <p className="text-red-500 text-sm">{formErrors.roles}</p>
+                  )}
+                </div>
               </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Form fields */}
-              <div className="space-y-2">
-                <Label htmlFor="fullName">Họ và tên</Label>
-                <Input
-                  id="fullName"
-                  value={formData.fullName}
-                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                  className={formErrors.fullName ? "border-red-500" : ""}
-                />
-                {formErrors.fullName && (
-                  <p className="text-red-500 text-sm">{formErrors.fullName}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className={formErrors.email ? "border-red-500" : ""}
-                />
-                {formErrors.email && (
-                  <p className="text-red-500 text-sm">{formErrors.email}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="phoneNumber">Số điện thoại</Label>
-                <Input
-                  id="phoneNumber"
-                  value={formData.phoneNumber}
-                  onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="username">Tên đăng nhập</Label>
-                <Input
-                  id="username"
-                  value={formData.username}
-                  onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                  className={formErrors.username ? "border-red-500" : ""}
-                />
-                {formErrors.username && (
-                  <p className="text-red-500 text-sm">{formErrors.username}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password">Mật khẩu</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className={formErrors.password ? "border-red-500" : ""}
-                />
-                {formErrors.password && (
-                  <p className="text-red-500 text-sm">{formErrors.password}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="address">Địa chỉ</Label>
-                <Input
-                  id="address"
-                  value={formData.address || ""}
-                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="dateOfBirth">Ngày sinh</Label>
-                <Input
-                  id="dateOfBirth"
-                  type="date"
-                  value={formData.dateOfBirth || ""}
-                  onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="role">Vai trò</Label>
-                <Select
-                  value={formData.roles[0]?.roleId.toString() || ""}
-                  onValueChange={(value) => {
-                    const selectedRole = ROLES.find(role => role.id.toString() === value);
-                    if (selectedRole) {
-                      setFormData({
-                        ...formData,
-                        roles: [{
-                          roleId: selectedRole.id,
-                          roleName: selectedRole.name,
-                          description: selectedRole.description
-                        }]
-                      });
-                    }
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Chọn vai trò" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {ROLES.map((role) => (
-                      <SelectItem key={role.id} value={role.id.toString()}>
-                        {role.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {formErrors.roles && (
-                  <p className="text-red-500 text-sm">{formErrors.roles}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="flex justify-end space-x-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleClearForm}
-                disabled={loading}
-              >
-                Hủy
-              </Button>
-              <Button
-                type="submit"
-                disabled={loading}
-              >
-                {loading ? (
-                  <RefreshCcw className="w-4 h-4 animate-spin" />
-                ) : isEditing ? (
-                  "Lưu thay đổi"
-                ) : (
-                  "Thêm mới"
-                )}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">Danh sách tài khoản</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {loading && <div className="flex justify-center p-4">
-            <RefreshCcw className="w-6 h-6 animate-spin" />
-          </div>}
-
-          <div className="overflow-x-auto relative">
-            <table className="min-w-full bg-white border rounded-lg">
-              <thead>
-                <tr>
-                  <th className="py-2 px-4 border">ID</th>
-                  <th className="py-2 px-4 border">Ảnh</th>
-                  <th className="py-2 px-4 border">Họ và tên</th>
-                  <th className="py-2 px-4 border">Email</th>
-                  <th className="py-2 px-4 border">Số điện thoại</th>
-                  <th className="py-2 px-4 border">Vai trò</th>
-                  <th className="py-2 px-4 border">Hành động</th>
-                </tr>
-              </thead>
-              <tbody>
-                {accounts.map((account) => (
-                  <tr key={account.accountId}>
-                    <td className="py-2 px-4 border text-center">{account.accountId}</td>
-                    <td className="py-2 px-4 border text-center">
-                      {account.imageUrl ? (
-                        <img
-                          src={account.imageUrl}
-                          alt={account.fullName}
-                          className="w-10 h-10 rounded-full object-cover mx-auto"
-                        />
-                      ) : (
-                        <UserCircle2 className="w-10 h-10 mx-auto" />
-                      )}
-                    </td>
-                    <td className="py-2 px-4 border">{account.fullName}</td>
-                    <td className="py-2 px-4 border">{account.email}</td>
-                    <td className="py-2 px-4 border">{account.phoneNumber}</td>
-                    <td className="py-2 px-4 border">
-                      <span className="px-2 py-1 bg-primary/10 text-primary text-sm rounded-full">
-                        {account.roles[0]?.roleName}
-                      </span>
-                    </td>
-                    <td className="py-2 px-4 border flex justify-center space-x-2">
-                      <Button
-                        size="sm"
-                        onClick={() => handleEditAccount(account)}
-                        disabled={loading}
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => handleDeleteAccount(account.accountId)}
-                        disabled={loading}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="flex justify-center items-center mt-4 space-x-2">
-            <Button
-              variant="outline"
-              disabled={currentPage === 0 || loading}
-              onClick={() => handlePageChange(currentPage - 1)}
-            >
-              Trước
-            </Button>
-
-            <div className="flex items-center space-x-1">
-              {Array.from({ length: totalPages }, (_, i) => (
+              <div className="flex justify-end space-x-4">
                 <Button
-                  key={i}
-                  variant={currentPage === i ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => handlePageChange(i)}
+                  type="button"
+                  variant="outline"
+                  onClick={handleClearForm}
                   disabled={loading}
-                  className="w-8 h-8"
                 >
-                  {i + 1}
+                  Hủy
                 </Button>
-              ))}
+                <Button
+                  type="submit"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <RefreshCcw className="w-4 h-4 animate-spin" />
+                  ) : isEditing ? (
+                    "Lưu thay đổi"
+                  ) : (
+                    "Thêm mới"
+                  )}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold">Danh sách tài khoản</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {loading && <div className="flex justify-center p-4">
+              <RefreshCcw className="w-6 h-6 animate-spin" />
+            </div>}
+
+            <div className="overflow-x-auto relative">
+              <table className="min-w-full bg-white border rounded-lg">
+                <thead>
+                  <tr>
+                    <th className="py-2 px-4 border">ID</th>
+                    <th className="py-2 px-4 border">Ảnh</th>
+                    <th className="py-2 px-4 border">Họ và tên</th>
+                    <th className="py-2 px-4 border">Email</th>
+                    <th className="py-2 px-4 border">Số điện thoại</th>
+                    <th className="py-2 px-4 border">Vai trò</th>
+                    <th className="py-2 px-4 border">Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {accounts.map((account) => (
+                    <tr key={account.accountId}>
+                      <td className="py-2 px-4 border text-center">{account.accountId}</td>
+                      <td className="py-2 px-4 border text-center">
+                        {account.imageUrl ? (
+                          <img
+                            src={`${BASE_URL}/uploads/${account.imageUrl}`}
+                            alt={account.fullName}
+                            className="w-10 h-10 rounded-full object-cover mx-auto"
+                          />
+                        ) : (
+                          <UserCircle2 className="w-10 h-10 mx-auto" />
+                        )}
+                      </td>
+                      <td className="py-2 px-4 border">{account.fullName}</td>
+                      <td className="py-2 px-4 border">{account.email}</td>
+                      <td className="py-2 px-4 border">{account.phoneNumber}</td>
+                      <td className="py-2 px-4 border">
+                        <span className="px-2 py-1 bg-primary/10 text-primary text-sm rounded-full">
+                          {account.roles[0]?.roleName}
+                        </span>
+                      </td>
+                      <td className="py-2 px-4 border flex justify-center space-x-2">
+                        <Button
+                          size="sm"
+                          onClick={() => handleEditAccount(account)}
+                          disabled={loading}
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => handleDeleteAccount(account.accountId)}
+                          disabled={loading}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
 
-            <Button
-              variant="outline"
-              disabled={currentPage === totalPages - 1 || loading}
-              onClick={() => handlePageChange(currentPage + 1)}
-            >
-              Sau
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+            <div className="flex justify-center items-center mt-4 space-x-2">
+              <Button
+                variant="outline"
+                disabled={currentPage === 0 || loading}
+                onClick={() => handlePageChange(currentPage - 1)}
+              >
+                Trước
+              </Button>
+
+              <div className="flex items-center space-x-1">
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <Button
+                    key={i}
+                    variant={currentPage === i ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => handlePageChange(i)}
+                    disabled={loading}
+                    className="w-8 h-8"
+                  >
+                    {i + 1}
+                  </Button>
+                ))}
+              </div>
+
+              <Button
+                variant="outline"
+                disabled={currentPage === totalPages - 1 || loading}
+                onClick={() => handlePageChange(currentPage + 1)}
+              >
+                Sau
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };

@@ -10,7 +10,13 @@ import com.rentalcar.dao.RoleRepo;
 import com.rentalcar.entity.Account;
 import com.rentalcar.entity.Role;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 //cho Pageable
@@ -61,14 +67,25 @@ public class AccountController {
     }
 
     // Tạo mới tài khoản
+//    @PostMapping
+//    public ResponseEntity<?> save(@RequestBody Account account) {
+//        try {
+//            accountRepo.save(account);
+//            return ResponseEntity.status(HttpStatus.CREATED).body("Account saved successfully");
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                                 .body("Error saving account: " + e.getMessage());
+//        }
+//    }
     @PostMapping
     public ResponseEntity<?> save(@RequestBody Account account) {
         try {
-            accountRepo.save(account);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Account saved successfully");
+            Account savedAccount = accountRepo.save(account);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedAccount);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Error saving account: " + e.getMessage());
+            Map<String, String> response = new HashMap<>();
+            response.put("error", "Error saving account: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
@@ -87,6 +104,7 @@ public class AccountController {
                 account.setRoles(accountDetails.getRoles());
                 account.setDateOfBirth(accountDetails.getDateOfBirth());
                 account.setAddress(accountDetails.getAddress());
+                account.setImageUrl(accountDetails.getImageUrl());
                 
                 accountRepo.save(account);
                 return ResponseEntity.ok("Account updated successfully");
@@ -100,18 +118,53 @@ public class AccountController {
     }
 
     // Xóa tài khoản theo ID
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<?> deleteById(@PathVariable("id") Long id) {
-        try {
-            if (accountRepo.existsById(id)) {
-                accountRepo.deleteById(id);
-                return ResponseEntity.ok("Account deleted successfully");
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found");
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("Error deleting account: " + e.getMessage());
-        }
-    }
+//    @DeleteMapping(value = "/{id}")
+//    public ResponseEntity<?> deleteById(@PathVariable("id") Long id) {
+//        try {
+//            if (accountRepo.existsById(id)) {
+//                accountRepo.deleteById(id);
+//                return ResponseEntity.ok("Account deleted successfully");
+//            } else {
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found");
+//            }
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                                 .body("Error deleting account: " + e.getMessage());
+//        }
+//    }
+    
+    @DeleteMapping("/{id}")
+	public ResponseEntity<?> delete(@PathVariable Long id) {
+	    try {
+	        // Lấy thông tin account trước khi xóa
+	        Optional<Account> accountOptional = accountRepo.findById(id);
+	        if (accountOptional.isPresent()) {
+	            Account account = accountOptional.get();
+	            String imageUrl = account.getImageUrl();
+	            
+	            // Xóa account từ database
+	            accountRepo.deleteById(id);
+	            
+	            // Xóa file ảnh nếu tồn tại và không phải ảnh mặc định
+	            if (imageUrl != null && !imageUrl.equals("user.jpg")) {
+	                String uploadDir = "./uploads/accountsImg/";
+	                Path filePath = Paths.get(uploadDir + imageUrl);
+	                
+	                try {
+	                    Files.deleteIfExists(filePath);
+	                    System.out.println("Đã xóa file ảnh: " + filePath);
+	                } catch (IOException e) {
+	                    System.err.println("Lỗi khi xóa file ảnh: " + e.getMessage());
+	                }
+	            }
+	            
+	            return ResponseEntity.ok().body("Account deleted successfully");
+	        } else {
+	            return ResponseEntity.notFound().build();
+	        }
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                           .body("Error deleting account: " + e.getMessage());
+	    }
+	}
 }
