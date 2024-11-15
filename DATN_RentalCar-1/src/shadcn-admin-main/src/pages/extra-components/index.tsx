@@ -43,7 +43,7 @@ const AccountSettings2: React.FC = () => {
             Cài đặt tài khoản
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-2">
           {/* Avatar Section */}
           <div className="flex flex-col items-center space-y-4">
             <div className="relative">

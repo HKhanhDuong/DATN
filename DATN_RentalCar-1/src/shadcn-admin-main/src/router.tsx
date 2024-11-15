@@ -52,6 +52,11 @@ const router = createBrowserRouter([
           Component: (await import('./pages/dashboard')).default,
         }),
       },
+      //Cài đặt tài khoản
+      { path: 'users', lazy: async () => ({Component: (await import('@/pages/accounts/accountSettings')).default,}),},
+      //
+      {path : 'carManagement', lazy: async() => ({Component :(await import ('@/pages/vehiclemanage/carManagement')).default,}),},
+
       {
         path: 'tasks',
         lazy: async () => ({
@@ -68,12 +73,6 @@ const router = createBrowserRouter([
         path: 'apps',
         lazy: async () => ({
           Component: (await import('@/pages/apps')).default,
-        }),
-      },
-      {
-        path: 'users',
-        lazy: async () => ({
-          Component: (await import('@/pages/accounts/accountSettings')).default,
         }),
       },
       {
@@ -136,6 +135,9 @@ const router = createBrowserRouter([
           },
         ],
       },
+      // LIST CAR
+      
+
     ],
   },
 
