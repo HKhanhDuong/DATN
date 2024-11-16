@@ -54,9 +54,9 @@ public class Rental {
     @Column(length = 255, columnDefinition = "NVARCHAR(255)")
     private String notes;
     
-    @OneToMany(mappedBy = "rental")
+    @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<RentalVehicle> rentalVehicle;
     
-    @OneToMany(mappedBy = "rental")
+    @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Payment> payment;
 }

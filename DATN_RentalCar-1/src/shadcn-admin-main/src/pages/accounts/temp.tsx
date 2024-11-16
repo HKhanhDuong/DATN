@@ -48,7 +48,16 @@ interface ApiResponse {
   size: number;
 }
 
+interface UploadResponse {
+  imageUrl: string;
+  fileName: string;
+  contentType: string;
+  size: string;
+}
+
 const API_URL = "http://localhost:8080/api/account";
+
+const BASE_URL = "http://localhost:8080";
 
 const AccountSettings: React.FC = () => {
   // State management
@@ -63,7 +72,7 @@ const AccountSettings: React.FC = () => {
     roles: [],
     address: "",
     dateOfBirth: "",
-    imageUrl: null,
+    imageUrl: "",
     rental: [],
   });
 
@@ -219,23 +228,54 @@ const AccountSettings: React.FC = () => {
       return;
     }
 
-    const formattedDateOfBirth = formData.dateOfBirth
-      ? moment(formData.dateOfBirth).format('YYYY-MM-DD')
-      : null;
-
-    const updatedFormData = {
-      ...formData,
-      dateOfBirth: formattedDateOfBirth,
-      imageUrl: formData.imageUrl || "user.jpg"
-    };
-
     setLoading(true);
     try {
-      if (isEditing) {
-        await updateAccount(updatedFormData);
-      } else {
-        await createAccount(updatedFormData);
+      // Bước 1: Upload ảnh nếu có ảnh mới được chọn
+      let finalImageUrl = formData.imageUrl;
+      if (selectedImage) {
+        const imageFormData = new FormData();
+        imageFormData.append("file", selectedImage);
+        imageFormData.append("type", "accountImg");
+
+        const uploadResponse = await fetch("http://localhost:8080/api/uploadImg", {
+          method: "POST",
+          body: imageFormData,
+        });
+
+        if (!uploadResponse.ok) {
+          const errorData = await uploadResponse.json();
+          throw new Error(errorData.message || "Lỗi khi upload ảnh");
+        }
+
+        const uploadResult: UploadResponse = await uploadResponse.json();
+        // Lấy đường dẫn ảnh từ response
+        finalImageUrl = uploadResult.imageUrl.split("/uploads")[1];
       }
+
+      // Bước 2: Chuẩn bị dữ liệu account với imageUrl đã có
+      const formattedDateOfBirth = formData.dateOfBirth
+        ? moment(formData.dateOfBirth).format('YYYY-MM-DD')
+        : null;
+
+      const accountData = {
+        ...formData,
+        dateOfBirth: formattedDateOfBirth,
+        imageUrl: finalImageUrl || "user.jpg" // Sử dụng đường dẫn tương đối
+      };
+
+      // Bước 3: Lưu thông tin account
+      if (isEditing) {
+        await updateAccount(accountData);
+      } else {
+        await createAccount(accountData);
+      }
+
+      // Xóa file ảnh đã chọn sau khi hoàn tất
+      setSelectedImage(null);
+      
+      // Refresh danh sách tài khoản
+      await fetchAccounts();
+      
     } catch (error) {
       showNotification(
         `Lỗi khi ${isEditing ? "cập nhật" : "thêm"} tài khoản: ${error.message}`,
@@ -283,9 +323,10 @@ const AccountSettings: React.FC = () => {
       roles: [],
       address: "",
       dateOfBirth: "",
-      imageUrl: null,
+      imageUrl: "",
       rental: [],
     });
+    setSelectedImage(null);
     setFormErrors({});
     setIsEditing(false);
   };
@@ -314,30 +355,19 @@ const AccountSettings: React.FC = () => {
     { id: 3, name: 'driver', description: 'Tài xế lái xe' }
   ];
 
-  // Sửa lại hàm xử lý ảnh
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Thêm state để lưu file ảnh đã chọn
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
+  // Sửa lại hàm xử lý khi chọn ảnh
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("type", "accountImg");
-
-    try {
-      const response = await fetch("http://localhost:8080/api/uploadImg", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Lỗi khi upload ảnh");
-      }
-
-      const result = await response.json();
-      const imageUrl = result.fileName || result.imageUrl.split('/').pop();
-      setFormData(prev => ({ ...prev, imageUrl: imageUrl }));
-    } catch (error) {
-      showNotification("Lỗi khi upload ảnh", "error");
+    if (file) {
+      setSelectedImage(file); // Lưu file để upload sau
+      // Tạo URL tạm thời để preview ảnh
+      setFormData(prev => ({ 
+        ...prev, 
+        imageUrl: URL.createObjectURL(file)
+      }));
     }
   };
 
@@ -363,7 +393,9 @@ const AccountSettings: React.FC = () => {
                 <div className="relative">
                   {formData.imageUrl ? (
                     <img
-                      src={formData.imageUrl}
+                      src={selectedImage 
+                        ? URL.createObjectURL(selectedImage) 
+                        : `${BASE_URL}/uploads/${formData.imageUrl}`}
                       alt="Profile"
                       className="w-32 h-32 rounded-full object-cover"
                     />
@@ -560,7 +592,7 @@ const AccountSettings: React.FC = () => {
                       <td className="py-2 px-4 border text-center">
                         {account.imageUrl ? (
                           <img
-                            src={account.imageUrl}
+                            src={`${BASE_URL}/uploads/${account.imageUrl}`}
                             alt={account.fullName}
                             className="w-10 h-10 rounded-full object-cover mx-auto"
                           />

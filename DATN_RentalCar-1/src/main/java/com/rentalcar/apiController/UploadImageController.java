@@ -92,7 +92,7 @@ public class UploadImageController {
 	    }
 	}
 
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/{id}") //chưa xóa được
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 	    try {
 	        // Lấy thông tin account trước khi xóa

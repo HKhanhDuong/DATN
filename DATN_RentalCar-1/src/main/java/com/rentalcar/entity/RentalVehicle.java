@@ -1,8 +1,7 @@
 package com.rentalcar.entity;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Set;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,7 +19,8 @@ public class RentalVehicle {
     private Long rentalVehicleId;
 
     @ManyToOne
-    @JoinColumn(name = "rentalId", nullable = false)
+    @JoinColumn(name = "rentalId")
+    @OnDelete(action = OnDeleteAction.CASCADE) 
     private Rental rental;
 
     @ManyToOne

@@ -36,7 +36,6 @@ const router = createBrowserRouter([
       Component: (await import('./pages/auth/otp')).default,
     }),
   },
-
   // Main routes
   {
     path: '/',
@@ -56,6 +55,14 @@ const router = createBrowserRouter([
       { path: 'users', lazy: async () => ({Component: (await import('@/pages/accounts/accountSettings')).default,}),},
       //
       {path : 'carManagement', lazy: async() => ({Component :(await import ('@/pages/vehiclemanage/carManagement')).default,}),},
+
+       //rental
+      {
+        path: '/rental-page',
+        lazy: async () => ({
+          Component: (await import('@/pages/rental/rentalPage')).default,
+        }),
+      },
 
       {
         path: 'tasks',

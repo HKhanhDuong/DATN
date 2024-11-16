@@ -3,7 +3,8 @@ package com.rentalcar.entity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,12 +19,13 @@ public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long paymentID;
+    private Long paymentId;
 
-    @OneToOne
-    @JoinColumn(name = "rentalID", nullable = false)
-    //@JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "rentalId")
+    @OnDelete(action = OnDeleteAction.CASCADE) 
     private Rental rental;
+
 
     @Column(nullable = false)
     private LocalDate paymentDate;
@@ -34,6 +36,5 @@ public class Payment {
     @Column(nullable = false, length = 50, columnDefinition = "NVARCHAR(50)")
     private String paymentMethod; // Enum might be better
 
-    // Getters and Setters
 }
 
