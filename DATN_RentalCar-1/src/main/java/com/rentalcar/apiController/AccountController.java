@@ -147,7 +147,7 @@ public class AccountController {
 	            
 	            // Xóa file ảnh nếu tồn tại và không phải ảnh mặc định
 	            if (imageUrl != null && !imageUrl.equals("user.jpg")) {
-	                String uploadDir = "./uploads/accountsImg/";
+	                String uploadDir = "uploads/accountsImg/";
 	                Path filePath = Paths.get(uploadDir + imageUrl);
 	                
 	                try {
