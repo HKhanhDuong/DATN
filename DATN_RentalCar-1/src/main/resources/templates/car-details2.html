@@ -947,11 +947,11 @@ updateRentalRate();
               return totalRate;
           }  
 
-          // Hàm hiển thị danh sách mã giảm giá
+       // Hàm hiển thị danh sách mã giảm giá
           function displayPromoCodes() {
               const promoList = document.getElementById('promoCodesList');
               promoList.innerHTML = '';
-              
+
               promoCodes.forEach(promo => {
                   const promoItem = document.createElement('div');
                   promoItem.className = 'promo-code-item';
@@ -960,18 +960,28 @@ updateRentalRate();
                           <div class="promo-code-value">${promo.discountCode}</div>
                           <div class="promo-code-description">${promo.description}</div>
                           <div id="discountPercentage" value="${promo.discountPercentage}">Giảm: ${promo.discountPercentage}%</div>
+                          
+                          <!-- Thêm thẻ hidden chứa giá trị discountId -->
                           <input type="hidden" id="hiddenDiscountValue" value="${promo.discountId}">
+                          
+                          <!-- Thêm thẻ hidden chứa value của hiddenDiscountValue khi chọn -->
+                          <input type="hidden" id="selectedDiscountValue" value="">
                       </div>
                       <div class="promo-code-status">${promo.status}</div>
                   `;
-                  
+
                   promoItem.addEventListener('click', () => {
                       applyPromoCode(promo);
+                      
+                      // Cập nhật giá trị của thẻ ẩn khi chọn mã giảm giá
+                      const selectedDiscountValue = document.getElementById('selectedDiscountValue');
+                      selectedDiscountValue.value = promo.discountId;
                   });
-                  
+
                   promoList.appendChild(promoItem);
               });
           }
+
 
           // Hàm tính toán tổng giá
           function updateTotalPriceWithDiscount(discountPercentage) {
@@ -1333,7 +1343,7 @@ document.addEventListener('DOMContentLoaded', () => {
         returnDate: new Date(`${DOM.getValue("modalReturnDate")} ${DOM.getValue("modalReturnTime")} GMT+07:00`).toISOString(),
         totalCost: Number(DOM.getText("totalRatePrice").replace(/\D/g, "")),
         renStatus: "Chờ xác nhận",
-        discount: { discountId: Number(DOM.getValue("hiddenDiscountValue")) || 0 },
+        discount: { discountId: Number(DOM.getValue("selectedDiscountValue")) || 0 },
         haveDriver: this.elements.driverCheckbox.checked,
         rentalLocations: DOM.getValue("address-input"),
         notes: DOM.getValue("notes-input")
@@ -1345,6 +1355,17 @@ document.addEventListener('DOMContentLoaded', () => {
       DOM.get("returnTime").textContent = DOM.formatDate(rentalData.returnDate);
       DOM.get("finalRentRate").textContent = DOM.getText("totalRatePrice");
       DOM.get("rentalAddress").textContent = rentalData.rentalLocations;
+      
+      const selectedPromoCode = document.querySelector('.selected-promo-code');
+      const selectedPromoDescription = document.querySelector('.selected-promo-description');
+      const promoText = selectedPromoCode && selectedPromoDescription 
+        ? `${selectedPromoCode.textContent} - ${selectedPromoDescription.textContent}` 
+        : null;
+        
+      DOM.get("rentalHours").textContent = DOM.getText("totalRentalHours");
+      DOM.get("promoCode").textContent = promoText;
+      
+      console.log("rentalData: ", rentalData)
     }
 
     async makeApiRequest(endpoint, data, errorMessage) {
@@ -1433,6 +1454,8 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         const rentalData = this.collectRentalData();
         this.validateRentalData(rentalData);
+        
+        console.log("rentalData: ", rentalData)
 
         // Save rental information
         const rental = await this.makeApiRequest(

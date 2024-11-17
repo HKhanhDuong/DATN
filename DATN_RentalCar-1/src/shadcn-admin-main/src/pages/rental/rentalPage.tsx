@@ -117,6 +117,11 @@ export default function RentalPage() {
   const PAGE_SIZE = 5
   const [sortField, setSortField] = useState<'rentalDate' | 'returnDate'>('rentalDate')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
+  const [searchCustomerName, setSearchCustomerName] = useState('');
+
+  const filteredRentals = searchCustomerName.trim() === ''
+    ? rentals
+    : rentals.filter(rental => rental.account.fullName.toLowerCase().includes(searchCustomerName.toLowerCase()));
 
   const form = useForm({
     resolver: zodResolver(rentalSchema),
@@ -608,6 +613,16 @@ export default function RentalPage() {
           </Form>
         </div>
 
+        {/* Search Bar */}
+        <div className="mb-4">
+          <Input 
+            type="text" 
+            placeholder="Tìm kiếm theo tên khách hàng" 
+            value={searchCustomerName}
+            onChange={(e) => setSearchCustomerName(e.target.value)} 
+          />
+        </div>
+
         <div className='rounded-lg bg-white shadow-md'>
           <Table>
             <TableHeader>
@@ -644,14 +659,14 @@ export default function RentalPage() {
                     Đang tải...
                   </TableCell>
                 </TableRow>
-              ) : rentals.length === 0 ? (
+              ) : filteredRentals.length === 0 ? ( // Use filteredRentals here 
                 <TableRow>
                   <TableCell colSpan={9} className="text-center">
                     Không tìm thấy dữ liệu
                   </TableCell>
                 </TableRow>
               ) : (
-                rentals.map((rental) => (
+                filteredRentals.map((rental) => (
                   <TableRow key={rental.rentalId}>
                     <TableCell>{rental.rentalId}</TableCell>
                     <TableCell>{rental.account.fullName}</TableCell>
