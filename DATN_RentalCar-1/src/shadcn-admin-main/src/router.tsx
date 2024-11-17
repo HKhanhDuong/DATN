@@ -53,9 +53,10 @@ const router = createBrowserRouter([
       },
       //Cài đặt tài khoản
       { path: 'users', lazy: async () => ({Component: (await import('@/pages/accounts/accountSettings')).default,}),},
-      //
+      //Quản Lí Xe Ô Tô
       {path : 'carManagement', lazy: async() => ({Component :(await import ('@/pages/vehiclemanage/carManagement')).default,}),},
-
+      //Quản Lú Xe Máy
+      {path :'motorbikeManagements', lazy: async() => ({Component : (await import('@/pages/vehiclemanage/motorbikeManagements')).default,}),},
        //rental
       {
         path: '/rental-page',

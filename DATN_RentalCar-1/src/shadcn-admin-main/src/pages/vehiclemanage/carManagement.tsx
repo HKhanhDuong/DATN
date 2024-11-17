@@ -11,13 +11,13 @@ interface Car {
   fuelConsumption: number;
   dailyRate: number;
   status: string;
-  images: number;
+  images: string[]; // Tập hợp các ảnh (1 ảnh chính và tối đa 4 ảnh phụ)
 }
 
 const CarManagement: React.FC = () => {
   const [cars, setCars] = useState<Car[]>([
     {
-      make: "Toyota",
+      make: "Toyota1",
       model: "Camry",
       year: 2020,
       color: "Đen",
@@ -27,44 +27,81 @@ const CarManagement: React.FC = () => {
       fuelConsumption: 8.5,
       dailyRate: 500000,
       status: "Sẵn sàng",
-      images: 4,
+      images: ["mainImage.png", "image1.png", "image2.png", "image3.png", "image4.png"],
     },
     {
-      make: "Honda",
-      model: "Civic",
-      year: 2021,
-      color: "Trắng",
-      mileage: 30000,
-      transmission: "Số tay",
-      fuelType: "Xăng",
-      fuelConsumption: 7.0,
-      dailyRate: 600000,
-      status: "Đang thuê",
-      images: 3,
-    },
-    {
-      make: "Ford",
-      model: "Focus",
-      year: 2019,
+      make: "Toyota2",
+      model: "Camry",
+      year: 2020,
       color: "Xanh",
-      mileage: 45000,
-      transmission: "Bán tự động",
+      mileage: 50000,
+      transmission: "Số tay",
       fuelType: "Dầu",
-      fuelConsumption: 5.5,
-      dailyRate: 550000,
-      status: "Bảo dưỡng",
-      images: 5,
-    },
+      fuelConsumption: 8.5,
+      dailyRate: 500000,
+      status: "Sẵn sàng",
+      images: ["mainImage.png", "image1.png", "image2.png", "image3.png", "image4.png"],
+    }, {
+      make: "Toyota3",
+      model: "Camry",
+      year: 2020,
+      color: "Vàng",
+      mileage: 50000,
+      transmission: "Bán Tự Động",
+      fuelType: "Điện",
+      fuelConsumption: 8.5,
+      dailyRate: 500000,
+      status: "Sẵn sàng",
+      images: ["mainImage.png", "image1.png", "image2.png", "image3.png", "image4.png"],
+    }
+    
   ]);
+
+  const handleAdd = () => {
+    alert("Thêm xe mới!");
+  };
+
+  const handleEdit = () => {
+    alert("Chỉnh sửa xe!");
+  };
+
+  const handleDelete = () => {
+    alert("Xóa xe!");
+  };
+
+  const handleReset = () => {
+    alert("Làm mới thông tin!");
+  };
 
   return (
     <div className="container mx-auto p-6">
       <h2 className="text-2xl font-bold mb-6 text-center">Quản Lí Xe Hơi</h2>
 
       {/* Form Section */}
-      <div className="grid grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-3 gap-6 mb-6">
+        {/* Upload Image Section */}
         <div className="col-span-1">
-          <h3 className="text-lg font-semibold">Thông Tin Xe</h3>
+          <h3 className="text-lg font-semibold mb-4">Tải lên ảnh của xe</h3>
+          <div className="border-dashed border-2 border-gray-400 rounded-lg h-48 flex flex-col items-center justify-center text-gray-500 mb-4">
+            <p className="font-medium">Ảnh Toàn Xe</p>
+            <p className="text-sm text-gray-400">Kích thước: 1200 x 600 px • JPG, PNG</p>
+            <p className="text-sm text-gray-400">Dung lượng tối đa: 5 MB</p>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            {["Ảnh Đầu Xe", "Ảnh Đuôi Xe", "Ảnh Vô Lăng", "Ảnh Có Tài Xế"].map((label, index) => (
+              <div
+                key={index}
+                className="border-dashed border-2 border-gray-400 rounded-lg h-24 flex flex-col items-center justify-center text-gray-500"
+              >
+                <p className="font-medium">{label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Thông Tin Xe */}
+        <div className="col-span-1">
+          <h3 className="text-lg font-semibold mb-4">Thông Tin Xe</h3>
           <form className="space-y-4">
             <div>
               <label htmlFor="make" className="block font-medium">
@@ -92,8 +129,10 @@ const CarManagement: React.FC = () => {
             </div>
           </form>
         </div>
+
+        {/* Thông Tin Bổ Sung + CRUD Buttons */}
         <div className="col-span-1">
-          <h3 className="text-lg font-semibold">Thông Tin Bổ Sung</h3>
+          <h3 className="text-lg font-semibold mb-4">Thông Tin Bổ Sung</h3>
           <form className="space-y-4">
             <div>
               <label htmlFor="transmission" className="block font-medium">
@@ -121,7 +160,45 @@ const CarManagement: React.FC = () => {
               </label>
               <input type="number" id="dailyRate" className="w-full p-2 border rounded" />
             </div>
+            <div>
+              <label htmlFor="status" className="block font-medium">
+                Trạng thái
+              </label>
+              <select id="status" className="w-full p-2 border rounded">
+                <option value="Sẵn sàng">Sẵn sàng</option>
+                <option value="Đang thuê">Đang thuê</option>
+                <option value="Bảo dưỡng">Bảo dưỡng</option>
+              </select>
+            </div>
           </form>
+
+          {/* CRUD Buttons */}
+          <div className="flex justify-start space-x-4 mt-4">
+            <button
+              onClick={handleAdd}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Thêm
+            </button>
+            <button
+              onClick={handleEdit}
+              className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+            >
+              Sửa
+            </button>
+            <button
+              onClick={handleDelete}
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            >
+              Xóa
+            </button>
+            <button
+              onClick={handleReset}
+              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+            >
+              Làm Mới
+            </button>
+          </div>
         </div>
       </div>
 
@@ -156,7 +233,7 @@ const CarManagement: React.FC = () => {
                 <td className="p-3">{car.fuelConsumption.toFixed(1)}</td>
                 <td className="p-3">{car.dailyRate.toLocaleString()} VND</td>
                 <td className="p-3">{car.status}</td>
-                <td className="p-3">{car.images} ảnh</td>
+                <td className="p-3">{car.images.length} ảnh</td>
               </tr>
             ))}
           </tbody>
