@@ -59,9 +59,11 @@
 							nhập</a></li>
 					<!-- Hiện tên người dùng nếu đã đăng nhập -->
 					<li th:if="${user != null}">
-						<a href="/logout" >Đăng Xuất</a>
-						<a href="/" th:text="'Chào ' + ${user.username}">Chào User</a>
+					    <a href="/logout">Đăng Xuất</a>
+					    <a href="/account" th:text="'Chào ' + ${user.username}">Chào User</a>
 					</li>
+
+
 				</ul>
 
 				<div class="menu-mobile">

@@ -26,8 +26,8 @@ public class WebConfiger implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor)
-            .addPathPatterns("/**")
-            .excludePathPatterns("/login");
+            .addPathPatterns("/**") // Đảm bảo tất cả các đường dẫn đều được kiểm tra
+            .excludePathPatterns("/login", "/about", "/pick-vehicle", "/testReact"); // Các trang không yêu cầu đăng nhập
     }
 
     @Bean
