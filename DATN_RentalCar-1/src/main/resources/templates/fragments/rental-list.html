@@ -1,0 +1,31 @@
+<!-- templates/fragments/rental-list.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="rentalList">
+        <h2>Danh sách thuê</h2>
+        <ul class="nav nav-tabs" id="rentalTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="car-tab" data-bs-toggle="tab" href="#car-rentals" role="tab" aria-controls="car-rentals" aria-selected="true">Xe Ô Tô</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="motorbike-tab" data-bs-toggle="tab" href="#motorbike-rentals" role="tab" aria-controls="motorbike-rentals" aria-selected="false">Xe Máy</a>
+            </li>
+        </ul>
+        <div class="tab-content mt-3">
+            <div class="tab-pane fade show active" id="car-rentals" role="tabpanel" aria-labelledby="car-tab">
+                <h3>Danh sách xe ô tô đã thuê</h3>
+                <ul class="list-group">
+                    <li class="list-group-item" th:each="car : ${carRentals}" th:text="${car.name}">Xe ô tô 1</li>
+                </ul>
+            </div>
+            <div class="tab-pane fade" id="motorbike-rentals" role="tabpanel" aria-labelledby="motorbike-tab">
+                <h3>Danh sách xe máy đã thuê</h3>
+                <ul class="list-group">
+                    <li class="list-group-item" th:each="bike : ${motorbikeRentals}" th:text="${bike.name}">Xe máy 1</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
