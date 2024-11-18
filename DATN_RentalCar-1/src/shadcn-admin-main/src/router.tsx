@@ -57,11 +57,28 @@ const router = createBrowserRouter([
       {path : 'carManagement', lazy: async() => ({Component :(await import ('@/pages/vehiclemanage/carManagement')).default,}),},
       //Quản Lú Xe Máy
       {path :'motorbikeManagements', lazy: async() => ({Component : (await import('@/pages/vehiclemanage/motorbikeManagements')).default,}),},
-       //rental
+      
+      //rental
       {
         path: '/rental-page',
         lazy: async () => ({
           Component: (await import('@/pages/rental/rentalPage')).default,
+        }),
+      },
+
+      //payment
+      {
+        path: '/payment',
+        lazy: async () => ({
+          Component: (await import('@/pages/payment/paymentPage')).default,
+        }),
+      },
+
+      //rental vehicle
+      {
+        path: '/rental-vehicle-page',
+        lazy: async () => ({
+          Component: (await import('@/pages/rentalVehicle/rentalVehiclePage')).default,
         }),
       },
 

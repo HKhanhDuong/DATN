@@ -74,16 +74,22 @@ export const sidelinks: SideLink[] = [
     icon: <IconMessages size={18} />,
     sub: [
       {
-        title: 'Danh Sách Đơn',
+        title: 'Danh Sách Đơn thuê',
         label: '',
         href: '/rental-page',
         icon: <IconHexagonNumber1 size={18} />,
       },
       {
+        title: 'Danh Sách xe cho thuê',
+        label: '',
+        href: '/rental-vehicle-page',
+        icon: <IconHexagonNumber2 size={18} />,
+      },
+      {
         title: 'Lịch Sử Thuê Xe',
         label: '',
         href: '/sign-in-2',
-        icon: <IconHexagonNumber2 size={18} />,
+        icon: <IconHexagonNumber3 size={18} />,
       },
     ],
   },
@@ -116,7 +122,7 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Hoá đơn, Thanh Toán',
         label: '',
-        href: '/sign-in',
+        href: '/payment',
         icon: <IconHexagonNumber1 size={18} />,
       },
       {

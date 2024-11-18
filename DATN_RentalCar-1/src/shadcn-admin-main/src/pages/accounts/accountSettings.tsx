@@ -22,7 +22,6 @@ interface Account {
   phoneNumber: string;
   username: string;
   passwordHash?: string;
-  password?: string;
   roles: Role[];
   address: string | null;
   dateOfBirth: string | null;
@@ -55,7 +54,6 @@ const AccountSettings: React.FC = () => {
     phoneNumber: "",
     username: "",
     passwordHash: "",
-    password: "",
     roles: [],
     address: "",
     dateOfBirth: "",
@@ -80,7 +78,7 @@ const AccountSettings: React.FC = () => {
     if (!formData.email.trim()) errors.email = "Email không được để trống";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errors.email = "Email không hợp lệ";
     if (!formData.username.trim()) errors.username = "Tên đăng nhập không được để trống";
-    if (!isEditing && !formData.password) errors.password = "Mật khẩu không được để trống";
+    if (!isEditing && !formData.passwordHash) errors.passwordHash = "Mật khẩu không được để trống";
     if (!formData.roles.length) errors.roles = "Vui lòng chọn vai trò";
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
@@ -105,8 +103,6 @@ const AccountSettings: React.FC = () => {
     try {
       await axios.post(API_URL, {
         ...accountData,
-        passwordHash: accountData.password,
-        password: undefined,
         imageUrl: accountData.imageUrl || "user.jpg"
       });
       await fetchAccounts(); //refresh account list after creation.
@@ -211,7 +207,6 @@ const AccountSettings: React.FC = () => {
       phoneNumber: "",
       username: "",
       passwordHash: "",
-      password: "",
       roles: [],
       address: "",
       dateOfBirth: "",
@@ -344,16 +339,16 @@ const AccountSettings: React.FC = () => {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="password">Mật khẩu</Label>
+                  <Label htmlFor="passwordHash">Mật khẩu</Label>
                   <Input
-                    id="password"
-                    type="password"
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    className={formErrors.password ? "border-red-500" : ""}
+                    id="passwordHash"
+                    type="passwordHash"
+                    value={formData.passwordHash}
+                    onChange={(e) => setFormData({ ...formData, passwordHash: e.target.value })}
+                    className={formErrors.passwordHash ? "border-red-500" : ""}
                   />
-                  {formErrors.password && (
-                    <p className="text-red-500 text-sm">{formErrors.password}</p>
+                  {formErrors.passwordHash && (
+                    <p className="text-red-500 text-sm">{formErrors.passwordHash}</p>
                   )}
                 </div>
                 <div className="space-y-2">
