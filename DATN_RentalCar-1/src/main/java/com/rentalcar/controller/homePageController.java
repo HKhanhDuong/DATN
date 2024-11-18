@@ -28,6 +28,7 @@ import com.rentalcar.dao.CarRepo;
 import com.rentalcar.dao.MotorbikeRepo;
 import com.rentalcar.entity.Car;
 import com.rentalcar.entity.Motorbike;
+import com.rentalcar.service.AccountService;
 import com.rentalcar.service.CarService;
 import com.rentalcar.service.SessionService;
 
@@ -45,6 +46,8 @@ public class homePageController {
 	@Autowired
     private AccountRepo accountRepo;
 	@Autowired
+    private AccountService accountService;
+	@Autowired
     private CarService carService;
 	
 	 private final String uploadDir = "uploads/accountsImg/";
@@ -60,6 +63,11 @@ public class homePageController {
         model.addAttribute("motorbikes", motorbikes);
         
         return "index2";
+    }
+    // Phương thức hiển thị trang đổi mật khẩu
+    @GetMapping("/change-password")
+    public String showChangePasswordPage() {
+        return "change-password"; // Trả về trang đổi mật khẩu
     }
     
  // Phương thức xử lý khi người dùng nhấn vào "Chào User" và chuyển đến trang Account
@@ -77,6 +85,59 @@ public class homePageController {
         model.addAttribute("user", user);
         return "account"; // Trả về trang hiển thị thông tin tài khoản
     }
+    
+    @PostMapping("/change-password")
+    public String changePassword(@RequestParam("currentPassword") String currentPassword,
+                                 @RequestParam("newPassword") String newPassword,
+                                 @RequestParam("confirmNewPassword") String confirmNewPassword,
+                                 Model model) {
+        // Lấy thông tin người dùng đã đăng nhập từ session
+        Account user = (Account) session.get("user");
+
+        if (user == null) {
+            return "redirect:/login"; // Nếu không có người dùng trong session, chuyển hướng về trang đăng nhập
+        }
+
+        // Kiểm tra mật khẩu cũ và các điều kiện khác
+        if (currentPassword.isEmpty() || newPassword.isEmpty() || confirmNewPassword.isEmpty()) {
+            model.addAttribute("error", "Tất cả các trường đều phải được điền.");
+            return "change-password";
+        }
+
+        // Kiểm tra mật khẩu cũ có đúng không
+        if (!user.getPasswordHash().equals(currentPassword)) {
+            model.addAttribute("error", "Mật khẩu cũ không chính xác");
+            return "change-password"; // Nếu mật khẩu cũ sai, quay lại trang đổi mật khẩu
+        }
+
+        // Kiểm tra mật khẩu mới và xác nhận mật khẩu mới có khớp không
+        if (!newPassword.equals(confirmNewPassword)) {
+            model.addAttribute("error", "Mật khẩu mới và xác nhận mật khẩu mới không khớp. Vui lòng thử lại.");
+            return "change-password"; // Nếu không khớp, quay lại trang đổi mật khẩu
+        }
+
+        // Kiểm tra xem mật khẩu mới có giống mật khẩu cũ không
+        if (newPassword.equals(currentPassword)) {
+            model.addAttribute("error", "Mật khẩu mới không được giống với mật khẩu cũ");
+            return "change-password"; // Nếu mật khẩu mới giống mật khẩu cũ, yêu cầu nhập lại
+        }
+
+        // Cập nhật mật khẩu mới
+        user.setPasswordHash(newPassword); // Lưu mật khẩu mới mà không mã hóa
+
+        // Lưu lại tài khoản vào cơ sở dữ liệu
+        accountService.saveAccount(user); // Lưu thông tin tài khoản với mật khẩu mới
+
+        // Cập nhật lại session với thông tin mới của người dùng
+        session.set("user", user);
+
+        // Thông báo thành công
+        model.addAttribute("success", "Mật khẩu đã được thay đổi thành công");
+        return "account"; // Quay lại trang tài khoản
+    }
+
+
+
     
     @PostMapping("/save-account-info")
     public String saveAccountInfo(@RequestParam String fullName, 
