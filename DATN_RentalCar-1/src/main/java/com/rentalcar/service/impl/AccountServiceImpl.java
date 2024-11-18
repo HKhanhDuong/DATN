@@ -18,6 +18,11 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AccountRepo accountRepo;
+    
+    @Override
+    public Account saveAccount(Account account) {
+        return accountRepo.save(account);  // This saves the account to the database
+    }
 
 	/**
 	 * @param <S>
