@@ -19,6 +19,7 @@ import {
 import { toast } from '@/components/ui/use-toast';
 import { Toaster } from '@/components/ui/toaster';
 import axios from 'axios';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 
 const RentalVehiclePage = () => {
   const [rentalVehicles, setRentalVehicles] = useState([]);
@@ -237,47 +238,54 @@ const RentalVehiclePage = () => {
         </CardHeader>
         
         <CardContent>
-          <div className="flex items-center mb-4">
-            <Button onClick={handleRefresh} className="border rounded p-2 mr-2" variant="outline">Refresh</Button>
+        <div className="flex items-center mb-4">
+          <Button onClick={handleRefresh} variant="outline" className="mr-2 h-10">
+            Refresh
+          </Button>
 
-            <Input
-              placeholder="Tìm kiếm ..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="mr-2"
-            />
+          <Input
+            placeholder="Tìm kiếm ..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="mr-2 h-10 w-full max-w-lg"
+          />
 
-            <select
-              value={searchType}
-              onChange={(e) => setSearchType(e.target.value)}
-              className="border rounded p-2 mr-2"
-            >
-              <option value="rentalId">Tìm theo ID đơn thuê</option>
-              <option value="vehicleId">Tìm theo ID xe</option>
-              <option value="vehicleName">Tìm theo tên xe</option>
-            </select>
-            
-            <select
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value)}
-              className="border rounded p-2 ml-2"
-            > 
-              <option value="desc">Mới nhất</option>
-              <option value="asc">Cũ nhất</option>
-            </select>
-            
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="border rounded p-2 ml-2"
-            >
-              <option value="all">Tất cả</option>
-              <option value="Chờ xác nhận">Chờ xác nhận</option>
-              <option value="Đang tới">Đang tới</option>
-              <option value="Đang thuê">Đang thuê</option>
-              <option value="Hoàn tất">Hoàn tất</option>
-            </select>
+          <div className="flex items-center gap-2">
+            <Select value={searchType} onValueChange={setSearchType}>
+              <SelectTrigger className="h-10 w-40">
+                <SelectValue placeholder="Tìm theo loại" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="rentalId">Tìm theo ID đơn thuê</SelectItem>
+                <SelectItem value="vehicleId">Tìm theo ID xe</SelectItem>
+                <SelectItem value="vehicleName">Tìm theo tên xe</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={sortOrder} onValueChange={setSortOrder}>
+              <SelectTrigger className="h-10 w-40">
+                <SelectValue placeholder="Sắp xếp" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="desc">Mới nhất</SelectItem>
+                <SelectItem value="asc">Cũ nhất</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="h-10 w-40">
+                <SelectValue placeholder="Trạng thái" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tất cả</SelectItem>
+                <SelectItem value="Chờ xác nhận">Chờ xác nhận</SelectItem>
+                <SelectItem value="Đang tới">Đang tới</SelectItem>
+                <SelectItem value="Đang thuê">Đang thuê</SelectItem>
+                <SelectItem value="Hoàn tất">Hoàn tất</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
+        </div>
 
           <Tabs defaultValue={activeTab} onValueChange={(value) => setActiveTab(value)}>
             <TabsList className="grid w-full grid-cols-2">

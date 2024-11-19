@@ -34,7 +34,13 @@ public class Payment {
     private BigDecimal amount;
 
     @Column(nullable = false, length = 50, columnDefinition = "NVARCHAR(50)")
-    private String paymentMethod; // Enum might be better
+    private String paymentMethod; 
+    
+    @Column(length = 255, columnDefinition = "NVARCHAR(255)")
+    private String notes; 
+    
+    @Column(length = 50, columnDefinition = "NVARCHAR(50)")
+    private String idQrCode; 
 
 }
 

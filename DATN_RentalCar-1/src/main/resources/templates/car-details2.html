@@ -1403,12 +1403,13 @@ document.addEventListener('DOMContentLoaded', () => {
       );
     }
 
-    async postRentalPayment(rentalId, amount, paymentMethod) {
+    async postRentalPayment(rentalId, amount, paymentMethod, idQrcode) {
       const paymentData = {
         rental: { rentalId },
         paymentDate: new Date().toISOString().split('T')[0],
         amount,
-        paymentMethod
+        paymentMethod,
+        idQrCode
       };
 
       return this.makeApiRequest(
@@ -1447,36 +1448,49 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async handleConfirmRent() {
-      if (!confirm("Hãy chắc chắn rằng bạn đã thanh toán nếu chọn trả trước!")) {
-	    return;
-	  }
-    	
-      try {
-        const rentalData = this.collectRentalData();
-        this.validateRentalData(rentalData);
-        
-        console.log("rentalData: ", rentalData)
+    	  if (!confirm("Hãy chắc chắn rằng bạn đã thanh toán nếu chọn trả trước!")) {
+    	    return;
+    	  }
+    	    
+    	  try {
+    	    const rentalData = this.collectRentalData();
+    	    this.validateRentalData(rentalData);
+    	    
+    	    // Generate booking code
+    	    const fullName = DOM.getText('fullName');
+    	    const carId = /*[[${car.carId}]]*/ 0;
+    	    const bookingCode = this.generateBookingCode(
+    	      carId,
+    	      rentalData.account.accountId || 0,
+    	      fullName || 'User',
+    	      rentalData.rentalDate,
+    	      DOM.getText("totalRentalHours")
+    	    );
 
-        // Save rental information
-        const rental = await this.makeApiRequest(
-          CONSTANTS.API_ENDPOINTS.RENTAL,
-          rentalData,
-          "Có lỗi xảy ra khi lưu thông tin thuê xe"
-        );
+    	    // Save rental information
+    	    const rental = await this.makeApiRequest(
+    	      CONSTANTS.API_ENDPOINTS.RENTAL,
+    	      rentalData,
+    	      "Có lỗi xảy ra khi lưu thông tin thuê xe"
+    	    );
 
-        const carId = /*[[${car.carId}]]*/ 0;
-        await this.postRentalVehicle(rental.rentalId, carId);
+    	    await this.postRentalVehicle(rental.rentalId, carId);
 
-        // Process payment
-        const paymentMethod = this.elements.prepayRadio.checked ? "prePayment" : "postPayment";
-        await this.postRentalPayment(rental.rentalId, rentalData.totalCost, paymentMethod);
+    	    // Process payment
+    	    const paymentMethod = this.elements.prepayRadio.checked ? "prePayment" : "postPayment";
+    	    await this.postRentalPayment(
+    	      rental.rentalId, 
+    	      rentalData.totalCost, 
+    	      paymentMethod, 
+    	      bookingCode
+    	    );
 
-        alert("Đăng ký thuê xe thành công!");
-        bootstrap.Modal.getInstance(this.elements.rentModal).hide();
-      } catch (error) {
-        alert(error.message);
-      }
-    }
+    	    alert("Đăng ký thuê xe thành công!");
+    	    bootstrap.Modal.getInstance(this.elements.rentModal).hide();
+    	  } catch (error) {
+    	    alert(error.message);
+    	  }
+    	}
   }
 
   // Initialize the form handler
