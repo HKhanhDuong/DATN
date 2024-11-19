@@ -71,7 +71,7 @@ const router = createBrowserRouter([
       {
         path: '/payment',
         lazy: async () => ({
-          Component: (await import('@/pages/payment/paymentPage')).default,
+          Component: (await import('@/pages/payment/PaymentManagement')).default,
         }),
       },
 

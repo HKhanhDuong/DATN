@@ -426,7 +426,7 @@ const AccountSettings: React.FC = () => {
           <CardContent>
             {loading && <div className="flex justify-center p-4"><RefreshCcw className="w-6 h-6 animate-spin" /></div>}
             <div className="overflow-x-auto relative">
-              <table className="min-w-full bg-white border rounded-lg">
+              <table className="min-w-full border rounded-lg">
                 <thead>
                   <tr>
                     <th className="py-2 px-4 border">ID</th>

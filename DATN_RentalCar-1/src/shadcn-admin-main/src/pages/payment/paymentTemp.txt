@@ -1,401 +1,367 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  AlertDialog, 
-  AlertDialogAction, 
-  AlertDialogCancel, 
-  AlertDialogContent, 
-  AlertDialogDescription, 
-  AlertDialogFooter, 
-  AlertDialogHeader, 
-  AlertDialogTitle, 
-  AlertDialogTrigger 
-} from '@/components/ui/alert-dialog';
-import { toast } from '@/components/ui/use-toast';
-import { Toaster } from '@/components/ui/toaster';
 import axios from 'axios';
+import { 
+  Card, 
+  CardContent, 
+  CardHeader, 
+  CardTitle 
+} from "@/components/ui/card";
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle 
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
+import { Search } from "lucide-react";
 
-const PaymentPage = () => {
-  const [rentalVehicles, setRentalVehicles] = useState([]);
-  const [carRentalVehicles, setCarRentalVehicles] = useState([]);
-  const [motorbikeRentalVehicles, setMotorbikeRentalVehicles] = useState([]);
-  const [currentRentalVehicle, setCurrentRentalVehicle] = useState({
-    rentalVehicleId: null,
-    rental: { rentalId: null },
-    car: { carId: null },
-    motorbike: null,
-    vehicleType: 'car',
-    driver: null
+const PaymentManagement = () => {
+  const [payments, setPayments] = useState([]);
+  const [filteredPayments, setFilteredPayments] = useState([]);
+  const [currentPayment, setCurrentPayment] = useState({
+    rentalId: '',
+    paymentDate: '',
+    amount: '',
+    paymentMethod: '',
+    notes: '',
+    idQrCode: ''
   });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState('car');
-  const [deleteConfirmation, setDeleteConfirmation] = useState(null);
+  
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchType, setSearchType] = useState('rentalId');
+  const [searchType, setSearchType] = useState('fullName');
+
+  const [sortField, setSortField] = useState('paymentId');
+  const [sortOrder, setSortOrder] = useState('asc');
 
   useEffect(() => {
-    fetchRentalVehicles();
+    fetchPayments();
   }, []);
 
-  const fetchRentalVehicles = async () => {
+  useEffect(() => {
+    filterPayments();
+  }, [payments, searchTerm, searchType]);
+
+  const fetchPayments = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/rental-vehicle');
-      setRentalVehicles(response.data);
-      
-      const carVehicles = response.data.filter(rv => rv.vehicleType === 'car');
-      const motorbikeVehicles = response.data.filter(rv => rv.vehicleType === 'motorbike');
-      
-      setCarRentalVehicles(carVehicles);
-      setMotorbikeRentalVehicles(motorbikeVehicles);
-      
-      console.log('Motorbike Vehicles:', motorbikeVehicles);
+      const response = await axios.get('http://localhost:8080/api/payment');
+      setPayments(response.data);
+      sortPayments(response.data);
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch rental vehicles",
-        variant: "destructive"
-      });
+      console.error('Lỗi tải danh sách thanh toán:', error);
     }
   };
 
-  const handleInputChange = (e, section) => {
-    const { name, value } = e.target;
-    setCurrentRentalVehicle(prev => ({
-      ...prev,
-      [section]: value === '' ? null : {
-        ...prev[section],
-        [name]: value
-      }
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    try {
-      // Prepare data for submission
-      const submissionData = {
-        ...currentRentalVehicle,
-        driver: currentRentalVehicle.driver?.driverId ? currentRentalVehicle.driver : null,
-        vehicleType: activeTab,
-        car: activeTab === 'car' ? currentRentalVehicle.car : null,
-        motorbike: activeTab === 'motorbike' ? currentRentalVehicle.motorbike : null
-      };
-
-      // Validate required fields
-      if (activeTab === 'car' && !submissionData.car?.carId) {
-        toast({
-          title: "Validation Error",
-          description: "Car ID is required",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      if (activeTab === 'motorbike' && !submissionData.motorbike?.motorbikeId) {
-        toast({
-          title: "Validation Error",
-          description: "Motorbike ID is required",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      if (isEditing) {
-        await axios.put(`http://localhost:8080/api/rental-vehicle/${submissionData.rentalVehicleId}`, submissionData);
-        toast({
-          title: "Success",
-          description: "Rental vehicle updated successfully"
-        });
-      } else {
-        await axios.post('http://localhost:8080/api/rental-vehicle', submissionData);
-        toast({
-          title: "Success",
-          description: "Rental vehicle created successfully"
-        });
-      }
-
-      fetchRentalVehicles();
-      setIsDialogOpen(false);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: error.response?.data?.message || "Failed to save rental vehicle",
-        variant: "destructive"
-      });
+  const filterPayments = () => {
+    if (!searchTerm) {
+      setFilteredPayments(payments);
+      return;
     }
-  };
 
-  const handleEdit = (vehicle) => {
-    setCurrentRentalVehicle({
-      ...vehicle,
-      rental: vehicle.rental || { rentalId: null },
-      car: vehicle.car || { carId: null },
-      driver: vehicle.driver || null
+    const filtered = payments.filter(payment => {
+      const searchValue = searchTerm.toLowerCase();
+      switch(searchType) {
+        case 'fullName':
+          return payment.rental.account.fullName.toLowerCase().includes(searchValue);
+        case 'rentalId':
+          return payment.rental.rentalId && payment.rental.rentalId.toString().toLowerCase().includes(searchValue);
+        case 'date':
+          return payment.paymentDate.toLowerCase().includes(searchValue);
+        case 'qrCode':
+          return payment.idQrCode && payment.idQrCode.toString().toLowerCase().includes(searchValue);
+        default:
+          return true;
+      }
     });
-    setIsEditing(true);
-    setIsDialogOpen(true);
-  };
 
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`http://localhost:8080/api/rental-vehicle/${id}`);
-      fetchRentalVehicles();
-      toast({
-        title: "Success",
-        description: "Rental vehicle deleted successfully"
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete rental vehicle",
-        variant: "destructive"
-      });
-    }
+    setFilteredPayments(filtered);
   };
 
   const openCreateDialog = () => {
-    setCurrentRentalVehicle({
-      rentalVehicleId: null,
-      rental: { rentalId: null },
-      car: { carId: null },
-      motorbike: null,
-      vehicleType: activeTab,
-      driver: null
+    setCurrentPayment({
+      rentalId: '',
+      paymentDate: '',
+      amount: '',
+      paymentMethod: '',
+      notes: '',
+      idQrCode: ''
     });
     setIsEditing(false);
     setIsDialogOpen(true);
   };
 
-  const renderVehicleDetails = (vehicle) => {
-    if (vehicle.vehicleType === 'car' && vehicle.car) {
-      return `(ID: ${vehicle.car.carId}) - ${vehicle.car.make} ${vehicle.car.model} - (${vehicle.car.licensePlate})`;
-    } else if (vehicle.vehicleType === 'motorbike' && vehicle.motorbike) {
-      return `(ID: ${vehicle.motorbike.motorbikeId}) - ${vehicle.motorbike.make} ${vehicle.motorbike.model} - (${vehicle.motorbike.licensePlate})`;
-    }
-    return 'N/A';
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setCurrentPayment(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
-  const handleRefresh = () => {
-    setSearchTerm('');
-    fetchRentalVehicles();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (isEditing) {
+        await axios.put(`http://localhost:8080/api/payment/${currentPayment.paymentId}`, currentPayment);
+      } else {
+        await axios.post('http://localhost:8080/api/payment', currentPayment);
+      }
+      fetchPayments();
+      setIsDialogOpen(false);
+    } catch (error) {
+      console.error('Lỗi lưu thanh toán:', error);
+    }
   };
 
-  const filteredCarRentalVehicles = carRentalVehicles.filter(vehicle => {
-    if (searchType === 'rentalId') {
-      return vehicle.rental?.rentalId.toString().includes(searchTerm);
-    } else {
-      return renderVehicleDetails(vehicle).toLowerCase().includes(searchTerm.toLowerCase());
-    }
-  });
+  const handleEdit = (payment) => {
+    setCurrentPayment(payment);
+    setIsEditing(true);
+    setIsDialogOpen(true);
+  };
 
-  const filteredMotorbikeRentalVehicles = motorbikeRentalVehicles.filter(vehicle => {
-    if (searchType === 'rentalId') {
-      return vehicle.rental?.rentalId.toString().includes(searchTerm);
-    } else {
-      return renderVehicleDetails(vehicle).toLowerCase().includes(searchTerm.toLowerCase());
+  const handleDelete = async (paymentId) => {
+    try {
+      await axios.delete(`http://localhost:8080/api/payment/${paymentId}`);
+      fetchPayments();
+    } catch (error) {
+      console.error('Lỗi xóa thanh toán:', error);
     }
-  });
+  };
 
-  const handleSort = (vehicles) => {
-    return [...vehicles].sort((a, b) => a.rentalVehicleId - b.rentalVehicleId);
+  const sortPayments = (paymentsToSort) => {
+    const sortedPayments = [...paymentsToSort].sort((a, b) => {
+      let aValue, bValue;
+      
+      switch(sortField) {
+        case 'rentalId':
+          aValue = a.rental.rentalId;
+          bValue = b.rental.rentalId;
+          break;
+        case 'paymentDate':
+          aValue = new Date(a.paymentDate);
+          bValue = new Date(b.paymentDate);
+          break;
+        default:
+          aValue = a[sortField];
+          bValue = b[sortField];
+      }
+
+      if (aValue === bValue) return 0;
+      
+      if (sortOrder === 'asc') {
+        return aValue < bValue ? -1 : 1;
+      } else {
+        return aValue > bValue ? -1 : 1;
+      }
+    });
+
+    setFilteredPayments(sortedPayments);
+  };
+
+  const handleSortChange = (field) => {
+    const newOrder = sortField === field && sortOrder === 'asc' ? 'desc' : 'asc';
+    setSortField(field);
+    setSortOrder(newOrder);
+    sortPayments(filteredPayments);
   };
 
   return (
     <div className="h-screen overflow-y-auto">
-      <Toaster />
       <Card className="w-full max-w-6xl mx-auto">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Quản lý xe cho thuê</CardTitle>
-          <Button onClick={openCreateDialog}>Thêm xe cho thuê mới</Button>
-        </CardHeader>
-        
-        <CardContent>
-          <div className="flex items-center mb-4">
-            <Input
-              placeholder="Tìm kiếm theo ID cho thuê hoặc tên xe"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="mr-2"
-            />
-            <select
-              value={searchType}
-              onChange={(e) => setSearchType(e.target.value)}
-              className="border rounded p-2 mr-2"
-            >
-              <option value="rentalId">Tìm theo ID cho thuê</option>
-              <option value="vehicleName">Tìm theo tên xe</option>
-            </select>
-            <Button onClick={handleRefresh} variant="outline">Refresh</Button>
+        <CardHeader>
+          <div className="flex justify-between items-center">
+            <CardTitle>Quản Lý Thanh Toán</CardTitle>
+            <Button onClick={openCreateDialog}>
+              Tạo Thanh Toán Mới
+            </Button>
           </div>
-
-          <Tabs defaultValue={activeTab} onValueChange={(value) => setActiveTab(value)}>
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="car">Xe ô tô cho thuê</TabsTrigger>
-              <TabsTrigger value="motorbike">Xe máy cho thuê</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="car">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>ID</TableHead>
-                    <TableHead>Chi tiết cho thuê</TableHead>
-                    <TableHead>Xe</TableHead>
-                    <TableHead>Người lái</TableHead>
-                    <TableHead>Hành động</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {handleSort(filteredCarRentalVehicles).map((vehicle) => (
-                    <TableRow key={vehicle.rentalVehicleId}>
-                      <TableCell>{vehicle.rentalVehicleId}</TableCell>
-                      <TableCell>
-                        Mã cho thuê: {vehicle.rental?.rentalId}<br />
-                        Trạng thái: {vehicle.rental?.renStatus}
-                      </TableCell>
-                      <TableCell>{renderVehicleDetails(vehicle)}</TableCell>
-                      <TableCell>
-                        {vehicle.driver ? vehicle.driver.fullName : 'Không có tài xế'}
-                      </TableCell>
-                      <TableCell>
-                        <Button variant="outline" onClick={() => handleEdit(vehicle)}>Chỉnh sửa</Button>
-                        <Button 
-                          variant="destructive" 
-                          onClick={() => handleDelete(vehicle.rentalVehicleId)}
-                          className="ml-2"
-                        >
-                          Xóa
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TabsContent>
-            
-            <TabsContent value="motorbike">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>ID</TableHead>
-                    <TableHead>Chi tiết cho thuê</TableHead>
-                    <TableHead>Xe</TableHead>
-                    <TableHead>Người lái</TableHead>
-                    <TableHead>Hành động</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {handleSort(filteredMotorbikeRentalVehicles).map((vehicle) => (
-                    <TableRow key={vehicle.rentalVehicleId}>
-                      <TableCell>{vehicle.rentalVehicleId}</TableCell>
-                      <TableCell>
-                        Mã cho thuê: {vehicle.rental?.rentalId}<br />
-                        Trạng thái: {vehicle.rental?.renStatus}
-                      </TableCell>
-                      <TableCell>{renderVehicleDetails(vehicle)}</TableCell>
-                      <TableCell>
-                        {vehicle.driver ? vehicle.driver.fullName : 'Không có tài xế'}
-                      </TableCell>
-                      <TableCell>
-                        <Button variant="outline" onClick={() => handleEdit(vehicle)}>Chỉnh sửa</Button>
-                        <Button 
-                          variant="destructive" 
-                          onClick={() => handleDelete(vehicle.rentalVehicleId)}
-                          className="ml-2"
-                        >
-                          Xóa
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TabsContent>
-
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>{isEditing ? 'Chỉnh sửa' : 'Tạo mới'} Xe cho thuê</DialogTitle>
-                </DialogHeader>
-                
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <Input
-                    placeholder="Mã cho thuê"
-                    name="rentalId"
-                    value={currentRentalVehicle.rental?.rentalId || ''}
-                    onChange={(e) => handleInputChange(e, 'rental')}
-                  />
-
-                  {activeTab === 'car' ? (
-                    <Input
-                      placeholder="ID Xe"
-                      name="carId"
-                      value={currentRentalVehicle.car?.carId || ''}
-                      onChange={(e) => handleInputChange(e, 'car')}
-                    />
-                  ) : (
-                    <Input
-                      placeholder="ID Xe máy"
-                      name="motorbikeId"
-                      value={currentRentalVehicle.motorbike?.motorbikeId || ''}
-                      onChange={(e) => setCurrentRentalVehicle(prev => ({
-                        ...prev, 
-                        motorbike: { motorbikeId: e.target.value || null }
-                      }))}
-                    />
-                  )}
-
-                  <Input
-                    placeholder="ID Người lái (tùy chọn)"
-                    name="driverId"
-                    value={currentRentalVehicle.driver?.driverId || ''}
-                    onChange={(e) => handleInputChange(e, 'driver')}
-                  />
-
-                  <Button type="submit">
-                    {isEditing ? 'Cập nhật' : 'Tạo mới'}
-                  </Button>
-                </form>
-              </DialogContent>
-            </Dialog>
-
-            {/* Delete Confirmation Dialog */}
-            <AlertDialog 
-              open={!!deleteConfirmation} 
-              onOpenChange={() => setDeleteConfirmation(null)}
+          <div className="flex items-center space-x-2 mt-4">
+            <div className="flex items-center w-full max-w-md border rounded-md">
+              <Search className="ml-2 text-gray-500" />
+              <Input 
+                placeholder="Tìm kiếm..." 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="border-none focus:outline-none"
+              />
+            </div>
+            <Select 
+              value={searchType}
+              onValueChange={setSearchType}
             >
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete the rental vehicle.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction 
-                    onClick={() => {
-                      handleDelete(deleteConfirmation);
-                      setDeleteConfirmation(null);
-                    }}
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Tìm kiếm theo" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="fullName">Tên Đầy Đủ</SelectItem>
+                <SelectItem value="rentalId">Mã Thuê</SelectItem>
+                <SelectItem value="date">Ngày</SelectItem>
+                <SelectItem value="qrCode">Mã QR</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead onClick={() => handleSortChange('paymentId')}>
+                  ID {sortField === 'paymentId' && (sortOrder === 'asc' ? '▲' : '▼')}
+                </TableHead>
+                <TableHead onClick={() => handleSortChange('rentalId')}>
+                  Mã Thuê {sortField === 'rentalId' && (sortOrder === 'asc' ? '▲' : '▼')}
+                </TableHead>
+                <TableHead onClick={() => handleSortChange('paymentDate')}>
+                  Ngày Thanh Toán {sortField === 'paymentDate' && (sortOrder === 'asc' ? '▲' : '▼')}
+                </TableHead>
+                <TableHead>Tên Đầy Đủ</TableHead>
+                <TableHead>SĐT</TableHead>
+                <TableHead>Số Tiền</TableHead>
+                <TableHead>Phương Thức</TableHead>
+                <TableHead>Mã QR</TableHead>
+                <TableHead>Thao Tác</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredPayments.map((payment) => (
+                <TableRow key={payment.paymentId}>
+                  <TableCell>{payment.paymentId}</TableCell>
+                  <TableCell>{payment.rental.rentalId}</TableCell>
+                  <TableCell>{payment.paymentDate}</TableCell>
+                  <TableCell>{payment.rental.account.fullName}</TableCell>
+                  <TableCell>{payment.rental.account.phoneNumber}</TableCell>
+                  <TableCell>{payment.amount.toLocaleString()} VND</TableCell>
+                  <TableCell>{payment.paymentMethod}</TableCell>
+                  <TableCell>{payment.idQrCode}</TableCell>
+                  <TableCell>
+                    <div className="flex space-x-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleEdit(payment)}
+                      >
+                        Sửa
+                      </Button>
+                      <Button 
+                        variant="destructive" 
+                        size="sm"
+                        onClick={() => handleDelete(payment.paymentId)}
+                      >
+                        Xóa
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+
+          <Dialog 
+            open={isDialogOpen} 
+            onOpenChange={() => setIsDialogOpen(false)}
+          >
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>
+                  {isEditing ? 'Sửa Thanh Toán' : 'Tạo Thanh Toán Mới'}
+                </DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <Label>Mã Thuê</Label>
+                  <Input
+                    name="rentalId"
+                    value={currentPayment.rentalId}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label>Ngày Thanh Toán</Label>
+                  <Input
+                    type="date"
+                    name="paymentDate"
+                    value={currentPayment.paymentDate}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label>Số Tiền</Label>
+                  <Input
+                    type="number"
+                    name="amount"
+                    value={currentPayment.amount}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label>Phương Thức Thanh Toán</Label>
+                  <Select
+                    name="paymentMethod"
+                    value={currentPayment.paymentMethod}
+                    onValueChange={(value) => 
+                      setCurrentPayment(prev => ({
+                        ...prev, 
+                        paymentMethod: value
+                      }))
+                    }
                   >
-                    Continue
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </Tabs>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Chọn Phương Thức Thanh Toán" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="prePayment">Trả Trước</SelectItem>
+                      <SelectItem value="postPayment">Trả Sau</SelectItem>
+                      <SelectItem value="cash">Tiền Mặt</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Ghi Chú</Label>
+                  <Input
+                    name="notes"
+                    value={currentPayment.notes}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  <Label>Mã QR</Label>
+                  <Input
+                    name="idQrCode"
+                    value={currentPayment.idQrCode}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <Button type="submit">
+                  {isEditing ? 'Cập Nhật' : 'Tạo'}
+                </Button>
+              </form>
+            </DialogContent>
+          </Dialog>
         </CardContent>
       </Card>
     </div>
   );
 };
 
-export default PaymentPage;
+export default PaymentManagement;
