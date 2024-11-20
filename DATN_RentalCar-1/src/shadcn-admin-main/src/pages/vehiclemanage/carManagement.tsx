@@ -3,7 +3,7 @@ import { Edit, Trash2 } from "lucide-react";
 import axios from "axios";
 
 interface Car {
-  id: number;
+  carId: number;
   make: string;
   model: string;
   year: number;
@@ -14,7 +14,14 @@ interface Car {
   fuelConsumption: number;
   dailyRate: number;
   status: string;
-  images: string[];
+  imageUrl: string;
+  condition: string;
+  licensePlate: string;
+  facilities: string;
+  detailCar: string;
+  engineCapacity: number;
+  seats: number;
+  vehicleLocation: string;
 }
 
 const CarManagement: React.FC = () => {
@@ -23,7 +30,7 @@ const CarManagement: React.FC = () => {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 
   const [newCar, setNewCar] = useState<Car>({
-    id: 0,
+    carId: 0,
     make: "",
     model: "",
     year: new Date().getFullYear(),
@@ -34,19 +41,28 @@ const CarManagement: React.FC = () => {
     fuelConsumption: 0,
     dailyRate: 0,
     status: "Sẵn sàng",
-    images: [],
+    imageUrl: "",
+    condition: "",
+    licensePlate: "",
+    facilities: "",
+    detailCar: "",
+    engineCapacity: 0,
+    seats: 0,
+    vehicleLocation: "",
   });
 
   useEffect(() => {
+    fetchCars();
+  }, []);
+
+  const fetchCars = () => {
     axios
       .get("http://localhost:8080/api/car")
       .then((response) => {
         setCars(response.data);
       })
-      .catch((error) => {
-        console.error("Error fetching cars:", error);
-      });
-  }, []);
+      .catch((error) => console.error("Error fetching cars:", error));
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -66,8 +82,18 @@ const CarManagement: React.FC = () => {
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
-    setNewCar((prevCar) => ({ ...prevCar, [id]: id === "year" || id === "mileage" || id === "dailyRate" ? +value : value }));
+
+    setNewCar((prevCar) => ({
+      ...prevCar,
+      [id]:
+        value === ""
+          ? "" // Cho phép người dùng xóa giá trị, đặt lại thành chuỗi rỗng
+          : id === "year" || id === "mileage" || id === "dailyRate" || id === "fuelConsumption"
+            ? Number(value) // Chuyển đổi sang số nếu không rỗng
+            : value, // Giữ nguyên chuỗi ký tự khác
+    }));
   };
+
 
   const filteredCars = cars.filter(
     (car) =>
@@ -75,6 +101,98 @@ const CarManagement: React.FC = () => {
       car.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
       car.color.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  //--------------Checkbox nội thất--------------------------------------------------------------
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, checked } = e.target;
+
+    setNewCar((prevCar) => {
+      let updatedFacilities = prevCar.facilities;
+      if (checked) {
+        updatedFacilities = updatedFacilities.length === 0 ? value : updatedFacilities + ", " + value; // Nối chuỗi
+      } else {
+        updatedFacilities = updatedFacilities.replace(new RegExp(`\\b${value}\\b,?\\s*`), ''); // Xóa chuỗi tương ứng nếu unchecked
+      }
+
+      return {
+        ...prevCar,
+        facilities: updatedFacilities, // Lưu dưới dạng chuỗi
+      };
+    });
+  };
+
+
+  //------------------------CURD-----------------------------------------
+
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+
+
+  const handleAddCar = () => {
+    if (isEditing) {
+      // Update car
+      axios
+        .put(`http://localhost:8080/api/car/${newCar.carId}`, newCar)
+        .then(() => {
+          fetchCars();
+          resetForm();
+        })
+        .catch((error) => console.error("Error updating car:", error));
+    } else {
+      // Add new car
+      axios
+        .post("http://localhost:8080/api/car", newCar)
+        .then(() => {
+          fetchCars();
+          resetForm();
+        })
+        .catch((error) => console.error("Error adding car:", error));
+    }
+  };
+
+  const handleDeleteCar = (id: number) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa xe này?")) {
+      axios
+        .delete(`http://localhost:8080/api/car/${id}`)
+        .then(() => fetchCars())
+        .catch((error) => console.error("Error deleting car:", error));
+    }
+  };
+
+  const handleEditCar = (car: Car) => {
+    setIsEditing(true);
+    setNewCar(car);
+    // Chuyển đổi chuỗi imageUrl thành mảng images
+    setUploadedImages(car.imageUrl.split(',').map(item => item.trim()));
+  };
+
+  const resetForm = () => {
+    setNewCar({
+      carId: 0,
+      make: "",
+      model: "",
+      year: new Date().getFullYear(),
+      color: "",
+      mileage: 0,
+      transmission: "Tự động",
+      fuelType: "Xăng",
+      fuelConsumption: 0,
+      dailyRate: 0,
+      status: "Sẵn sàng",
+      imageUrl: "",
+      condition: "",
+      licensePlate: "",
+      facilities: "",
+      detailCar: "",
+      engineCapacity: 0,
+      seats: 0,
+      vehicleLocation: "",
+    });
+    setUploadedImages([]);
+    setIsEditing(false);
+  };
+  //----------------------------------------------------------------------------------------------
 
   return (
     <div className="h-screen overflow-auto">
@@ -121,7 +239,7 @@ const CarManagement: React.FC = () => {
                     key={index}
                     className="border-dashed border-2 border-gray-400 rounded-lg h-24 flex items-center justify-center text-gray-500 relative"
                   >
-                    {uploadedImages[index + 1] ? (
+                    {uploadedImages?.[index + 1] ? (
                       <img
                         src={uploadedImages[index + 1]}
                         alt={label}
@@ -164,6 +282,18 @@ const CarManagement: React.FC = () => {
                   <label htmlFor="fuelConsumption" className="block font-medium">Tiêu thụ (L/100km)</label>
                   <input type="number" id="fuelConsumption" value={newCar.fuelConsumption} onChange={handleFormChange} className="w-full p-2 border rounded" />
                 </div>
+                <div>
+                  <label htmlFor="licensePlate" className="block font-medium">Biển số xe</label>
+                  <input type="text" id="licensePlate" value={newCar.licensePlate} onChange={handleFormChange} className="w-full p-2 border rounded" />
+                </div>
+                <div>
+                  <label htmlFor="detailCar" className="block font-medium">Chi tiết</label>
+                  <input type="text" id="detailCar" value={newCar.detailCar} onChange={handleFormChange} className="w-full p-2 border rounded" />
+                </div>
+                <div>
+                  <label htmlFor="vehicleLocation" className="block font-medium">Địa điểm</label>
+                  <input type="text" id="vehicleLocation" value={newCar.vehicleLocation} onChange={handleFormChange} className="w-full p-2 border rounded" />
+                </div>
               </form>
 
             </div>
@@ -193,6 +323,10 @@ const CarManagement: React.FC = () => {
                   <input type="number" id="dailyRate" value={newCar.dailyRate} onChange={handleFormChange} className="w-full p-2 border rounded" />
                 </div>
                 <div>
+                  <label htmlFor="engineCapacity" className="block font-medium">Mã lực</label>
+                  <input type="number" id="engineCapacity" value={newCar.engineCapacity} onChange={handleFormChange} className="w-full p-2 border rounded" />
+                </div>
+                <div>
                   <label htmlFor="status" className="block font-medium">Trạng thái</label>
                   <select id="status" value={newCar.status} onChange={handleFormChange} className="w-full p-2 border rounded">
                     <option value="Sẵn sàng">Sẵn sàng</option>
@@ -200,20 +334,66 @@ const CarManagement: React.FC = () => {
                     <option value="Bảo dưỡng">Bảo dưỡng</option>
                   </select>
                 </div>
+                <div>
+                  <label htmlFor="condition" className="block font-medium">Tình trạng</label>
+                  <input type="text" id="condition" value={newCar.condition} onChange={handleFormChange} className="w-full p-2 border rounded" />
+                </div>
+                <div className="relative">
+                  <label htmlFor="facilities" className="block font-medium">Nội thất</label>
+                  <div
+                    className="w-full p-2 border rounded cursor-pointer"
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                  >
+                    {newCar.facilities ? newCar.facilities : "Chọn nội thất"}
+                  </div>
+
+                  {dropdownOpen && (
+                    <div className="absolute top-12 left-0 w-full bg-white shadow-lg rounded border mt-2">
+                      <div className="p-4">
+                        <div className="space-y-2">
+                          {["Ghế da", "Ghế chỉnh điện", "Điều hòa", "Màn hình cảm ứng", "Camera lùi"].map((facility) => (
+                            <div key={facility} className="flex items-center">
+                              <input
+                                type="checkbox"
+                                id={facility}
+                                value={facility}
+                                checked={newCar.facilities.includes(facility)}
+                                onChange={handleCheckboxChange}
+                                className="mr-2"
+                              />
+                              <label htmlFor={facility}>{facility}</label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="seats" className="block font-medium">Số ghế</label>
+                  <input type="number" id="seats" value={newCar.seats} onChange={handleFormChange} className="w-full p-2 border rounded" />
+                </div>
+
+
               </form>
 
               {/* CRUD Buttons */}
               <div className="flex justify-start space-x-4 mt-4">
                 <button
                   className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  onClick={handleAddCar}
                 >
-                  Thêm
+                  {isEditing ? "Cập Nhật" : "Thêm"}
                 </button>
+
                 <button
                   className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+                  onClick={resetForm}
                 >
                   Làm Mới
                 </button>
+
               </div>
 
             </div>
@@ -239,6 +419,7 @@ const CarManagement: React.FC = () => {
             <table className="min-w-full bg-white border rounded-lg">
               <thead>
                 <tr className="bg-gray-100">
+                  <th className="p-3 text-left font-medium">ID</th>
                   <th className="p-3 text-left font-medium">Hãng Xe</th>
                   <th className="p-3 text-left font-medium">Mẫu Xe</th>
                   <th className="p-3 text-left font-medium">Năm Sản Xuất</th>
@@ -254,7 +435,8 @@ const CarManagement: React.FC = () => {
               </thead>
               <tbody>
                 {filteredCars.map((car) => (
-                  <tr key={car.id} className="border-t hover:bg-gray-50">
+                  <tr key={car.carId} className="border-t hover:bg-gray-50">
+                    <td className="p-3">{car.carId}</td>
                     <td className="p-3">{car.make}</td>
                     <td className="p-3">{car.model}</td>
                     <td className="p-3">{car.year}</td>
@@ -266,13 +448,20 @@ const CarManagement: React.FC = () => {
                     <td className="p-3">{car.dailyRate.toLocaleString()} VND</td>
                     <td className="p-3">{car.status}</td>
                     <td className="p-3 flex space-x-2">
-                      <button className="flex items-center justify-center w-10 h-10 bg-black text-white rounded-lg hover:bg-gray-800">
+                      <button
+                        className="flex items-center justify-center w-10 h-10 bg-black text-white rounded-lg hover:bg-gray-800"
+                        onClick={() => handleEditCar(car)}
+                      >
                         <Edit className="w-5 h-5" />
                       </button>
-                      <button className="flex items-center justify-center w-10 h-10 bg-red-500 text-white rounded-lg hover:bg-red-600">
+                      <button
+                        className="flex items-center justify-center w-10 h-10 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                        onClick={() => handleDeleteCar(car.carId)}
+                      >
                         <Trash2 className="w-5 h-5" />
                       </button>
                     </td>
+
                   </tr>
                 ))}
               </tbody>
