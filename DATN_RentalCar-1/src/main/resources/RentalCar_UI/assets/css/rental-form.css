@@ -1,0 +1,228 @@
+/* Form container */
+.rental-form {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    max-width: 700px;
+    margin: 0 auto;
+    margin-top: -250px;
+    margin-bottom: 60px;
+    position: relative;
+    backdrop-filter: blur(10px);
+    z-index: 1;
+}
+
+/* Form title */
+h2{
+    text-align: center;
+}
+p{
+    text-align: center;
+}
+.rental-form h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #333;
+    font-weight: 600;
+}
+
+/* Form groups */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 500;
+    font-size: 15px;
+}
+
+/* Vehicle type buttons */
+.vehicle-type {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    width: 100%;
+}
+.btn-select {
+    flex: 1; /* Các button sẽ chia đều không gian */
+    max-width: 300px;
+    text-align: center;
+    padding: 8px 20px;
+    border: 1px solid #e0e0e0;
+    background: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.btn-select:hover {
+    background: #f5f5f5;
+}
+
+.btn-select.active {
+    background: #2196F3;
+    color: white;
+    border-color: #2196F3;
+}
+
+/* Select and inputs */
+select, 
+input[type="datetime-local"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 15px;
+    color: #333;
+    background: #fff;
+    transition: border-color 0.3s ease;
+}
+
+select:focus, 
+input[type="datetime-local"]:focus {
+    outline: none;
+    border-color: #2196F3;
+}
+
+/* Search button */
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: #1976D2;
+}
+
+/* Special requests section */
+.special-requests {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.special-requests p {
+    color: #666;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.special-requests ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.special-requests li {
+    margin-bottom: 10px;
+}
+
+.special-requests a {
+    color: #2196F3;
+    text-decoration: none;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    transition: color 0.3s ease;
+}
+
+.special-requests a:hover {
+    color: #1976D2;
+}
+
+/* New tag */
+.new {
+    background: #FF4081;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-left: 8px;
+    font-weight: 500;
+}
+/* Special requests section */
+.special-requests {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.special-requests p {
+    color: #666;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.special-requests-list {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.special-requests-list li {
+    text-align: center;
+    margin: 0 15px;
+}
+
+.special-requests-list a {
+    color: #2196F3;
+    text-decoration: none;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.special-requests-list .new {
+    margin-left: 8px;
+}
+/* Thêm style mới cho container chứa 2 input date */
+.date-row {
+    display: flex;
+    gap: 20px;  /* Khoảng cách giữa 2 input */
+}
+
+.date-row .form-group {
+    flex: 1;    /* Chia đều không gian cho 2 input */
+    margin-bottom: 20px;
+}
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .rental-form {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    .vehicle-type {
+        flex-direction: column;
+    }
+
+    .btn-select {
+        width: 100%;
+    }
+}
+
+.btn-select .fa-check {
+    margin-left: 8px;
+    display: none; /* Ẩn dấu tích mặc định */
+}
+
+.btn-select.active .fa-check {
+    display: inline-block; /* Hiện dấu tích khi button active */
+}

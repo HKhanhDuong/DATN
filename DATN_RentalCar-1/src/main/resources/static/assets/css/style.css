@@ -76,9 +76,8 @@
     text-align: center;
     margin: 0 auto;
     line-height: 1.25;
-    transform: translateX(-270px); 
+    margin-top: -20px;
   }
-  
   .no-wrap {
     white-space: nowrap;
   }
@@ -87,15 +86,15 @@
   
   .banner-layout .line {
     width: 280px;
-    margin-left: 200px;
     height: 0.5px;
     background: var(--white);
+    margin: 0 auto; /* Thêm margin auto để căn giữa */
+
   }
   
   .text-white {
     color: var(--white);
     margin: 0 24px 100px 24px;
-    transform: translateX(-250px);
     text-align: center;
   }
   
