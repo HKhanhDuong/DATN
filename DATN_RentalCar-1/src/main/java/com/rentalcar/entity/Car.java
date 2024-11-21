@@ -57,7 +57,7 @@ public class Car {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal dailyRate;
 
-    @Column(length = 255, columnDefinition = "NVARCHAR(255)")
+    @Column(length = 255, columnDefinition = "NVARCHAR(4000)")
     private String imageUrl;
 
     @Column(nullable = false)

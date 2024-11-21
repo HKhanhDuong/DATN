@@ -23,12 +23,15 @@ interface Car {
   engineCapacity: number;
   seats: number;
   vehicleLocation: string;
+  percentDiscount: number;
 }
 
 const CarManagement: React.FC = () => {
   const [cars, setCars] = useState<Car[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+
 
   const [newCar, setNewCar] = useState<Car>({
     carId: 0,
@@ -50,6 +53,7 @@ const CarManagement: React.FC = () => {
     engineCapacity: 0,
     seats: 0,
     vehicleLocation: "",
+    percentDiscount: 0,
   });
 
   useEffect(() => {
@@ -65,13 +69,51 @@ const CarManagement: React.FC = () => {
       .catch((error) => console.error("Error fetching cars:", error));
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (files && files.length > 0) {
-      const newImages = Array.from(files).map(file => URL.createObjectURL(file)); // Tạo URL cho mỗi file ảnh
-      if (uploadedImages.length + newImages.length <= 5) {  // Kiểm tra nếu tổng số ảnh không vượt quá 5
-        setUploadedImages((prevImages) => [...prevImages, ...newImages]);
+    if (!files || files.length === 0) return;
+
+    if (uploadedImages.length + files.length > 5) {
+      alert("Chỉ được phép tải lên tối đa 5 ảnh");
+      return;
+    }
+
+    setIsUploading(true);
+    const uploadedUrls: string[] = [];
+    const serverHost = "http://localhost:8080"; // Thêm host của server
+
+    try {
+      for (const file of Array.from(files)) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("type", "car");
+
+        const response = await axios.post(`${serverHost}/api/uploadImg`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        // Lấy URL tương đối từ server (nếu đường dẫn trả về là full URL, thì chỉ lấy phần sau localhost)
+        const relativeUrl = response.data.imageUrl.startsWith("http")
+          ? response.data.imageUrl.split('http://localhost:8080')[1] // Lấy phần sau localhost
+          : response.data.imageUrl;
+
+        uploadedUrls.push(relativeUrl);
       }
+
+      // Cập nhật danh sách ảnh đã tải lên
+      setUploadedImages(prev => [...prev, ...uploadedUrls]);
+      // Cập nhật vào newCar với đường dẫn tương đối của ảnh
+      setNewCar(prev => ({
+        ...prev,
+        imageUrl: [...uploadedImages, ...uploadedUrls].join(","), // Chỉ lưu đường dẫn tương đối
+      }));
+    } catch (error) {
+      console.error("Error uploading images:", error);
+      alert("Lỗi khi tải ảnh lên");
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -94,7 +136,6 @@ const CarManagement: React.FC = () => {
             : value, // Giữ nguyên chuỗi ký tự khác
     }));
   };
-
 
   const filteredCars = cars.filter(
     (car) =>
@@ -123,7 +164,6 @@ const CarManagement: React.FC = () => {
       };
     });
   };
-
 
   //------------------------CURD-----------------------------------------
 
@@ -224,6 +264,7 @@ const CarManagement: React.FC = () => {
       engineCapacity: 0,
       seats: 0,
       vehicleLocation: "",
+      percentDiscount: 0,
     });
     setUploadedImages([]);
     setIsEditing(false);
@@ -253,9 +294,15 @@ const CarManagement: React.FC = () => {
                   multiple // Thêm thuộc tính multiple để cho phép chọn nhiều ảnh
                 />
 
+                {isUploading && (
+                  <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white"></div>
+                  </div>
+                )}
+
                 {uploadedImages[0] ? (
                   <img
-                    src={uploadedImages[0]}
+                    src={`http://localhost:8080/assets/images/car/${uploadedImages[0]}`} // Nối localhost trước khi hiển thị
                     alt="Ảnh Toàn Xe"
                     className="object-cover w-full h-full rounded-lg"
                   />
@@ -266,6 +313,7 @@ const CarManagement: React.FC = () => {
                     <p className="text-sm text-gray-400">Dung lượng tối đa: 5 MB</p>
                   </>
                 )}
+
               </div>
 
               {/* Display uploaded images */}
@@ -277,7 +325,7 @@ const CarManagement: React.FC = () => {
                   >
                     {uploadedImages?.[index + 1] ? (
                       <img
-                        src={uploadedImages[index + 1]}
+                        src={`http://localhost:8080/assets/images/car/${uploadedImages[index + 1]}`}
                         alt={label}
                         className="object-cover h-full w-full rounded-lg"
                       />
@@ -368,6 +416,7 @@ const CarManagement: React.FC = () => {
                     <option value="Sẵn sàng">Sẵn sàng</option>
                     <option value="Đang thuê">Đang thuê</option>
                     <option value="Bảo dưỡng">Bảo dưỡng</option>
+                    <option value="Không khả dụng">Không khả dụng</option>
                   </select>
                 </div>
                 <div>
