@@ -38,7 +38,7 @@ public class UploadImageController {
 	        }
 
 	        // Giới hạn kích thước file (5MB)
-	        if (file.getSize() > 5 * 1024 * 1024) {
+	        if (file.getSize() > 30 * 1024 * 1024) {
 	            return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
 	                                 .body(Map.of("message", "File quá lớn, giới hạn là 5MB."));
 	        }
@@ -46,23 +46,25 @@ public class UploadImageController {
 	        // Xác định loại thư mục theo loại ảnh
 	        String folderType;
 	        switch (type.toLowerCase()) {
-		        case "car":
-		            folderType = "carsImg";
-		            break;
-		        case "motorbike":
-		            folderType = "motorbikesImg";
-		            break;
-		        case "account":
-		            folderType = "accountsImg";
-		            break;
-		        default:
-		            folderType = "others";
-		            break;
-		    }
+	            case "car":
+	                folderType = "car";
+	                break;
+	            case "motorbike":
+	                folderType = "motorbike";
+	                break;
+	            case "account":
+	                folderType = "account";
+	                break;
+	            default:
+	                folderType = "others";
+	                break;
+	        }
 
 	        // Tạo tên file với UUID
 	        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-	        String uploadDir = "uploads/" + folderType + "/";
+	        
+	        // Thư mục lưu trữ bên trong resources/static/assets
+	        String uploadDir = "src/main/resources/static/assets/images/" + folderType + "/";
 	        Path uploadPath = Paths.get(uploadDir);
 
 	        // Tạo thư mục nếu chưa tồn tại
@@ -70,14 +72,13 @@ public class UploadImageController {
 	            Files.createDirectories(uploadPath);
 	        }
 
-	        // Lưu file
+	        // Lưu file vào thư mục trong resources
 	        Files.copy(file.getInputStream(), uploadPath.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
 
-	        // Tạo URL ảnh
-	        String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-	                .path("/uploads/" + folderType + "/")
-	                .path(fileName)
-	                .toUriString();
+	        // Tạo URL ảnh (URL tương đối từ thư mục static)
+	        String imageUrl = fileName;
+
+	        System.out.println("imageUrl: " + imageUrl);
 
 	        // Trả về thông tin file
 	        return ResponseEntity.ok(Map.of(
@@ -91,6 +92,7 @@ public class UploadImageController {
 	                             .body(Map.of("message", "Lỗi khi lưu file."));
 	    }
 	}
+
 
 	@DeleteMapping("/{id}") //chưa xóa được
 	public ResponseEntity<?> delete(@PathVariable Long id) {
