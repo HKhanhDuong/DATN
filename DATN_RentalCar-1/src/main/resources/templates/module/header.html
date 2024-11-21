@@ -1,0 +1,42 @@
+<div th:fragment="header" class="container">
+			<div class="header-layout">
+				<a href="/" id="logo"> <img
+					src="./assets/images/Logo.png" alt="" />
+				</a>
+				<ul class="menu-list">
+					<li><a href="/about">Về Chúng Tôi</a></li>
+					<li><a href="#!">Hổ Trợ</a></li>
+					<li><a href="#!">Khuyến Mãi</a></li>
+					<div class="menu-line"></div>
+
+					<!-- Hiện nút đăng ký và đăng nhập nếu không có người dùng nào đăng nhập -->
+					<li th:if="${user == null || user == ''}"><a href="/register"
+						class="register-link">Đăng ký</a></li>
+					<li th:if="${user == null || user == ''}"><a href="/login" class="border">Đăng
+							nhập</a></li>
+					<!-- Hiện tên người dùng nếu đã đăng nhập -->
+					<li th:if="${user != null}">
+					    <a href="/logout">Đăng Xuất</a>
+					    <a href="/account" th:text="'Chào ' + ${user.username}">Chào User</a>
+					</li>
+
+
+				</ul>
+
+				<div class="menu-mobile">
+					<div class="wrap-svg tab-menu">
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+							xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 6H19" stroke="black" stroke-width="1.5"
+								stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M5 18H19" stroke="black" stroke-width="1.5"
+								stroke-linecap="round" stroke-linejoin="round">
+              </path>
+              <path d="M5 12H19" stroke="black" stroke-width="1.5"
+								stroke-linecap="round" stroke-linejoin="round">
+              </path>
+            </svg>
+					</div>
+				</div>
+			</div>
+</div>

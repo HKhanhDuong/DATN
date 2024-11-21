@@ -1,0 +1,74 @@
+<div th:fragment="modal_choose_time" class="container">
+			<div class="modal-m modal-search modal-fix modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close">
+									<span aria-hidden="true">×</span><span class="sr-only"></span>
+								</button>
+								<h5>Thời gian</h5>
+							</div>
+							<div class="modal-body">
+								<div class="modal-confirm-body">
+									<div class="time-choose"
+										style="margin-bottom: 20px; margin-top: 0;">
+										<div class="time-choose__item">
+											<p class="title-time">Ngày bắt đầu</p>
+											<div class="active-time">25/09/2024</div>
+										</div>
+										<div class="time-choose__item">
+											<div>
+												<p class="title-time">Đón xe lúc</p>
+												<p class="active-time">08:00</p>
+											</div>
+										</div>
+									</div>
+									<div class="time-choose">
+										<div class="time-choose__item">
+											<p class="title-time">Thời gian thuê</p>
+											<p class="select active-time">
+												2 tiếng<span class="font-12 text-gray"> (kết thúc
+													10:00 17/09/2024)</span>
+											</p>
+										</div>
+									</div>
+									<div class="time-choose" style="margin-bottom: 20px;">
+										<div class="time-choose__item">
+											<p class="title-time">Ngày kết thúc</p>
+											<div class="active-time">25/09/2024</div>
+										</div>
+										<div class="time-choose__item">
+											<div>
+												<p class="title-time">Trả xe lúc</p>
+												<p class="active-time">08:00</p>
+											</div>
+										</div>
+									</div>
+									<div class="text-danger marginBottom-l">
+										<p id="error_choose_datetime" style="font-size: .75rem;"></p>
+									</div>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<div class="info-time">
+									<div class="info-time__item">
+										<p class="time">
+											<span class="time-nhan" id="p_time_nhan_modal_choose_time_2">8:00</span>,
+											<span id="span_date_nhan_modal_choose_time">25/09/2024</span>
+											- <span class="time-tra" id="p_time_tra_modal_choose_time_2">10:00</span>,
+											<span id="span_date_tra_modal_choose_time">25/09/2024</span>
+										</p>
+										<p class="df-align-center total">
+											Thời gian thuê: <span class="fontWeight-6"
+												id="total_rental_date"
+												style="margin: 0px 2px; font-weight: 600;"> 1 </span> tiếng
+										</p>
+									</div>
+									<div class="wrap-btn">
+										<a class="btn btn--s btn-primary"
+											id="a_btn_update_car_rental_datetime">Tiếp tục</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+		</div>

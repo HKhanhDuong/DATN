@@ -8,6 +8,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.rentalcar.dao.RentalRepo;
+import com.rentalcar.dto.RentalDTO;
+import com.rentalcar.dto.RentalDTO2;
 import com.rentalcar.entity.Rental;
 import com.rentalcar.service.RentalService;
 
@@ -19,6 +21,16 @@ public class rentalServiceImpl implements RentalService {
 
     @Autowired
     private RentalRepo rentalRepo;
+    
+    @Override
+    public List<RentalDTO2> findAllCarRentals() {
+        return rentalRepo.findAllCarRentals(); // Truy vấn xe ô tô đã thuê
+    }
+
+    @Override
+    public List<RentalDTO2> findAllMotorbikeRentals() {
+        return rentalRepo.findAllMotorbikeRentals(); // Truy vấn xe máy đã thuê
+    }
 
 	/**
 	 * @param <S>

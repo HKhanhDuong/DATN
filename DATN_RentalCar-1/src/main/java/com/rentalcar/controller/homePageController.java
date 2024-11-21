@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,10 +27,17 @@ import com.rentalcar.entity.Role;
 import com.rentalcar.dao.AccountRepo;
 import com.rentalcar.dao.CarRepo;
 import com.rentalcar.dao.MotorbikeRepo;
+import com.rentalcar.dao.RentalVehicleRepo;
+import com.rentalcar.dto.RentalDTO;
+import com.rentalcar.dto.RentalDTO2;
 import com.rentalcar.entity.Car;
 import com.rentalcar.entity.Motorbike;
+import com.rentalcar.entity.Rental;
+import com.rentalcar.entity.RentalVehicle;
 import com.rentalcar.service.AccountService;
 import com.rentalcar.service.CarService;
+import com.rentalcar.service.RentalService;
+import com.rentalcar.service.RentalVehicleService;
 import com.rentalcar.service.SessionService;
 
 
@@ -50,7 +58,10 @@ public class homePageController {
 	@Autowired
     private CarService carService;
 	
-	 private final String uploadDir = "uploads/accountsImg/";
+	@Autowired
+    private RentalService rentalService;
+	
+	//private final String uploadDir = "uploads/accountsImg/";
 
     // Phương thức để lấy danh sách xe và hiển thị trong Thymeleaf template
     @GetMapping()
@@ -190,6 +201,21 @@ public class homePageController {
         model.addAttribute("motorbikes", motorbikes);
         
         return "pick-vehicle2";
+    }
+    
+    @GetMapping("/rentalList")
+    public String getRentalList(Model model) {
+        // Lấy danh sách xe ô tô đã thuê
+        List<RentalDTO2> rentedCars = rentalService.findAllCarRentals();
+        
+        // Lấy danh sách xe máy đã thuê
+        List<RentalDTO2> rentedMotorbikes = rentalService.findAllMotorbikeRentals();
+        
+        // Thêm vào model để Thymeleaf có thể sử dụng
+        model.addAttribute("rentedCars", rentedCars);
+        model.addAttribute("rentedMotorbikes", rentedMotorbikes);
+        
+        return "rentalList"; // Tên file HTML
     }
     
     @RequestMapping("/logout")
