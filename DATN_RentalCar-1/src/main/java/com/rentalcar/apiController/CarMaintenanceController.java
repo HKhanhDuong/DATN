@@ -59,11 +59,26 @@ public class CarMaintenanceController {
 		    return "updated...";
 		}
 		
-		@DeleteMapping(value = "/{id}")
-	    public String deleteById(@PathVariable("id") Long id) {
-			CarMaintenanceRepo.deleteById(id);
-			
-			return "Deleted...";
-	    }
+		
+		@DeleteMapping(value = "/{carId}")
+		public String deleteMaintenanceByCarId(@PathVariable("carId") Long carId) {
+		    List<CarMaintenance> maintenances = CarMaintenanceRepo.findByCar_CarId(carId);
+		    if (!maintenances.isEmpty()) {
+		        CarMaintenanceRepo.deleteAll(maintenances);
+		        return "Maintenance records deleted successfully.";
+		    } else {
+		        return "No maintenance records found for the car ID."; 
+		    }
+		}
+
+
+		
+		
+//		@DeleteMapping(value = "/{id}")
+//	    public String deleteById(@PathVariable("id") Long id) {
+//			CarMaintenanceRepo.deleteById(id);
+//			
+//			return "Deleted...";
+//	    }
 	
 }

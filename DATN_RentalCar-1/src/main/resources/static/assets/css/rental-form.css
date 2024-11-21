@@ -7,7 +7,11 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     max-width: 700px;
     margin: 0 auto;
+<<<<<<< Updated upstream
     margin-top: -250px;
+=======
+    margin-top: -100px;
+>>>>>>> Stashed changes
     margin-bottom: 60px;
     position: relative;
     backdrop-filter: blur(10px);

@@ -62,7 +62,7 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Bảo Quản Và Sửa Chữa',
         label: '',
-        href: '/sign-in-2',
+        href: '/MaintenanceManagement',
         icon: <IconHexagonNumber2 size={18} />,
       },
     ],

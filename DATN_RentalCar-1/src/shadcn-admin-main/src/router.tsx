@@ -57,7 +57,8 @@ const router = createBrowserRouter([
       {path : 'carManagement', lazy: async() => ({Component :(await import ('@/pages/vehiclemanage/carManagement')).default,}),},
       //Quản Lú Xe Máy
       {path :'motorbikeManagements', lazy: async() => ({Component : (await import('@/pages/vehiclemanage/motorbikeManagements')).default,}),},
-      
+      // Bảo quản và sửa chửa
+      {path :'MaintenanceManagement', lazy: async() => ({Component : (await import('@/pages/maintenance/MaintenanceManagement')).default,}),},
       //rental
       {
         path: '/rental-page',

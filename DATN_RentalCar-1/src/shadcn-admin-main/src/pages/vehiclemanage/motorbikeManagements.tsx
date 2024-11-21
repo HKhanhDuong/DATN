@@ -201,7 +201,7 @@ const MotorbikeManagement: React.FC = () => {
       <h2 className="text-2xl font-bold mb-6 text-center">Quản Lý Xe Máy</h2>
 
       {/* Form Section */}
-      <div className="p-6 border border-gray-300 shadow-md rounded-lg bg-white">
+      <div className="p-6 border border-gray-300 shadow-md rounded-lg ">
         <div className="grid grid-cols-3 gap-6">
           {/* Upload Image Section */}
           <div className="col-span-1">
@@ -236,7 +236,7 @@ const MotorbikeManagement: React.FC = () => {
                   id="make"
                   value={motorbike.make}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  className="w-full p-2 bg-muted border rounded"
                 />
               </div>
               <div>
@@ -248,7 +248,7 @@ const MotorbikeManagement: React.FC = () => {
                   id="model"
                   value={motorbike.model}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  className="w-full p-2 bg-muted  border rounded"
                 />
               </div>
               <div>
@@ -260,7 +260,7 @@ const MotorbikeManagement: React.FC = () => {
                   id="year"
                   value={motorbike.year}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  className="w-full p-2 bg-muted  border rounded"
                 />
               </div>
               <div>
@@ -272,7 +272,7 @@ const MotorbikeManagement: React.FC = () => {
                   id="color"
                   value={motorbike.color}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  className="w-full p-2 bg-muted  border rounded"
                 />
               </div>
             </form>
@@ -290,7 +290,7 @@ const MotorbikeManagement: React.FC = () => {
                   id="fuelType"
                   value={motorbike.fuelType}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  className="w-full p-2 bg-muted  border rounded"
                 >
                   <option value="Petrol">Xăng</option>
                   <option value="Electric">Điện</option>
@@ -305,7 +305,7 @@ const MotorbikeManagement: React.FC = () => {
                   id="dailyRate"
                   value={motorbike.dailyRate}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  className="w-full p-2 bg-muted  border rounded"
                 />
               </div>
               <div>
@@ -316,7 +316,7 @@ const MotorbikeManagement: React.FC = () => {
                   id="status"
                   value={motorbike.status}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  className="w-full p-2 bg-muted  border rounded"
                 >
                   <option value="Sẵn sàng">Sẵn sàng</option>
                   <option value="Đang thuê">Đang thuê</option>
@@ -332,7 +332,7 @@ const MotorbikeManagement: React.FC = () => {
                   id="engineCapacity"
                   value={motorbike.engineCapacity}
                   onChange={handleChange}
-                  className="w-full p-2 border rounded"
+                  className="w-full p-2 bg-muted  border rounded"
                 />
               </div>
             </form>
@@ -362,7 +362,7 @@ const MotorbikeManagement: React.FC = () => {
           placeholder="Tìm kiếm theo hãng xe, mẫu xe hoặc màu sắc..."
           value={searchTerm}
           onChange={handleSearchChange}
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border bg-muted  rounded"
         />
       </div>
 
@@ -370,9 +370,9 @@ const MotorbikeManagement: React.FC = () => {
       <div className="mt-6">
         <h3 className="text-lg font-semibold mb-4 text-center">Danh sách xe</h3>
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border rounded-lg">
+          <table className="min-w-full border rounded-lg">
             <thead>
-              <tr className="bg-gray-100">
+              <tr>
                 <th className="p-3 text-left font-medium">Hãng Xe</th>
                 <th className="p-3 text-left font-medium">Mẫu Xe</th>
                 <th className="p-3 text-left font-medium">Năm</th>
@@ -385,7 +385,7 @@ const MotorbikeManagement: React.FC = () => {
             </thead>
             <tbody>
               {filteredMotorbikes.map((item, index) => (
-                <tr key={index} className="border-t hover:bg-gray-50">
+                <tr key={index} className="border-t hover:bg-muted/50">
                   <td className="p-3">{item.make}</td>
                   <td className="p-3">{item.model}</td>
                   <td className="p-3">{item.year}</td>
