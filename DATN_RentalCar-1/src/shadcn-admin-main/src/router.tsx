@@ -83,6 +83,14 @@ const router = createBrowserRouter([
         }),
       },
 
+      //rental vehicle
+      {
+        path: '/disount-management',
+        lazy: async () => ({
+          Component: (await import('@/pages/discounts/discountManagement')).default,
+        }),
+      },
+
       {
         path: 'tasks',
         lazy: async () => ({

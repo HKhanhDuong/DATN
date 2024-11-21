@@ -70,7 +70,7 @@ const AccountSettings: React.FC = () => {
   const [itemsPerPage] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
-
+  const [roles, setRoles] = useState<Role[]>([]);
 
   const validateForm = (): boolean => {
     const errors: Partial<Record<keyof Account, string>> = {};
@@ -95,6 +95,15 @@ const AccountSettings: React.FC = () => {
       showNotification(`Lỗi khi tải danh sách tài khoản: ${error.message}`, "error");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchRoles = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/role");
+      setRoles(response.data);
+    } catch (error) {
+      showNotification(`Lỗi khi tải danh sách vai trò: ${error.message}`, "error");
     }
   };
 
@@ -231,13 +240,8 @@ const AccountSettings: React.FC = () => {
 
   useEffect(() => {
     fetchAccounts();
+    fetchRoles();
   }, [currentPage]);
-
-  const ROLES = [
-    { id: 1, name: 'admin', description: 'Quản trị hệ thống' },
-    { id: 2, name: 'customer', description: 'Khách hàng sử dụng dịch vụ' },
-    { id: 3, name: 'driver', description: 'Tài xế lái xe' }
-  ];
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -373,13 +377,13 @@ const AccountSettings: React.FC = () => {
                   <Select
                     value={formData.roles[0]?.roleId.toString() || ""}
                     onValueChange={(value) => {
-                      const selectedRole = ROLES.find(role => role.id.toString() === value);
+                      const selectedRole = roles.find(role => role.roleId.toString() === value);
                       if (selectedRole) {
                         setFormData({
                           ...formData,
                           roles: [{
-                            roleId: selectedRole.id,
-                            roleName: selectedRole.name,
+                            roleId: selectedRole.roleId,
+                            roleName: selectedRole.roleName,
                             description: selectedRole.description
                           }]
                         });
@@ -390,9 +394,9 @@ const AccountSettings: React.FC = () => {
                       <SelectValue placeholder="Chọn vai trò" />
                     </SelectTrigger>
                     <SelectContent>
-                      {ROLES.map((role) => (
-                        <SelectItem key={role.id} value={role.id.toString()}>
-                          {role.name}
+                      {roles.map((role) => (
+                        <SelectItem key={role.roleId} value={role.roleId.toString()}>
+                          {role.roleName}
                         </SelectItem>
                       ))}
                     </SelectContent>

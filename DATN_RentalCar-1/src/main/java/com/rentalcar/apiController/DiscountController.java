@@ -40,7 +40,7 @@ public class DiscountController {
 	}
 
 	// lưu
-	@PostMapping(value = "/save")
+	@PostMapping
 	public String save(@RequestBody Discount disc) {
 		discRepo.save(disc);
 		return "Saved!!!";

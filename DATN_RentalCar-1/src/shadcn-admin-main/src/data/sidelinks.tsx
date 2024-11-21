@@ -146,23 +146,11 @@ export const sidelinks: SideLink[] = [
     icon: <IconRouteAltLeft size={18} />,
     sub: [
       {
-        title: 'Chương trình khuyến mãi',
-        label: '9',
-        href: '/trucks',
-        icon: <IconTruck size={18} />,
-      },
-      {
         title: 'Mã giảm giá',
         label: '',
-        href: '/cargos',
+        href: '/disount-management',
         icon: <IconBoxSeam size={18} />,
-      },
-      {
-        title: 'Ưu Đãi Đặc Biệt',
-        label: '',
-        href: '/cargos',
-        icon: <IconBoxSeam size={18} />,
-      },
+      }
     ],
   },
   {
