@@ -78,9 +78,9 @@ public class homePageController {
     // Phương thức hiển thị trang đổi mật khẩu
     @GetMapping("/change-password")
     public String showChangePasswordPage() {
-        return "change-password"; // Trả về trang đổi mật khẩu
+        return "fragments/change-password"; // Chỉ định đúng đường dẫn tới file trong thư mục fragments
     }
-    
+
  // Phương thức xử lý khi người dùng nhấn vào "Chào User" và chuyển đến trang Account
     @GetMapping("/account")
     public String viewAccountInfo(Model model) {
@@ -109,28 +109,28 @@ public class homePageController {
             return "redirect:/login"; // Nếu không có người dùng trong session, chuyển hướng về trang đăng nhập
         }
 
-        // Kiểm tra mật khẩu cũ và các điều kiện khác
-        if (currentPassword.isEmpty() || newPassword.isEmpty() || confirmNewPassword.isEmpty()) {
+     // Kiểm tra mật khẩu cũ và các điều kiện khác
+        if (currentPassword.trim().isEmpty() || newPassword.trim().isEmpty() || confirmNewPassword.trim().isEmpty()) {
             model.addAttribute("error", "Tất cả các trường đều phải được điền.");
-            return "change-password";
+            return "account";
         }
 
-        // Kiểm tra mật khẩu cũ có đúng không
+     // Kiểm tra mật khẩu cũ có đúng không
         if (!user.getPasswordHash().equals(currentPassword)) {
             model.addAttribute("error", "Mật khẩu cũ không chính xác");
-            return "change-password"; // Nếu mật khẩu cũ sai, quay lại trang đổi mật khẩu
+            return "account"; // Nếu mật khẩu cũ sai, quay lại trang đổi mật khẩu
         }
 
         // Kiểm tra mật khẩu mới và xác nhận mật khẩu mới có khớp không
-        if (!newPassword.equals(confirmNewPassword)) {
+        if (!newPassword.trim().equals(confirmNewPassword.trim())) {
             model.addAttribute("error", "Mật khẩu mới và xác nhận mật khẩu mới không khớp. Vui lòng thử lại.");
-            return "change-password"; // Nếu không khớp, quay lại trang đổi mật khẩu
+            return "account"; // Nếu không khớp, quay lại trang đổi mật khẩu
         }
 
         // Kiểm tra xem mật khẩu mới có giống mật khẩu cũ không
-        if (newPassword.equals(currentPassword)) {
+        if (newPassword.trim().equals(currentPassword.trim())) {
             model.addAttribute("error", "Mật khẩu mới không được giống với mật khẩu cũ");
-            return "change-password"; // Nếu mật khẩu mới giống mật khẩu cũ, yêu cầu nhập lại
+            return "account"; // Nếu mật khẩu mới giống mật khẩu cũ, yêu cầu nhập lại
         }
 
         // Cập nhật mật khẩu mới
