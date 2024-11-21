@@ -67,7 +67,7 @@
     gap: 24px;
     justify-content: center;
   }
-  /* sửa */
+  
   .banner-layout h1 {
     font-size: 4.4rem;
     font-weight: bold;
@@ -77,23 +77,22 @@
     text-align: center;
     margin: 0 auto;
     line-height: 1.25;
-    margin-top: -20px;
+    margin-top: -20px; 
   }
   
   .no-wrap {
     white-space: nowrap;
   }
   
-
+  
   
   .banner-layout .line {
     width: 280px;
     height: 0.5px;
     background: var(--white);
     margin: 0 auto; /* Thêm margin auto để căn giữa */
-
   }
-  /* sửa */
+  
   .text-white {
     color: var(--white);
     margin: 0 24px 100px 24px;

@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollAreaProvider } from "@/components/ui/scroll-area";
 import { useToast } from '@/components/ui/use-toast';
 import produce from 'immer'; // Import 'immer'
 
@@ -52,12 +52,12 @@ interface FieldLimit {
 
 const FIELD_LIMITS: Record<string, FieldLimit> = {
   fullName: { max: 100 },
-  email: {
-    max: 100,
+  email: { 
+    max: 100, 
     pattern: "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$",
     patternMessage: "Email không hợp lệ"
   },
-  phoneNumber: {
+  phoneNumber: { 
     max: 15,
     pattern: "^[0-9+()-]{10,15}$",
     patternMessage: "Số điện thoại không hợp lệ"
@@ -87,7 +87,7 @@ const AccountSettings: React.FC = () => {
     rental: [],
   };
   const [formData, setFormData] = useState<Account>(initialFormData);
-
+  
   // UI state
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -122,10 +122,10 @@ const AccountSettings: React.FC = () => {
   // Form validation
   const validateForm = (): boolean => {
     const errors: Partial<Record<keyof Account, string>> = {};
-
+    
     Object.entries(FIELD_LIMITS).forEach(([field, limits]) => {
       const value = formData[field as keyof Account] as string;
-
+      
       if (!value && field !== 'address') {
         errors[field as keyof Account] = `${field} không được để trống`;
         return;
@@ -135,7 +135,7 @@ const AccountSettings: React.FC = () => {
         if (limits.min && value.length < limits.min) {
           errors[field as keyof Account] = `${field} phải có ít nhất ${limits.min} ký tự`;
         }
-
+        
         if (value.length > limits.max) {
           errors[field as keyof Account] = `${field} không được vượt quá ${limits.max} ký tự`;
         }
@@ -159,12 +159,12 @@ const AccountSettings: React.FC = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data: ApiResponse = await response.json();
-
+      
       const formattedAccounts = data.content.map(account => ({
         ...account,
         dateOfBirth: formatDateForInput(account.dateOfBirth)
       }));
-
+      
       setAccounts(formattedAccounts);
       setTotalPages(data.totalPages);
       setCurrentPage(data.number);
@@ -190,11 +190,11 @@ const AccountSettings: React.FC = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(dataToSend),
     });
-
+    
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-
+    
     const newAccount = await response.json();
     // Update the state and refetch
     setAccounts(produce(accounts, draft => draft.push(newAccount))); // Immutably update array
@@ -214,19 +214,19 @@ const AccountSettings: React.FC = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(dataToSend),
     });
-
+    
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-
+    
     const updatedAccount = await response.json();
     // Update the state and refetch
     setAccounts(produce(accounts, draft => {
       const index = draft.findIndex(acc => acc.accountId === updatedAccount.accountId);
       if (index !== -1) {
-        draft[index] = updatedAccount;
+        draft[index] = updatedAccount; 
       }
-    }));
+    })); 
     fetchAccounts();
 
     return updatedAccount;
@@ -236,11 +236,11 @@ const AccountSettings: React.FC = () => {
     const response = await fetch(`${API_URL}/${accountId}`, {
       method: "DELETE",
     });
-
+    
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-
+    
     // Update the state and refetch
     setAccounts(produce(accounts, draft => {
       const index = draft.findIndex(acc => acc.accountId === accountId);
@@ -248,7 +248,7 @@ const AccountSettings: React.FC = () => {
         draft.splice(index, 1); // Immutably remove from array
       }
     }));
-    fetchAccounts();
+    fetchAccounts(); 
   };
 
   // Event handlers
@@ -262,7 +262,7 @@ const AccountSettings: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    
     if (!validateForm()) {
       return;
     }
@@ -271,7 +271,7 @@ const AccountSettings: React.FC = () => {
     try {
       if (isEditing) {
         const updatedAccount = await updateAccount(formData);
-        setAccounts(accounts.map(account =>
+        setAccounts(accounts.map(account => 
           account.accountId === updatedAccount.accountId ? updatedAccount : account
         ));
         toast({
@@ -349,10 +349,10 @@ const AccountSettings: React.FC = () => {
   useEffect(() => {
     // Refetches accounts after a successful account update
     fetchAccounts();
-  }, [accounts]);
+  }, [accounts]); 
 
   return (
-    <ScrollBar>
+    <ScrollAreaProvider>
       <div className="container mx-auto p-6 space-y-6">
         <ScrollArea className="max-h-screen">
           <Card className="mb-6">
@@ -367,11 +367,11 @@ const AccountSettings: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="fullName">Họ và tên</Label>
-                    <Input
-                      id="fullName"
-                      type="text"
-                      placeholder="Họ và tên"
-                      value={formData.fullName}
+                    <Input 
+                      id="fullName" 
+                      type="text" 
+                      placeholder="Họ và tên" 
+                      value={formData.fullName} 
                       onChange={(e) => handleInputChange('fullName', e.target.value)}
                       className={formErrors.fullName ? 'border-red-500' : ''}
                     />
@@ -381,11 +381,11 @@ const AccountSettings: React.FC = () => {
                   </div>
                   <div>
                     <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="Email"
-                      value={formData.email}
+                    <Input 
+                      id="email" 
+                      type="email" 
+                      placeholder="Email" 
+                      value={formData.email} 
                       onChange={(e) => handleInputChange('email', e.target.value)}
                       className={formErrors.email ? 'border-red-500' : ''}
                     />
@@ -395,11 +395,11 @@ const AccountSettings: React.FC = () => {
                   </div>
                   <div>
                     <Label htmlFor="phoneNumber">Số điện thoại</Label>
-                    <Input
-                      id="phoneNumber"
-                      type="tel"
-                      placeholder="Số điện thoại"
-                      value={formData.phoneNumber}
+                    <Input 
+                      id="phoneNumber" 
+                      type="tel" 
+                      placeholder="Số điện thoại" 
+                      value={formData.phoneNumber} 
                       onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
                       className={formErrors.phoneNumber ? 'border-red-500' : ''}
                     />
@@ -409,11 +409,11 @@ const AccountSettings: React.FC = () => {
                   </div>
                   <div>
                     <Label htmlFor="username">Tên đăng nhập</Label>
-                    <Input
-                      id="username"
-                      type="text"
-                      placeholder="Tên đăng nhập"
-                      value={formData.username}
+                    <Input 
+                      id="username" 
+                      type="text" 
+                      placeholder="Tên đăng nhập" 
+                      value={formData.username} 
                       onChange={(e) => handleInputChange('username', e.target.value)}
                       className={formErrors.username ? 'border-red-500' : ''}
                     />
@@ -423,11 +423,11 @@ const AccountSettings: React.FC = () => {
                   </div>
                   <div>
                     <Label htmlFor="passwordHash">Mật khẩu</Label>
-                    <Input
-                      id="passwordHash"
-                      type="password"
-                      placeholder="Mật khẩu"
-                      value={formData.passwordHash}
+                    <Input 
+                      id="passwordHash" 
+                      type="password" 
+                      placeholder="Mật khẩu" 
+                      value={formData.passwordHash} 
                       onChange={(e) => handleInputChange('passwordHash', e.target.value)}
                       className={formErrors.passwordHash ? 'border-red-500' : ''}
                     />
@@ -437,11 +437,11 @@ const AccountSettings: React.FC = () => {
                   </div>
                   <div>
                     <Label htmlFor="address">Địa chỉ</Label>
-                    <Input
-                      id="address"
-                      type="text"
-                      placeholder="Địa chỉ"
-                      value={formData.address || ''}
+                    <Input 
+                      id="address" 
+                      type="text" 
+                      placeholder="Địa chỉ" 
+                      value={formData.address || ''} 
                       onChange={(e) => handleInputChange('address', e.target.value)}
                       className={formErrors.address ? 'border-red-500' : ''}
                     />
@@ -451,10 +451,10 @@ const AccountSettings: React.FC = () => {
                   </div>
                   <div>
                     <Label htmlFor="dateOfBirth">Ngày sinh</Label>
-                    <Input
-                      id="dateOfBirth"
-                      type="date"
-                      value={formData.dateOfBirth || ''}
+                    <Input 
+                      id="dateOfBirth" 
+                      type="date" 
+                      value={formData.dateOfBirth || ''} 
                       onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
                       className={formErrors.dateOfBirth ? 'border-red-500' : ''}
                     />
@@ -523,7 +523,7 @@ const AccountSettings: React.FC = () => {
           </div>
         </ScrollArea>
       </div>
-    </ScrollBar>
+    </ScrollAreaProvider>
   );
 };
 

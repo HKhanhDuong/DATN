@@ -14,9 +14,6 @@
  <!-- Search-option--> 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.theme.css">
-  <link rel="stylesheet" href="./assets/css/rental-form.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
   <title>TRANG CHỦ RENTALCAR</title>
 </head>
 
@@ -74,47 +71,879 @@
           }
         </style>
         <!-- Search-option -->
-        <div class="rental-form">
-          <h2>Bạn cần thuê xe?</h2>
-          <div class="form-group">
+        <div class="search-option">
+          <div class="option">
+            <div class="option-item active" data-httx="xe-tu-lai">
+              <div class="wrap-svg">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M12 8C13.6569 8 15 6.65685 15 5C15 3.34315 13.6569 2 12 2C10.3431 2 9 3.34315 9 5C9 6.65685 10.3431 8 12 8Z"
+                    stroke="#C6C6C6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path
+                    d="M16.5 19.1538H18.1283C18.9357 19.1538 19.6639 18.6684 19.9744 17.923L20.691 16.2031C20.8893 15.7272 20.8961 15.1931 20.7101 14.7123L18.9946 10.2783C18.6965 9.50789 17.9554 9 17.1293 9H6.87067C6.04458 9 5.30349 9.50789 5.00541 10.2783L3.28991 14.7122C3.10386 15.1931 3.11071 15.7272 3.30903 16.2032L4.0257 17.9231C4.33625 18.6684 5.06446 19.1538 5.87184 19.1538H7.5"
+                    stroke="#C6C6C6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M7.5 18.7857L12 16.5M12 16.5L16.5 18.7857M12 16.5V22" stroke="#C6C6C6" stroke-width="1.5"
+                    stroke-linecap="round"></path>
+                  <circle cx="12" cy="17" r="5" stroke="#C6C6C6" stroke-width="1.5"></circle>
+                  <circle cx="12" cy="17" r="1" stroke="#C6C6C6" stroke-width="2"></circle>
+                </svg>
+              </div>
+              <p>Xe tự lái</p>
+            </div>
+            <div class="option-item" data-httx="xe-co-tai-xe">
+              <div class="wrap-svg">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M22.25 17.1903C22.25 17.6784 21.7539 18.25 20.917 18.25H3.08296C2.24609 18.25 1.75 17.6784 1.75 17.1903V13.8101C1.75 13.3216 2.24625 12.75 3.08296 12.75H20.917C21.7537 12.75 22.25 13.3216 22.25 13.8101L22.25 17.1903Z"
+                    stroke="#C6C6C6" stroke-width="1.5"></path>
+                  <path
+                    d="M21 13L19.1258 4.56613C18.9224 3.65106 18.1108 3 17.1734 3H6.82657C5.88917 3 5.07754 3.65107 4.87419 4.56614L3 13"
+                    stroke="#C6C6C6" stroke-width="1.5"></path>
+                  <path
+                    d="M8.5 9.5C9.32843 9.5 10 8.82843 10 8C10 7.17157 9.32843 6.5 8.5 6.5C7.67157 6.5 7 7.17157 7 8C7 8.82843 7.67157 9.5 8.5 9.5Z"
+                    stroke="#C6C6C6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M6 12V11.3547C6 10.6041 6.64251 10 7.42995 10H9.57005C10.3623 10 11 10.6087 11 11.3547V12"
+                    stroke="#C6C6C6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path
+                    d="M15.5 9.5C16.3284 9.5 17 8.82843 17 8C17 7.17157 16.3284 6.5 15.5 6.5C14.6716 6.5 14 7.17157 14 8C14 8.82843 14.6716 9.5 15.5 9.5Z"
+                    stroke="#C6C6C6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M13 12V11.3547C13 10.6041 13.6425 10 14.4299 10H16.5701C17.3623 10 18 10.6087 18 11.3547V12"
+                    stroke="#C6C6C6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M4 19V19.6453C4 20.3959 4.64251 21 5.42995 21H7.57005C8.36232 21 9 20.3913 9 19.6453V19"
+                    stroke="#C6C6C6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M15 19V19.6453C15 20.3959 15.6425 21 16.4299 21H18.5701C19.3623 21 20 20.3913 20 19.6453V19"
+                    stroke="#C6C6C6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </div>
+              <p>Xe có tài xế</p>
+            </div>
+            <div class="option-item" data-httx="thue-xe-dai-han">
+              <div class="wrap-svg">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M6.66699 1.6665V4.1665" stroke="#c6c6c6" stroke-width="1.5" stroke-miterlimit="10"
+                    stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M13.333 1.6665V4.1665" stroke="#c6c6c6" stroke-width="1.5" stroke-miterlimit="10"
+                    stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M2.91699 7.5752H17.0837" stroke="#c6c6c6" stroke-width="1.5" stroke-miterlimit="10"
+                    stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path
+                    d="M18.3337 15.8333C18.3337 16.4583 18.1587 17.05 17.8503 17.55C17.2753 18.5167 16.217 19.1667 15.0003 19.1667C14.1587 19.1667 13.392 18.8583 12.8087 18.3333C12.5503 18.1167 12.3253 17.85 12.1503 17.55C11.842 17.05 11.667 16.4583 11.667 15.8333C11.667 13.9917 13.1587 12.5 15.0003 12.5C16.0003 12.5 16.892 12.9417 17.5003 13.6333C18.017 14.225 18.3337 14.9917 18.3337 15.8333Z"
+                    stroke="#c6c6c6" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"
+                    stroke-linejoin="round"></path>
+                  <path d="M13.6992 15.8333L14.5242 16.6583L16.2992 15.0166" stroke="#c6c6c6" stroke-width="1.5"
+                    stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path
+                    d="M17.5 7.08317V13.6332C16.8917 12.9415 16 12.4998 15 12.4998C13.1583 12.4998 11.6667 13.9915 11.6667 15.8332C11.6667 16.4582 11.8417 17.0498 12.15 17.5498C12.325 17.8498 12.55 18.1165 12.8083 18.3332H6.66667C3.75 18.3332 2.5 16.6665 2.5 14.1665V7.08317C2.5 4.58317 3.75 2.9165 6.66667 2.9165H13.3333C16.25 2.9165 17.5 4.58317 17.5 7.08317Z"
+                    stroke="#c6c6c6" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"
+                    stroke-linejoin="round"></path>
+                  <path d="M9.99609 11.4165H10.0036" stroke="#c6c6c6" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round"></path>
+                  <path d="M6.91211 11.4165H6.91959" stroke="#c6c6c6" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round"></path>
+                  <path d="M6.91211 13.9165H6.91959" stroke="#c6c6c6" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round"></path>
+                </svg>
+              </div>
+              <p>Thuê xe dài hạn</p>
+            </div>
+          </div>
+          <div class="search">
+            <div class="search-item active" data-httx="xe-tu-lai">
+              <div class="search-form sd">
+                <div class="search-form__item address address-search-option">
+                  <div class="title">
+                    <div class="wrap-svg">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M12 2.75C8.31 2.75 5.3 5.76 5.3 9.45C5.3 14.03 11.3 20.77 11.55 21.05C11.79 21.32 12.21 21.32 12.45 21.05C12.71 20.77 18.7 14.03 18.7 9.45C18.7 5.76 15.69 2.75 12 2.75Z"
+                          stroke="#767676" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path
+                          d="M12.3849 11.7852C13.6776 11.5795 14.5587 10.3647 14.3529 9.07204C14.1472 7.77936 12.9325 6.89824 11.6398 7.104C10.3471 7.30976 9.46597 8.52449 9.67173 9.81717C9.87749 11.1099 11.0922 11.991 12.3849 11.7852Z"
+                          stroke="#767676" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                      </svg>
+                    </div>
+                    <p>Địa điểm</p>
+                  </div>
+                  <div class="choose">
+                    <div class="choose-item has-arrow" id="choose_address" data-id="1">
+                      <div class="here-autocomplete">
+                        <p class="address pointer " id="id_p_address_car">Hà Nội</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="line line-address-time"></div>
+                <div class="search-form__item">
+                  <div class="title">
+                    <div class="wrap-svg">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6.86 4.81V2.75" stroke="#767676" stroke-width="1.5" stroke-linecap="round"
+                          stroke-linejoin="round"></path>
+                        <path d="M17.14 4.81V2.75" stroke="#767676" stroke-width="1.5" stroke-linecap="round"
+                          stroke-linejoin="round"></path>
+                        <path
+                          d="M18.05 3.78003H5.95C4.18 3.78003 2.75 5.21003 2.75 6.98003V18.06C2.75 19.83 4.18 21.26 5.95 21.26H18.06C19.83 21.26 21.26 19.83 21.26 18.06V6.98003C21.25 5.21003 19.82 3.78003 18.05 3.78003Z"
+                          stroke="#767676" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M2.75 7.8999H21.25" stroke="#767676" stroke-width="1.5" stroke-linecap="round"
+                          stroke-linejoin="round"></path>
+                        <path
+                          d="M18 12C18.5523 12 19 11.5523 19 11C19 10.4477 18.5523 10 18 10C17.4477 10 17 10.4477 17 11C17 11.5523 17.4477 12 18 12Z"
+                          fill="#767676"></path>
+                        <path
+                          d="M14 12C14.5523 12 15 11.5523 15 11C15 10.4477 14.5523 10 14 10C13.4477 10 13 10.4477 13 11C13 11.5523 13.4477 12 14 12Z"
+                          fill="#767676"></path>
+                        <path
+                          d="M10 12C10.5523 12 11 11.5523 11 11C11 10.4477 10.5523 10 10 10C9.44772 10 9 10.4477 9 11C9 11.5523 9.44772 12 10 12Z"
+                          fill="#767676"></path>
+                        <path
+                          d="M6 12C6.55228 12 7 11.5523 7 11C7 10.4477 6.55228 10 6 10C5.44772 10 5 10.4477 5 11C5 11.5523 5.44772 12 6 12Z"
+                          fill="#767676"></path>
+                        <path
+                          d="M18 15.49C18.5523 15.49 19 15.0423 19 14.49C19 13.9377 18.5523 13.49 18 13.49C17.4477 13.49 17 13.9377 17 14.49C17 15.0423 17.4477 15.49 18 15.49Z"
+                          fill="#767676"></path>
+                        <path
+                          d="M14 15.49C14.5523 15.49 15 15.0423 15 14.49C15 13.9377 14.5523 13.49 14 13.49C13.4477 13.49 13 13.9377 13 14.49C13 15.0423 13.4477 15.49 14 15.49Z"
+                          fill="#767676"></path>
+                        <path
+                          d="M10 15.49C10.5523 15.49 11 15.0423 11 14.49C11 13.9377 10.5523 13.49 10 13.49C9.44772 13.49 9 13.9377 9 14.49C9 15.0423 9.44772 15.49 10 15.49Z"
+                          fill="#767676"></path>
+                        <path
+                          d="M6 15.49C6.55228 15.49 7 15.0423 7 14.49C7 13.9377 6.55228 13.49 6 13.49C5.44772 13.49 5 13.9377 5 14.49C5 15.0423 5.44772 15.49 6 15.49Z"
+                          fill="#767676"></path>
+                        <path
+                          d="M14 18.97C14.5523 18.97 15 18.5223 15 17.97C15 17.4177 14.5523 16.97 14 16.97C13.4477 16.97 13 17.4177 13 17.97C13 18.5223 13.4477 18.97 14 18.97Z"
+                          fill="#767676"></path>
+                        <path
+                          d="M10 18.97C10.5523 18.97 11 18.5223 11 17.97C11 17.4177 10.5523 16.97 10 16.97C9.44772 16.97 9 17.4177 9 17.97C9 18.5223 9.44772 18.97 10 18.97Z"
+                          fill="#767676"></path>
+                        <path
+                          d="M6 18.97C6.55228 18.97 7 18.5223 7 17.97C7 17.4177 6.55228 16.97 6 16.97C5.44772 16.97 5 17.4177 5 17.97C5 18.5223 5.44772 18.97 6 18.97Z"
+                          fill="#767676"></path>
+                      </svg>
+                    </div>
+                    <p>Thời gian thuê</p>
+                  </div>
+                  <div class="choose">
+                    <label class="choose-item has-arrow" id="choose_day">
+                      <span class="value">
+                        <span class="day-nhan" id="span_day_nhan_search_option">24/09/2024</span> -
+                        <span class="day-tra" id="span_day_tra_search_option">25/09/2024</span>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+                <form action="pick-oto-xemay.html" >
+                  <input type="hidden" name="ipt_day_nhan" value="">
+                  <input type="hidden" name="ipt_day_tra" value="">
+                  <input type="hidden" name="ipt_number_rental_day" value="">
+                  <input type="hidden" name="ipt_diachi" value="">
+                  <input type="hidden" name="ipt_type_car" value="">
+                  <button type="submit" class="btn btn-primary" target="" id="a_search_car_xetulai">Tìm xe</button>
+                </form>
+              </div>
+            </div>
+            <div class="search-item" data-httx="xe-co-tai-xe" style="padding: 16px 16px 0;">
+              <h6 class="title-wd">Lộ trình</h6>
+              <div class="wd-option-form">
+                <div class="custom-radio"><input type="radio" id="city" name="trip_mode" checked="" value="city"><label
+                    for="city">Nội thành</label></div>
+                <div class="custom-radio"><input type="radio" id="province" name="trip_mode" value="province"><label
+                    for="province">Liên tỉnh</label></div>
+                <div class="custom-radio"><input type="radio" id="province_oneWay" name="trip_mode"
+                    value="province_oneWay"><label for="province_oneWay">Liên tỉnh (1 chiều)</label></div>
+              </div>
+              <div class="note">
+                Di chuyển nội thành hoặc lân cận, lộ trình tự do.
+                <div class="wrap-svg pointer">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M10.0001 18.3337C14.6025 18.3337 18.3334 14.6027 18.3334 10.0003C18.3334 5.39795 14.6025 1.66699 10.0001 1.66699C5.39771 1.66699 1.66675 5.39795 1.66675 10.0003C1.66675 14.6027 5.39771 18.3337 10.0001 18.3337Z"
+                      stroke="#767676" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path
+                      d="M7.57495 7.50047C7.77087 6.94353 8.15758 6.4739 8.66658 6.17475C9.17558 5.87561 9.77403 5.76626 10.3559 5.86607C10.9378 5.96588 11.4656 6.26841 11.8458 6.72008C12.2261 7.17175 12.4342 7.74341 12.4333 8.33381C12.4333 10.0005 9.93328 10.8338 9.93328 10.8338"
+                      stroke="#767676" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M10 14.167H10.0083" stroke="#767676" stroke-width="1.5" stroke-linecap="round"
+                      stroke-linejoin="round"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="search-form">
+                <div class="search-form__item">
+                  <div class="title no-space">
+                    <div class="wrap-svg">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M12 2.75C8.31 2.75 5.3 5.76 5.3 9.45C5.3 14.03 11.3 20.77 11.55 21.05C11.79 21.32 12.21 21.32 12.45 21.05C12.71 20.77 18.7 14.03 18.7 9.45C18.7 5.76 15.69 2.75 12 2.75Z"
+                          stroke="#767676" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path
+                          d="M12.3849 11.7852C13.6776 11.5795 14.5587 10.3647 14.3529 9.07204C14.1472 7.77936 12.9325 6.89824 11.6398 7.104C10.3471 7.30976 9.46597 8.52449 9.67173 9.81717C9.87749 11.1099 11.0922 11.991 12.3849 11.7852Z"
+                          stroke="#767676" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                      </svg>
+                    </div>
+                    <div class="choose-item has-arrow" id="choose_address_xecotaice">
+                      <div class="here-autocomplete">
+                        <p class="address pointer text-disabled fontWeight-4">Tôi muốn đón tại ...</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h6 class="title-wd">Thời gian</h6>
+              <div class="search-form wd">
+                <div class="search-form__item">
+                  <div class="title no-space">
+                    <div class="wrap-svg">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6.86 4.81V2.75" stroke="#767676" stroke-width="1.5" stroke-linecap="round"
+                          stroke-linejoin="round"></path>
+                        <path d="M17.14 4.81V2.75" stroke="#767676" stroke-width="1.5" stroke-linecap="round"
+                          stroke-linejoin="round"></path>
+                        <path
+                          d="M18.05 3.78003H5.95C4.18 3.78003 2.75 5.21003 2.75 6.98003V18.06C2.75 19.83 4.18 21.26 5.95 21.26H18.06C19.83 21.26 21.26 19.83 21.26 18.06V6.98003C21.25 5.21003 19.82 3.78003 18.05 3.78003Z"
+                          stroke="#767676" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M2.75 7.8999H21.25" stroke="#767676" stroke-width="1.5" stroke-linecap="round"
+                          stroke-linejoin="round"></path>
+                        <path
+                          d="M18 12C18.5523 12 19 11.5523 19 11C19 10.4477 18.5523 10 18 10C17.4477 10 17 10.4477 17 11C17 11.5523 17.4477 12 18 12Z"
+                          fill="#767676"></path>
+                        <path
+                          d="M14 12C14.5523 12 15 11.5523 15 11C15 10.4477 14.5523 10 14 10C13.4477 10 13 10.4477 13 11C13 11.5523 13.4477 12 14 12Z"
+                          fill="#767676"></path>
+                        <path
+                          d="M10 12C10.5523 12 11 11.5523 11 11C11 10.4477 10.5523 10 10 10C9.44772 10 9 10.4477 9 11C9 11.5523 9.44772 12 10 12Z"
+                          fill="#767676"></path>
+                        <path
+                          d="M6 12C6.55228 12 7 11.5523 7 11C7 10.4477 6.55228 10 6 10C5.44772 10 5 10.4477 5 11C5 11.5523 5.44772 12 6 12Z"
+                          fill="#767676"></path>
+                        <path
+                          d="M18 15.49C18.5523 15.49 19 15.0423 19 14.49C19 13.9377 18.5523 13.49 18 13.49C17.4477 13.49 17 13.9377 17 14.49C17 15.0423 17.4477 15.49 18 15.49Z"
+                          fill="#767676"></path>
+                        <path
+                          d="M14 15.49C14.5523 15.49 15 15.0423 15 14.49C15 13.9377 14.5523 13.49 14 13.49C13.4477 13.49 13 13.9377 13 14.49C13 15.0423 13.4477 15.49 14 15.49Z"
+                          fill="#767676"></path>
+                        <path
+                          d="M10 15.49C10.5523 15.49 11 15.0423 11 14.49C11 13.9377 10.5523 13.49 10 13.49C9.44772 13.49 9 13.9377 9 14.49C9 15.0423 9.44772 15.49 10 15.49Z"
+                          fill="#767676"></path>
+                        <path
+                          d="M6 15.49C6.55228 15.49 7 15.0423 7 14.49C7 13.9377 6.55228 13.49 6 13.49C5.44772 13.49 5 13.9377 5 14.49C5 15.0423 5.44772 15.49 6 15.49Z"
+                          fill="#767676"></path>
+                        <path
+                          d="M14 18.97C14.5523 18.97 15 18.5223 15 17.97C15 17.4177 14.5523 16.97 14 16.97C13.4477 16.97 13 17.4177 13 17.97C13 18.5223 13.4477 18.97 14 18.97Z"
+                          fill="#767676"></path>
+                        <path
+                          d="M10 18.97C10.5523 18.97 11 18.5223 11 17.97C11 17.4177 10.5523 16.97 10 16.97C9.44772 16.97 9 17.4177 9 17.97C9 18.5223 9.44772 18.97 10 18.97Z"
+                          fill="#767676"></path>
+                        <path
+                          d="M6 18.97C6.55228 18.97 7 18.5223 7 17.97C7 17.4177 6.55228 16.97 6 16.97C5.44772 16.97 5 17.4177 5 17.97C5 18.5223 5.44772 18.97 6 18.97Z"
+                          fill="#767676"></path>
+                      </svg>
+                    </div>
+                    <label class="choose-item has-arrow" id="choose_time_xecotaixe">
+                      <span class="value">
+                        <span class="day-nhan" id="span_day_nhan_search_option">24/09/2024</span> -
+                        <span class="day-tra" id="span_day_tra_search_option">25/09/2024</span>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+                <form action="pick-oto-xemay.html" >
+                  <input type="hidden" name="ipt_lotrinh" value="">
+                  <input type="hidden" name="ipt_diemdon" value="">
+                  <input type="hidden" name="ipt_day_batdau" value="">
+                  <input type="hidden" name="ipt_day_ketthuc" value="">
+                  <input type="hidden" name="ipt_time_batdau" value="">
+                  <input type="hidden" name="ipt_time_ketthuc" value="">
+                  <button type="button" class="btn btn-primary"><a href="pick-oto-xemay.html">Tìm xe</a></button>
 
-            <div class="vehicle-type">
-    <button class="btn btn-select active" data-type="car">
-        Ô tô <i class="fas fa-check"></i>
-    </button>
-    <button class="btn btn-select" data-type="bike">
-        Xe máy <i class="fas fa-check"></i>
-    </button>
-</div>
+                </form>
+              </div>
+            </div>
+            <div class="search-item" data-httx="thue-xe-dai-han">
+              <div class="search-form cs">
+                <div class="search-form__item address">
+                  <div class="title">
+                    <div class="wrap-svg">
+                    </div>
+                    <p>Địa điểm áp dụng hiện tại</p>
+                  </div>
+                  <div class="choose">
+                    <div class="choose-item pointer" id="choose_city_thuexedaihan">
+                      <p class="address">TP. Hồ Chí Minh</p>
+                    </div>
+                  </div>
+                </div>
+                <a class="btn btn-primary" href="pick-oto-xemay.html">Tìm xe</a>
+              </div>
+            </div>
           </div>
-          <div class="form-group">
-            <label for="location">Địa điểm</label>
-            <select id="location">
-              <option>TP. Hồ Chí Minh</option>
-              <option>Hà Nội</option>
-              <option>Đà Nẵng</option>
-            </select>
+        </div>
+        <!-- //Search-option -->
+        <!-- modal search -->
+        <!-- Modal choose address -->
+        <div class="modal" id="modal_choose_address" style="display: none;">
+          <div class="modal-m modal-search modal-fix modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close"><span aria-hidden="true">×</span><span
+                    class="sr-only"></span></button>
+                <h5>Địa điểm</h5>
+              </div>
+              <div class="modal-body">
+                <div class="search-input">
+                  <div class="wrap-svg">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M11.9989 14.1714C9.86891 14.1714 8.12891 12.4414 8.12891 10.3014C8.12891 8.16141 9.86891 6.44141 11.9989 6.44141C14.1289 6.44141 15.8689 8.17141 15.8689 10.3114C15.8689 12.4514 14.1289 14.1714 11.9989 14.1714ZM11.9989 7.94141C10.6989 7.94141 9.62891 9.00141 9.62891 10.3114C9.62891 11.6214 10.6889 12.6814 11.9989 12.6814C13.3089 12.6814 14.3689 11.6214 14.3689 10.3114C14.3689 9.00141 13.2989 7.94141 11.9989 7.94141Z"
+                        fill="black"></path>
+                      <path
+                        d="M12.0016 22.76C10.5216 22.76 9.03164 22.2 7.87164 21.09C4.92164 18.25 1.66164 13.72 2.89164 8.33C4.00164 3.44 8.27164 1.25 12.0016 1.25C12.0016 1.25 12.0016 1.25 12.0116 1.25C15.7416 1.25 20.0116 3.44 21.1216 8.34C22.3416 13.73 19.0816 18.25 16.1316 21.09C14.9716 22.2 13.4816 22.76 12.0016 22.76ZM12.0016 2.75C9.09164 2.75 5.35164 4.3 4.36164 8.66C3.28164 13.37 6.24164 17.43 8.92164 20C10.6516 21.67 13.3616 21.67 15.0916 20C17.7616 17.43 20.7216 13.37 19.6616 8.66C18.6616 4.3 14.9116 2.75 12.0016 2.75Z"
+                        fill="black"></path>
+                    </svg>
+                  </div>
+                  <input type="text" placeholder="Nhập địa điêm" value="Hồ Chí Minh" name="address_start"
+                    id="id_address_start">
+                  <div class="wrap-svg pointer" id="del_address_start">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <path d="M24 0H0V24H24V0Z" fill="white"></path>
+                      <path
+                        d="M12 2C6.49 2 2 6.49 2 12C2 17.51 6.49 22 12 22C17.51 22 22 17.51 22 12C22 6.49 17.51 2 12 2ZM14.42 13.39C14.72 13.69 14.71 14.16 14.42 14.45C14.27 14.59 14.08 14.67 13.89 14.67C13.7 14.67 13.5 14.59 13.36 14.44L12 13.07L10.65 14.44C10.5 14.59 10.31 14.67 10.11 14.67C9.91999 14.67 9.73 14.59 9.59 14.45C9.29 14.16 9.28999 13.69 9.57999 13.39L10.95 12L9.57999 10.61C9.28999 10.31 9.29 9.84 9.59 9.55C9.88 9.26 10.36 9.26 10.65 9.56L12 10.93L13.36 9.56C13.65 9.26 14.12 9.26 14.42 9.55C14.71 9.84 14.72 10.31 14.42 10.61L13.05 12L14.42 13.39Z"
+                        fill="#F26A2B"></path>
+                    </svg>
+                  </div>
+                </div>
+                <div id="search_ajax" class="search-suggest" style="position: relative;">
+                </div>
+                <div class="search-suggest">
+                  <div class="box-container">
+                    <div class="wrap-box">
+                    </div>
+                  </div>
+                  <div class="box-container">
+                    <p class="title-box">Giao xe sân bay</p>
+                    <div class="wrap-box airport">
+                      <div class="box-item" data-airport="Hồ Chí Minh">
+                        <div class="wrap-svg">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M17.2748 2.72494C16.6831 2.13327 15.7248 2.14161 15.1498 2.74994L11.9915 6.04161L4.28314 3.49161L2.66647 5.10827L9.09147 9.06661L5.84147 12.4499L3.75814 12.1083L2.2998 13.5666L5.36647 14.6416L6.44147 17.7083L7.89981 16.2499L7.55814 14.1666L10.9415 10.9166L14.8998 17.3416L16.5165 15.7249L13.9665 8.01661L17.2581 4.85828C17.8498 4.27494 17.8581 3.31661 17.2748 2.72494Z"
+                              stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                          </svg>
+                        </div>
+                        <div class="box-item__text" style="text-transform: capitalize;">
+                          <p class="main" title="">tân sơn nhất</p>
+                        </div>
+                      </div>
+                      <div class="box-item" data-airport="Hà Nội">
+                        <div class="wrap-svg">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M17.2748 2.72494C16.6831 2.13327 15.7248 2.14161 15.1498 2.74994L11.9915 6.04161L4.28314 3.49161L2.66647 5.10827L9.09147 9.06661L5.84147 12.4499L3.75814 12.1083L2.2998 13.5666L5.36647 14.6416L6.44147 17.7083L7.89981 16.2499L7.55814 14.1666L10.9415 10.9166L14.8998 17.3416L16.5165 15.7249L13.9665 8.01661L17.2581 4.85828C17.8498 4.27494 17.8581 3.31661 17.2748 2.72494Z"
+                              stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                          </svg>
+                        </div>
+                        <div class="box-item__text" style="text-transform: capitalize;">
+                          <p class="main" title="">nội bài</p>
+                        </div>
+                      </div>
+                      <div class="box-item" data-airport="Đà Nẵng">
+                        <div class="wrap-svg">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M17.2748 2.72494C16.6831 2.13327 15.7248 2.14161 15.1498 2.74994L11.9915 6.04161L4.28314 3.49161L2.66647 5.10827L9.09147 9.06661L5.84147 12.4499L3.75814 12.1083L2.2998 13.5666L5.36647 14.6416L6.44147 17.7083L7.89981 16.2499L7.55814 14.1666L10.9415 10.9166L14.8998 17.3416L16.5165 15.7249L13.9665 8.01661L17.2581 4.85828C17.8498 4.27494 17.8581 3.31661 17.2748 2.72494Z"
+                              stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                          </svg>
+                        </div>
+                        <div class="box-item__text" style="text-transform: capitalize;">
+                          <p class="main" title="">đà nẵng</p>
+                        </div>
+                      </div>
+                      <div class="box-item" data-airport="Khánh Hòa">
+                        <div class="wrap-svg">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M17.2748 2.72494C16.6831 2.13327 15.7248 2.14161 15.1498 2.74994L11.9915 6.04161L4.28314 3.49161L2.66647 5.10827L9.09147 9.06661L5.84147 12.4499L3.75814 12.1083L2.2998 13.5666L5.36647 14.6416L6.44147 17.7083L7.89981 16.2499L7.55814 14.1666L10.9415 10.9166L14.8998 17.3416L16.5165 15.7249L13.9665 8.01661L17.2581 4.85828C17.8498 4.27494 17.8581 3.31661 17.2748 2.72494Z"
+                              stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                          </svg>
+                        </div>
+                        <div class="box-item__text" style="text-transform: capitalize;">
+                          <p class="main" title="">cam ranh</p>
+                        </div>
+                      </div>
+                      <div class="box-item" data-airport="Lâm Đồng">
+                        <div class="wrap-svg">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M17.2748 2.72494C16.6831 2.13327 15.7248 2.14161 15.1498 2.74994L11.9915 6.04161L4.28314 3.49161L2.66647 5.10827L9.09147 9.06661L5.84147 12.4499L3.75814 12.1083L2.2998 13.5666L5.36647 14.6416L6.44147 17.7083L7.89981 16.2499L7.55814 14.1666L10.9415 10.9166L14.8998 17.3416L16.5165 15.7249L13.9665 8.01661L17.2581 4.85828C17.8498 4.27494 17.8581 3.31661 17.2748 2.72494Z"
+                              stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                          </svg>
+                        </div>
+                        <div class="box-item__text" style="text-transform: capitalize;">
+                          <p class="main" title="">liên khương</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="box-container" id="box_recent_searches">
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-<!-- Thay thế 2 form-group date cũ bằng code mới -->
-<div class="date-row">
-  <div class="form-group">
-      <label for="pickup-date">Ngày nhận xe</label>
-      <input type="datetime-local" id="pickup-date" value="2024-11-21T07:00">
-  </div>
-  <div class="form-group">
-      <label for="return-date">Ngày trả xe</label>
-      <input type="datetime-local" id="return-date" value="2024-11-21T19:00">
-  </div>
-</div>
-          <button class="btn btn-primary">Tìm xe giá tốt</button>
-          <div class="special-requests">
-            <p>Dành cho các yêu cầu đặc biệt</p>
-            <ul class="special-requests-list">
-              <li><a href="#">Thuê xe dài hạn <span class="new">New</span></a></li>
-              <li><a href="#">Thuê xe có lái</a></li>
-              <li><a href="#">Yêu cầu thuê xe khác</a></li>
-            </ul>
+        </div>
+        <!-- //Modal choose address -->
+        <!-- Modal choose day -->
+        <div class="modal" id="modal_choose_day" style="display: none;">
+          <div class="modal-m modal-search modal-fix modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close"><span aria-hidden="true">×</span><span
+                    class="sr-only"></span></button>
+                <h5>Thời gian</h5>
+              </div>
+              <div class="modal-body">
+                <div class="modal-confirm-body">
+                  <div class="calendar-container">
+                    <div id="calendar" class="hasDatepicker">
+                      <div
+                        class="ui-datepicker-inline ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all ui-datepicker-multi-2 ui-datepicker-multi"
+                        style="width: 34em; display: block;">
+                        <div class="ui-datepicker-group ui-datepicker-group-first">
+                          <div class="ui-datepicker-header ui-widget-header ui-helper-clearfix ui-corner-left">
+                            <a class="ui-datepicker-prev ui-corner-all ui-state-disabled" title="Prev"><span
+                                class="ui-icon ui-icon-circle-triangle-w">Prev</span></a>
+                            <div class="ui-datepicker-title"><span
+                                class="ui-datepicker-month">September</span>&nbsp;<span
+                                class="ui-datepicker-year">2024</span></div>
+                          </div>
+                          <table class="ui-datepicker-calendar">
+                            <thead>
+                              <tr>
+                                <th scope="col" class="ui-datepicker-week-end"><span title="Sunday">CN</span></th>
+                                <th scope="col"><span title="Monday">T2</span></th>
+                                <th scope="col"><span title="Tuesday">T3</span></th>
+                                <th scope="col"><span title="Wednesday">T4</span></th>
+                                <th scope="col"><span title="Thursday">T5</span></th>
+                                <th scope="col"><span title="Friday">T6</span></th>
+                                <th scope="col" class="ui-datepicker-week-end"><span title="Saturday">T7</span></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td class=" ui-datepicker-week-end ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">1</span></td>
+                                <td class=" ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">2</span></td>
+                                <td class=" ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">3</span></td>
+                                <td class=" ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">4</span></td>
+                                <td class=" ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">5</span></td>
+                                <td class=" ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">6</span></td>
+                                <td class=" ui-datepicker-week-end ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">7</span></td>
+                              </tr>
+                              <tr>
+                                <td class=" ui-datepicker-week-end ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">8</span></td>
+                                <td class=" ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">9</span></td>
+                                <td class=" ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">10</span></td>
+                                <td class=" ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">11</span></td>
+                                <td class=" ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">12</span></td>
+                                <td class=" ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">13</span></td>
+                                <td class=" ui-datepicker-week-end ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">14</span></td>
+                              </tr>
+                              <tr>
+                                <td class=" ui-datepicker-week-end ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">15</span></td>
+                                <td class=" ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">16</span></td>
+                                <td class=" ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">17</span></td>
+                                <td class=" ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">18</span></td>
+                                <td class=" ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">19</span></td>
+                                <td class=" ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">20</span></td>
+                                <td class=" ui-datepicker-week-end ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">21</span></td>
+                              </tr>
+                              <tr>
+                                <td class=" ui-datepicker-week-end ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">22</span></td>
+                                <td class=" ui-datepicker-unselectable ui-state-disabled "><span
+                                    class="ui-state-default">23</span></td>
+                                <td class=" ui-datepicker-days-cell-over  ui-datepicker-current-day ui-datepicker-today"
+                                  data-handler="selectDay" data-event="click" data-month="8" data-year="2024"><a
+                                    class="ui-state-default ui-state-highlight ui-state-active ui-state-hover"
+                                    href="#">24</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="8"
+                                  data-year="2024"><a class="ui-state-default" href="#">25</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="8"
+                                  data-year="2024"><a class="ui-state-default" href="#">26</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="8"
+                                  data-year="2024"><a class="ui-state-default" href="#">27</a></td>
+                                <td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click"
+                                  data-month="8" data-year="2024"><a class="ui-state-default" href="#">28</a></td>
+                              </tr>
+                              <tr>
+                                <td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click"
+                                  data-month="8" data-year="2024"><a class="ui-state-default" href="#">29</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="8"
+                                  data-year="2024"><a class="ui-state-default" href="#">30</a></td>
+                                <td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">
+                                  &nbsp;</td>
+                                <td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">
+                                  &nbsp;</td>
+                                <td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">
+                                  &nbsp;</td>
+                                <td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">
+                                  &nbsp;</td>
+                                <td
+                                  class=" ui-datepicker-week-end ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">
+                                  &nbsp;</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="ui-datepicker-group ui-datepicker-group-last">
+                          <div class="ui-datepicker-header ui-widget-header ui-helper-clearfix ui-corner-right">
+                            <a class="ui-datepicker-next ui-corner-all" data-handler="next" data-event="click"
+                              title="Next"><span class="ui-icon ui-icon-circle-triangle-e">Next</span></a>
+                            <div class="ui-datepicker-title"><span class="ui-datepicker-month">October</span>&nbsp;<span
+                                class="ui-datepicker-year">2024</span></div>
+                          </div>
+                          <table class="ui-datepicker-calendar">
+                            <thead>
+                              <tr>
+                                <th scope="col" class="ui-datepicker-week-end"><span title="Sunday">CN</span></th>
+                                <th scope="col"><span title="Monday">T2</span></th>
+                                <th scope="col"><span title="Tuesday">T3</span></th>
+                                <th scope="col"><span title="Wednesday">T4</span></th>
+                                <th scope="col"><span title="Thursday">T5</span></th>
+                                <th scope="col"><span title="Friday">T6</span></th>
+                                <th scope="col" class="ui-datepicker-week-end"><span title="Saturday">T7</span></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td
+                                  class=" ui-datepicker-week-end ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">
+                                  &nbsp;</td>
+                                <td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">
+                                  &nbsp;</td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">1</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">2</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">3</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">4</a></td>
+                                <td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click"
+                                  data-month="9" data-year="2024"><a class="ui-state-default" href="#">5</a></td>
+                              </tr>
+                              <tr>
+                                <td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click"
+                                  data-month="9" data-year="2024"><a class="ui-state-default" href="#">6</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">7</a></td>
+                                <td class=" dp-highlight" data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">8</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">9</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">10</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">11</a></td>
+                                <td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click"
+                                  data-month="9" data-year="2024"><a class="ui-state-default" href="#">12</a></td>
+                              </tr>
+                              <tr>
+                                <td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click"
+                                  data-month="9" data-year="2024"><a class="ui-state-default" href="#">13</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">14</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">15</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">16</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">17</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">18</a></td>
+                                <td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click"
+                                  data-month="9" data-year="2024"><a class="ui-state-default" href="#">19</a></td>
+                              </tr>
+                              <tr>
+                                <td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click"
+                                  data-month="9" data-year="2024"><a class="ui-state-default" href="#">20</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">21</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">22</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">23</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">24</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">25</a></td>
+                                <td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click"
+                                  data-month="9" data-year="2024"><a class="ui-state-default" href="#">26</a></td>
+                              </tr>
+                              <tr>
+                                <td class=" ui-datepicker-week-end " data-handler="selectDay" data-event="click"
+                                  data-month="9" data-year="2024"><a class="ui-state-default" href="#">27</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">28</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">29</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">30</a></td>
+                                <td class=" " data-handler="selectDay" data-event="click" data-month="9"
+                                  data-year="2024"><a class="ui-state-default" href="#">31</a></td>
+                                <td class=" ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">
+                                  &nbsp;</td>
+                                <td
+                                  class=" ui-datepicker-week-end ui-datepicker-other-month ui-datepicker-unselectable ui-state-disabled">
+                                  &nbsp;</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="ui-datepicker-row-break"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="text-danger marginBottom-l">
+                    <p id="error_choose_datetime" style="font-size: .75rem;"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <div class="info-time">
+                  <div class="info-time__item">
+                    <p>
+                      <span id="span_date_nhan_modal_choose_time">08/10/2024</span>
+                      -
+                      <span id="span_date_tra_modal_choose_time">Chọn ngày kết thúc</span>
+                    </p>
+                    <p class="df-align-center total">
+                      Số ngày thuê:
+                      <span class="fontWeight-6" id="total_rental_date"
+                        style="margin: 0px 2px; font-weight: 600;">1</span> ngày
+                      <span class="tooltip  ">
+                        <span class="wrap-svg">
+                          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M10.0001 18.3337C14.6025 18.3337 18.3334 14.6027 18.3334 10.0003C18.3334 5.39795 14.6025 1.66699 10.0001 1.66699C5.39771 1.66699 1.66675 5.39795 1.66675 10.0003C1.66675 14.6027 5.39771 18.3337 10.0001 18.3337Z"
+                              stroke="#767676" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path
+                              d="M7.57495 7.50047C7.77087 6.94353 8.15758 6.4739 8.66658 6.17475C9.17558 5.87561 9.77403 5.76626 10.3559 5.86607C10.9378 5.96588 11.4656 6.26841 11.8458 6.72008C12.2261 7.17175 12.4342 7.74341 12.4333 8.33381C12.4333 10.0005 9.93328 10.8338 9.93328 10.8338"
+                              stroke="#767676" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M10 14.167H10.0083" stroke="#767676" stroke-width="1.5" stroke-linecap="round"
+                              stroke-linejoin="round"></path>
+                          </svg>
+                        </span>
+                        <span class="tooltip-text">
+                          Giá thuê xe được tính theo ngày. Nếu bạn thuê xe dưới 24h sẽ được tính tròn 1 ngày </span>
+                      </span>
+                    </p>
+                  </div>
+                  <div class="wrap-btn"><a class="btn btn--s btn-primary disabled"
+                      id="a_btn_update_car_rental_datetime">Tiếp tục</a></div>
+                </div>
+              </div>
+            </div>
           </div>
+        </div>
+        <!-- //Modal choose day -->
+        <!-- Modal choose time -->
+        <div class="modal" id="modal_choose_time_xecotaixe">
+          <div class="modal-m modal-search modal-fix modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close"><span aria-hidden="true">×</span><span
+                    class="sr-only"></span></button>
+                <h5>Thời gian</h5>
+              </div>
+              <div class="modal-body">
+                <div class="modal-confirm-body">
+                  <div class="time-choose" style="margin-bottom: 20px; margin-top: 0;">
+                    <div class="time-choose__item">
+                      <p class="title-time">Ngày bắt đầu</p>
+                      <div class="active-time">
+                        25/09/2024
+                      </div>
+                    </div>
+                    <div class="time-choose__item">
+                      <div>
+                        <p class="title-time">Đón xe lúc</p>
+                        <p class="active-time">08:00</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="time-choose">
+                    <div class="time-choose__item">
+                      <p class="title-time">Thời gian thuê</p>
+                      <p class="select active-time">2 tiếng<span class="font-12 text-gray"> (kết thúc 10:00
+                          17/09/2024)</span></p>
+                    </div>
+                  </div>
+                  <div class="time-choose" style="margin-bottom: 20px;">
+                    <div class="time-choose__item">
+                      <p class="title-time">Ngày kết thúc</p>
+                      <div class="active-time">
+                        25/09/2024
+                      </div>
+                    </div>
+                    <div class="time-choose__item">
+                      <div>
+                        <p class="title-time">Trả xe lúc</p>
+                        <p class="active-time">08:00</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="text-danger marginBottom-l">
+                    <p id="error_choose_datetime" style="font-size: .75rem;"></p>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <div class="info-time">
+                  <div class="info-time__item">
+                    <p class="time"><span class="time-nhan" id="p_time_nhan_modal_choose_time_2">8:00</span>, <span
+                        id="span_date_nhan_modal_choose_time">25/09/2024</span>
+                      -
+                      <span class="time-tra" id="p_time_tra_modal_choose_time_2">10:00</span>, <span
+                        id="span_date_tra_modal_choose_time">25/09/2024</span>
+                    </p>
+                    <p class="df-align-center total">Thời gian thuê:
+                      <span class="fontWeight-6" id="total_rental_date" style="margin: 0px 2px; font-weight: 600;">
+                        1 </span> tiếng
+                    </p>
+                  </div>
+                  <div class="wrap-btn"><a class="btn btn--s btn-primary" id="a_btn_update_car_rental_datetime">Tiếp
+                      tục</a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- modal choose time -->
+        <!-- Modal choose city -->
+        <div class="modal" id="modal_choose_city_thuexedaihan" style="display: none;">
+          <div class="modal-m modal-search modal-fix modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close"><span aria-hidden="true">×</span><span
+                    class="sr-only"></span></button>
+                <h5>Địa điểm</h5>
+              </div>
+              <div class="modal-body">
+                <div class="search-input">
+                  <div class="wrap-svg">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M11.9989 14.1714C9.86891 14.1714 8.12891 12.4414 8.12891 10.3014C8.12891 8.16141 9.86891 6.44141 11.9989 6.44141C14.1289 6.44141 15.8689 8.17141 15.8689 10.3114C15.8689 12.4514 14.1289 14.1714 11.9989 14.1714ZM11.9989 7.94141C10.6989 7.94141 9.62891 9.00141 9.62891 10.3114C9.62891 11.6214 10.6889 12.6814 11.9989 12.6814C13.3089 12.6814 14.3689 11.6214 14.3689 10.3114C14.3689 9.00141 13.2989 7.94141 11.9989 7.94141Z"
+                        fill="black"></path>
+                      <path
+                        d="M12.0016 22.76C10.5216 22.76 9.03164 22.2 7.87164 21.09C4.92164 18.25 1.66164 13.72 2.89164 8.33C4.00164 3.44 8.27164 1.25 12.0016 1.25C12.0016 1.25 12.0016 1.25 12.0116 1.25C15.7416 1.25 20.0116 3.44 21.1216 8.34C22.3416 13.73 19.0816 18.25 16.1316 21.09C14.9716 22.2 13.4816 22.76 12.0016 22.76ZM12.0016 2.75C9.09164 2.75 5.35164 4.3 4.36164 8.66C3.28164 13.37 6.24164 17.43 8.92164 20C10.6516 21.67 13.3616 21.67 15.0916 20C17.7616 17.43 20.7216 13.37 19.6616 8.66C18.6616 4.3 14.9116 2.75 12.0016 2.75Z"
+                        fill="black"></path>
+                    </svg>
+                  </div>
+                  <input type="text" placeholder="Chọn tỉnh/thành phố" value="Hồ Chí Minh" name="address_start"
+                    id="id_address_start">
+                  <div class="wrap-svg pointer" id="del_address_start2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <path d="M24 0H0V24H24V0Z" fill="white"></path>
+                      <path
+                        d="M12 2C6.49 2 2 6.49 2 12C2 17.51 6.49 22 12 22C17.51 22 22 17.51 22 12C22 6.49 17.51 2 12 2ZM14.42 13.39C14.72 13.69 14.71 14.16 14.42 14.45C14.27 14.59 14.08 14.67 13.89 14.67C13.7 14.67 13.5 14.59 13.36 14.44L12 13.07L10.65 14.44C10.5 14.59 10.31 14.67 10.11 14.67C9.91999 14.67 9.73 14.59 9.59 14.45C9.29 14.16 9.28999 13.69 9.57999 13.39L10.95 12L9.57999 10.61C9.28999 10.31 9.29 9.84 9.59 9.55C9.88 9.26 10.36 9.26 10.65 9.56L12 10.93L13.36 9.56C13.65 9.26 14.12 9.26 14.42 9.55C14.71 9.84 14.72 10.31 14.42 10.61L13.05 12L14.42 13.39Z"
+                        fill="#F26A2B"></path>
+                    </svg>
+                  </div>
+                </div>
+                <div id="search_ajax" class="search-suggest" style="position: relative;">
+                </div>
+                <div class="search-suggest">
+                  <div class="box-container">
+                    <div class="wrap-box">
+                    </div>
+                  </div>
+                  <div class="box-container">
+                    <p class="title-box">Tỉnh / Thành phố</p>
+                    <div class="wrap-box airport">
+                      <div class="box-item" data-airport="Hồ Chí Minh">
+                        <div class="wrap-svg">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M11.9989 14.1714C9.86891 14.1714 8.12891 12.4414 8.12891 10.3014C8.12891 8.16141 9.86891 6.44141 11.9989 6.44141C14.1289 6.44141 15.8689 8.17141 15.8689 10.3114C15.8689 12.4514 14.1289 14.1714 11.9989 14.1714ZM11.9989 7.94141C10.6989 7.94141 9.62891 9.00141 9.62891 10.3114C9.62891 11.6214 10.6889 12.6814 11.9989 12.6814C13.3089 12.6814 14.3689 11.6214 14.3689 10.3114C14.3689 9.00141 13.2989 7.94141 11.9989 7.94141Z"
+                              fill="black"></path>
+                            <path
+                              d="M12.0016 22.76C10.5216 22.76 9.03164 22.2 7.87164 21.09C4.92164 18.25 1.66164 13.72 2.89164 8.33C4.00164 3.44 8.27164 1.25 12.0016 1.25C12.0016 1.25 12.0016 1.25 12.0116 1.25C15.7416 1.25 20.0116 3.44 21.1216 8.34C22.3416 13.73 19.0816 18.25 16.1316 21.09C14.9716 22.2 13.4816 22.76 12.0016 22.76ZM12.0016 2.75C9.09164 2.75 5.35164 4.3 4.36164 8.66C3.28164 13.37 6.24164 17.43 8.92164 20C10.6516 21.67 13.3616 21.67 15.0916 20C17.7616 17.43 20.7216 13.37 19.6616 8.66C18.6616 4.3 14.9116 2.75 12.0016 2.75Z"
+                              fill="black"></path>
+                          </svg>
+                        </div>
+                        <div class="box-item__text" style="text-transform: capitalize;">
+                          <p class="main" title="">TP. Hồ Chí Minh</p>
+                        </div>
+                      </div>
+                      <div class="box-item" data-airport="Hà Nội">
+                        <div class="wrap-svg">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M11.9989 14.1714C9.86891 14.1714 8.12891 12.4414 8.12891 10.3014C8.12891 8.16141 9.86891 6.44141 11.9989 6.44141C14.1289 6.44141 15.8689 8.17141 15.8689 10.3114C15.8689 12.4514 14.1289 14.1714 11.9989 14.1714ZM11.9989 7.94141C10.6989 7.94141 9.62891 9.00141 9.62891 10.3114C9.62891 11.6214 10.6889 12.6814 11.9989 12.6814C13.3089 12.6814 14.3689 11.6214 14.3689 10.3114C14.3689 9.00141 13.2989 7.94141 11.9989 7.94141Z"
+                              fill="black"></path>
+                            <path
+                              d="M12.0016 22.76C10.5216 22.76 9.03164 22.2 7.87164 21.09C4.92164 18.25 1.66164 13.72 2.89164 8.33C4.00164 3.44 8.27164 1.25 12.0016 1.25C12.0016 1.25 12.0016 1.25 12.0116 1.25C15.7416 1.25 20.0116 3.44 21.1216 8.34C22.3416 13.73 19.0816 18.25 16.1316 21.09C14.9716 22.2 13.4816 22.76 12.0016 22.76ZM12.0016 2.75C9.09164 2.75 5.35164 4.3 4.36164 8.66C3.28164 13.37 6.24164 17.43 8.92164 20C10.6516 21.67 13.3616 21.67 15.0916 20C17.7616 17.43 20.7216 13.37 19.6616 8.66C18.6616 4.3 14.9116 2.75 12.0016 2.75Z"
+                              fill="black"></path>
+                          </svg>
+                        </div>
+                        <div class="box-item__text" style="text-transform: capitalize;">
+                          <p class="main" title="">Hà Nội</p>
+                        </div>
+                      </div>
+                      <div class="box-item" data-airport="Đà Nẵng">
+                        <div class="wrap-svg">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M11.9989 14.1714C9.86891 14.1714 8.12891 12.4414 8.12891 10.3014C8.12891 8.16141 9.86891 6.44141 11.9989 6.44141C14.1289 6.44141 15.8689 8.17141 15.8689 10.3114C15.8689 12.4514 14.1289 14.1714 11.9989 14.1714ZM11.9989 7.94141C10.6989 7.94141 9.62891 9.00141 9.62891 10.3114C9.62891 11.6214 10.6889 12.6814 11.9989 12.6814C13.3089 12.6814 14.3689 11.6214 14.3689 10.3114C14.3689 9.00141 13.2989 7.94141 11.9989 7.94141Z"
+                              fill="black"></path>
+                            <path
+                              d="M12.0016 22.76C10.5216 22.76 9.03164 22.2 7.87164 21.09C4.92164 18.25 1.66164 13.72 2.89164 8.33C4.00164 3.44 8.27164 1.25 12.0016 1.25C12.0016 1.25 12.0016 1.25 12.0116 1.25C15.7416 1.25 20.0116 3.44 21.1216 8.34C22.3416 13.73 19.0816 18.25 16.1316 21.09C14.9716 22.2 13.4816 22.76 12.0016 22.76ZM12.0016 2.75C9.09164 2.75 5.35164 4.3 4.36164 8.66C3.28164 13.37 6.24164 17.43 8.92164 20C10.6516 21.67 13.3616 21.67 15.0916 20C17.7616 17.43 20.7216 13.37 19.6616 8.66C18.6616 4.3 14.9116 2.75 12.0016 2.75Z"
+                              fill="black"></path>
+                          </svg>
+                        </div>
+                        <div class="box-item__text" style="text-transform: capitalize;">
+                          <p class="main" title="">Đà Nẵng</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="box-container" id="box_recent_searches">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -857,7 +1686,7 @@
                   height="22" fill="black">
                   <rect fill="white" x="0.919998" y="0.919922" width="22" height="22"></rect>
                   <path
-                    d="M4.32 1.91992C3.00023 1.91992 1.92 3.00015 1.92 4.31992V19.6799C1.92 20.9997 3.00023 22.0799 4.32 22.0799H19.68C20.999822.0799 22.08 20.9997 20.9997 22.08 19.6799V4.31992C22.08 3.00015 20.9998 1.91992 19.68 1.91992H4.32ZM4.32 2.87992H7.47656C5.81666 4.60701 4.8 6.87526 4.8 9.35992C4.8 11.9334 5.88871 14.2792 7.65562 16.0265C7.5914 15.9653 7.67454 16.0717 7.68281 16.2599C7.69134 16.4542 7.66209 16.7212 7.58344 16.9855C7.42613 17.5143 7.09711 18.0017 6.56812 18.178C6.46765 18.2115 6.38107 18.2773 6.32187 18.3651C6.26266 18.4529 6.23416 18.5578 6.24079 18.6635C6.24742 18.7692 6.28882 18.8698 6.35854 18.9495C6.42826 19.0292 6.52238 19.0836 6.62625 19.1043C7.95091 19.3692 8.8879 18.9704 9.57844 18.6534C10.269 18.3363 10.6421 18.123 11.34 18.4049L11.3456 18.4068C12.6523 18.9176 14.091 19.1999 15.6 19.1999C17.6147 19.1999 19.503 18.6965 21.12 17.819V19.6799C21.12 20.4808 20.4809 21.1199 19.68 21.1199H4.32C3.51913 21.1199 2.88 20.4808 2.88 19.6799V4.31992C2.88 3.51905 3.51913 2.87992 4.32 2.87992ZM8.87812 2.87992H19.68C20.4809 2.87992 21.12 3.51905 21.12 4.31992V16.7062C19.5489 17.67 17.6518 18.2399 15.6 18.2399C14.2129 18.2399 12.8945 17.9804 11.7 17.5143C10.6857 17.1046 9.85955 17.4677 9.17812 17.7805C8.80908 17.95 8.44498 18.0908 8.03344 18.1687C8.23704 17.8784 8.4112 17.5683 8.50312 17.2593C8.61173 16.8942 8.65588 16.5367 8.64187 16.2177C8.62791 15.8998 8.60013 15.6087 8.33156 15.3449L8.33062 15.344C6.72812 13.7593 5.76 11.6633 5.76 9.35992C5.76 6.80508 6.95336 4.50598 8.87812 2.87992ZM15.8325 7.19336C15.7054 7.19535 15.5842 7.2477 15.4956 7.33892C15.407 7.43014 15.3583 7.55278 15.36 7.67992V11.9999C15.3591 12.0635 15.3708 12.1267 15.3946 12.1857C15.4183 12.2447 15.4535 12.2984 15.4982 12.3437C15.5428 12.389 15.596 12.425 15.6547 12.4496C15.7134 12.4741 15.7764 12.4868 15.84 12.4868C15.9036 12.4868 15.9666 12.4741 16.0253 12.4496C16.084 12.425 16.1372 12.389 16.1818 12.3437C16.2265 12.2984 16.2617 12.2447 16.2854 12.1857C16.3091 12.1267 16.3209 12.0635 16.32 11.9999V7.67992C16.3209 7.6157 16.3089 7.55196 16.2847 7.49247C16.2605 7.43298 16.2246 7.37895 16.1791 7.33358C16.1337 7.28821 16.0796 7.25242 16.02 7.22833C15.9605 7.20425 15.8967 7.19236 15.8325 7.19336ZM8.64 7.67992C8.57639 7.67902 8.51324 7.69077 8.45422 7.71449C8.39519 7.73821 8.34147 7.77342 8.29617 7.81808C8.25088 7.86275 8.21491 7.91597 8.19036 7.97465C8.1658 8.03333 8.15316 8.09631 8.15316 8.15992C8.15316 8.22353 8.1658 8.28651 8.19036 8.3452C8.21491 8.40388 8.25088 8.4571 8.29617 8.50176C8.34147 8.54642 8.39519 8.58163 8.45422 8.60535C8.51324 8.62907 8.57639 8.64082 8.64 8.63992H10.1747L8.23312 11.7459C8.18782 11.8185 8.16277 11.9019 8.16057 11.9875C8.15837 12.0731 8.17909 12.1577 8.22059 12.2326C8.2621 12.3075 8.32287 12.3699 8.39661 12.4134C8.47036 12.4569 8.55439 12.4798 8.64 12.4799H11.04C11.1036 12.4808 11.1668 12.4691 11.2258 12.4454C11.2848 12.4216 11.3385 12.3864 11.3838 12.3418C11.4291 12.2971 11.4651 12.2439 11.4896 12.1852C11.5142 12.1265 11.5268 12.0635 11.5268 11.9999C11.5268 11.9363 11.5142 11.8733 11.4896 11.8146C11.4651 11.756 11.4291 11.7027 11.3838 11.6581C11.3385 11.6134 11.2848 11.5782 11.2258 11.5545C11.1668 11.5308 11.1036 11.519 11.04 11.5199H9.50531L11.4469 8.41398C11.4922 8.34134 11.5172 8.25791 11.5194 8.17232C11.5216 8.08674 11.5009 8.00213 11.4594 7.92725C11.4179 7.85237 11.3571 7.78995 11.2834 7.74647C11.2096 7.70298 11.1256 7.68 11.04 7.67992H8.64ZM14.3925 9.11336C14.3138 9.11475 14.2366 9.13549 14.1677 9.17374C14.0989 9.212 14.0406 9.2666 13.9978 9.33273C13.759 9.20158 13.4897 9.11992 13.2 9.11992C12.2778 9.11992 11.52 9.87777 11.52 10.7999C11.52 11.7221 12.2778 12.4799 13.2 12.4799C13.4894 12.4799 13.7582 12.398 13.9969 12.2671C14.0534 12.3546 14.1369 12.4213 14.2347 12.4572C14.3325 12.493 14.4393 12.4961 14.539 12.4659C14.6387 12.4358 14.7259 12.374 14.7874 12.2899C14.8489 12.2059 14.8814 12.1041 14.88 11.9999V10.7999V9.59992C14.8809 9.5357 14.8689 9.47196 14.8447 9.41247C14.8205 9.35298 14.7846 9.29895 14.7391 9.25358C14.6937 9.20821 14.6396 9.17242 14.58 9.14833C14.5205 9.12425 14.4567 9.11236 14.3925 9.11336ZM18.48 9.11992C17.5578 9.11992 16.8 9.87777 16.8 10.7999C16.8 11.7221 17.5578 12.4799 18.48 12.4799C19.4022 12.4799 20.16 11.7221 20.16 10.7999C20.16 9.87777 19.4022 9.11992 18.48 9.11992ZM13.2 10.0799C13.6033 10.0799 13.92 10.3966 13.92 10.7999C13.92 11.2033 13.6033 11.5199 13.2 11.5199C12.7967 11.5199 12.48 11.2033 12.48 10.7999C12.48 10.3966 12.7967 10.0799 13.2 10.0799ZM18.48 10.0799C18.8833 10.0799 19.2 10.3966 19.2 10.7999C19.2 11.2033 18.8833 11.5199 18.48 11.5199C18.0767 11.5199 17.76 11.2033 17.76 10.7999C17.76 10.3966 18.0767 10.0799 18.48 10.0799Z">
+                    d="M4.32 1.91992C3.00023 1.91992 1.92 3.00015 1.92 4.31992V19.6799C1.92 20.9997 3.00023 22.0799 4.32 22.0799H19.68C20.999822.0799 22.08 20.9997 22.08 19.6799V4.31992C22.08 3.00015 20.9998 1.91992 19.68 1.91992H4.32ZM4.32 2.87992H7.47656C5.81666 4.60701 4.8 6.87526 4.8 9.35992C4.8 11.9334 5.88871 14.2792 7.65562 16.0265C7.5914 15.9653 7.67454 16.0717 7.68281 16.2599C7.69134 16.4542 7.66209 16.7212 7.58344 16.9855C7.42613 17.5143 7.09711 18.0017 6.56812 18.178C6.46765 18.2115 6.38107 18.2773 6.32187 18.3651C6.26266 18.4529 6.23416 18.5578 6.24079 18.6635C6.24742 18.7692 6.28882 18.8698 6.35854 18.9495C6.42826 19.0292 6.52238 19.0836 6.62625 19.1043C7.95091 19.3692 8.8879 18.9704 9.57844 18.6534C10.269 18.3363 10.6421 18.123 11.34 18.4049L11.3456 18.4068C12.6523 18.9176 14.091 19.1999 15.6 19.1999C17.6147 19.1999 19.503 18.6965 21.12 17.819V19.6799C21.12 20.4808 20.4809 21.1199 19.68 21.1199H4.32C3.51913 21.1199 2.88 20.4808 2.88 19.6799V4.31992C2.88 3.51905 3.51913 2.87992 4.32 2.87992ZM8.87812 2.87992H19.68C20.4809 2.87992 21.12 3.51905 21.12 4.31992V16.7062C19.5489 17.67 17.6518 18.2399 15.6 18.2399C14.2129 18.2399 12.8945 17.9804 11.7 17.5143C10.6857 17.1046 9.85955 17.4677 9.17812 17.7805C8.80908 17.95 8.44498 18.0908 8.03344 18.1687C8.23704 17.8784 8.4112 17.5683 8.50312 17.2593C8.61173 16.8942 8.65588 16.5367 8.64187 16.2177C8.62791 15.8998 8.60013 15.6087 8.33156 15.3449L8.33062 15.344C6.72812 13.7593 5.76 11.6633 5.76 9.35992C5.76 6.80508 6.95336 4.50598 8.87812 2.87992ZM15.8325 7.19336C15.7054 7.19535 15.5842 7.2477 15.4956 7.33892C15.407 7.43014 15.3583 7.55278 15.36 7.67992V11.9999C15.3591 12.0635 15.3708 12.1267 15.3946 12.1857C15.4183 12.2447 15.4535 12.2984 15.4982 12.3437C15.5428 12.389 15.596 12.425 15.6547 12.4496C15.7134 12.4741 15.7764 12.4868 15.84 12.4868C15.9036 12.4868 15.9666 12.4741 16.0253 12.4496C16.084 12.425 16.1372 12.389 16.1818 12.3437C16.2265 12.2984 16.2617 12.2447 16.2854 12.1857C16.3091 12.1267 16.3209 12.0635 16.32 11.9999V7.67992C16.3209 7.6157 16.3089 7.55196 16.2847 7.49247C16.2605 7.43298 16.2246 7.37895 16.1791 7.33358C16.1337 7.28821 16.0796 7.25242 16.02 7.22833C15.9605 7.20425 15.8967 7.19236 15.8325 7.19336ZM8.64 7.67992C8.57639 7.67902 8.51324 7.69077 8.45422 7.71449C8.39519 7.73821 8.34147 7.77342 8.29617 7.81808C8.25088 7.86275 8.21491 7.91597 8.19036 7.97465C8.1658 8.03333 8.15316 8.09631 8.15316 8.15992C8.15316 8.22353 8.1658 8.28651 8.19036 8.3452C8.21491 8.40388 8.25088 8.4571 8.29617 8.50176C8.34147 8.54642 8.39519 8.58163 8.45422 8.60535C8.51324 8.62907 8.57639 8.64082 8.64 8.63992H10.1747L8.23312 11.7459C8.18782 11.8185 8.16277 11.9019 8.16057 11.9875C8.15837 12.0731 8.17909 12.1577 8.22059 12.2326C8.2621 12.3075 8.32287 12.3699 8.39661 12.4134C8.47036 12.4569 8.55439 12.4798 8.64 12.4799H11.04C11.1036 12.4808 11.1668 12.4691 11.2258 12.4454C11.2848 12.4216 11.3385 12.3864 11.3838 12.3418C11.4291 12.2971 11.4651 12.2439 11.4896 12.1852C11.5142 12.1265 11.5268 12.0635 11.5268 11.9999C11.5268 11.9363 11.5142 11.8733 11.4896 11.8146C11.4651 11.756 11.4291 11.7027 11.3838 11.6581C11.3385 11.6134 11.2848 11.5782 11.2258 11.5545C11.1668 11.5308 11.1036 11.519 11.04 11.5199H9.50531L11.4469 8.41398C11.4922 8.34134 11.5172 8.25791 11.5194 8.17232C11.5216 8.08674 11.5009 8.00213 11.4594 7.92725C11.4179 7.85237 11.3571 7.78995 11.2834 7.74647C11.2096 7.70298 11.1256 7.68 11.04 7.67992H8.64ZM14.3925 9.11336C14.3138 9.11475 14.2366 9.13549 14.1677 9.17374C14.0989 9.212 14.0406 9.2666 13.9978 9.33273C13.759 9.20158 13.4897 9.11992 13.2 9.11992C12.2778 9.11992 11.52 9.87777 11.52 10.7999C11.52 11.7221 12.2778 12.4799 13.2 12.4799C13.4894 12.4799 13.7582 12.398 13.9969 12.2671C14.0534 12.3546 14.1369 12.4213 14.2347 12.4572C14.3325 12.493 14.4393 12.4961 14.539 12.4659C14.6387 12.4358 14.7259 12.374 14.7874 12.2899C14.8489 12.2059 14.8814 12.1041 14.88 11.9999V10.7999V9.59992C14.8809 9.5357 14.8689 9.47196 14.8447 9.41247C14.8205 9.35298 14.7846 9.29895 14.7391 9.25358C14.6937 9.20821 14.6396 9.17242 14.58 9.14833C14.5205 9.12425 14.4567 9.11236 14.3925 9.11336ZM18.48 9.11992C17.5578 9.11992 16.8 9.87777 16.8 10.7999C16.8 11.7221 17.5578 12.4799 18.48 12.4799C19.4022 12.4799 20.16 11.7221 20.16 10.7999C20.16 9.87777 19.4022 9.11992 18.48 9.11992ZM13.2 10.0799C13.6033 10.0799 13.92 10.3966 13.92 10.7999C13.92 11.2033 13.6033 11.5199 13.2 11.5199C12.7967 11.5199 12.48 11.2033 12.48 10.7999C12.48 10.3966 12.7967 10.0799 13.2 10.0799ZM18.48 10.0799C18.8833 10.0799 19.2 10.3966 19.2 10.7999C19.2 11.2033 18.8833 11.5199 18.48 11.5199C18.0767 11.5199 17.76 11.2033 17.76 10.7999C17.76 10.3966 18.0767 10.0799 18.48 10.0799Z">
                   </path>
                 </mask>
                 <path
@@ -912,7 +1741,6 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
   <script src="./assets/js/Search-option.js"></script>
-  <script src="./assets/js/rental-form.js"></script>
   <!-- Ion-Icon -->
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>

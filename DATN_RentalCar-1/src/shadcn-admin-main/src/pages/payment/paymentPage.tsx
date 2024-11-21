@@ -38,6 +38,7 @@ const PaymentPage = () => {
   const [deleteConfirmation, setDeleteConfirmation] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchType, setSearchType] = useState('rentalId');
+  const [sortOrder, setSortOrder] = useState('desc');
 
   useEffect(() => {
     fetchRentalVehicles();
@@ -190,6 +191,8 @@ const PaymentPage = () => {
   const filteredCarRentalVehicles = carRentalVehicles.filter(vehicle => {
     if (searchType === 'rentalId') {
       return vehicle.rental?.rentalId.toString().includes(searchTerm);
+    } else if (searchType === 'vehicleId') {
+      return vehicle.car?.carId.toString().includes(searchTerm) || vehicle.motorbike?.motorbikeId.toString().includes(searchTerm);
     } else {
       return renderVehicleDetails(vehicle).toLowerCase().includes(searchTerm.toLowerCase());
     }
@@ -198,13 +201,21 @@ const PaymentPage = () => {
   const filteredMotorbikeRentalVehicles = motorbikeRentalVehicles.filter(vehicle => {
     if (searchType === 'rentalId') {
       return vehicle.rental?.rentalId.toString().includes(searchTerm);
+    } else if (searchType === 'vehicleId') {
+      return vehicle.car?.carId.toString().includes(searchTerm) || vehicle.motorbike?.motorbikeId.toString().includes(searchTerm);
     } else {
       return renderVehicleDetails(vehicle).toLowerCase().includes(searchTerm.toLowerCase());
     }
   });
 
   const handleSort = (vehicles) => {
-    return [...vehicles].sort((a, b) => a.rentalVehicleId - b.rentalVehicleId);
+    return [...vehicles].sort((a, b) => {
+      if (sortOrder === 'asc') {
+        return a.rentalVehicleId - b.rentalVehicleId;
+      } else {
+        return b.rentalVehicleId - a.rentalVehicleId;
+      }
+    });
   };
 
   return (
@@ -218,21 +229,33 @@ const PaymentPage = () => {
         
         <CardContent>
           <div className="flex items-center mb-4">
+            <Button onClick={handleRefresh} className="border rounded p-2 mr-2" variant="outline">Refresh</Button>
+
             <Input
-              placeholder="Tìm kiếm theo ID cho thuê hoặc tên xe"
+              placeholder="Tìm kiếm theo ID cho thuê, ID xe hoặc tên xe"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="mr-2"
             />
+
             <select
               value={searchType}
               onChange={(e) => setSearchType(e.target.value)}
               className="border rounded p-2 mr-2"
             >
               <option value="rentalId">Tìm theo ID cho thuê</option>
+              <option value="vehicleId">Tìm theo ID xe</option>
               <option value="vehicleName">Tìm theo tên xe</option>
             </select>
-            <Button onClick={handleRefresh} variant="outline">Refresh</Button>
+            
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+              className="border rounded p-2 ml-2"
+            > 
+              <option value="desc">Mới nhất</option>
+              <option value="asc">Cũ nhất</option>
+            </select>
           </div>
 
           <Tabs defaultValue={activeTab} onValueChange={(value) => setActiveTab(value)}>

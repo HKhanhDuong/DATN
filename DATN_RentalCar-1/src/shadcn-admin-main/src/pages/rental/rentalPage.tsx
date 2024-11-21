@@ -279,7 +279,7 @@ export default function RentalPage() {
         </h1>
 
         {/* Form */}
-        <div className='mb-6 rounded-lg p-6 shadow-md'>
+        <div className='mb-6 rounded-lg bg-white p-6 shadow-md'>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
               <div className='grid grid-cols-2 gap-4'>
@@ -623,7 +623,7 @@ export default function RentalPage() {
           />
         </div>
 
-        <div className='rounded-lg shadow-md'>
+        <div className='rounded-lg bg-white shadow-md'>
           <Table>
             <TableHeader>
               <TableRow>
