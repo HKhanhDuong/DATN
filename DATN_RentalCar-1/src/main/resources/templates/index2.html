@@ -12,11 +12,14 @@
 <link rel="stylesheet" href="./assets/css/style.css" />
 <link rel="stylesheet" href="./assets/css/responsive.css" />
 <link rel="stylesheet" href="./assets/css/Search-option.css">
+<link rel="stylesheet" href="./assets/css/rental-form.css">
+
 <!-- Search-option-->
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.theme.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <title>TRANG CHỦ RENTALCAR</title>
 <style >
 	.product-item {
@@ -69,6 +72,7 @@
 	color: #e2e2e2;
 }
 </style>
+<<<<<<< HEAD
 				<!-- Search-option -->
 				<div class="search-option">
 					<div th:replace="~{module/search :: search}" >
@@ -104,13 +108,107 @@
 					<div th:replace="~{module/modal_choose_city :: modal_choose_city}" >
 					
 					</div>
+=======
+                <!--------------------------------------------------------------------------->
+				       <div class="rental-form">
+          <h2>Bạn cần thuê xe?</h2>
+          <div class="form-group">
+
+            <div class="vehicle-type">
+    <button class="btn btn-select active" data-type="car">
+        Ô tô <i class="fas fa-check"></i>
+    </button>
+    <button class="btn btn-select" data-type="bike">
+        Xe máy <i class="fas fa-check"></i>
+    </button>
+			</div>
+          </div>
+          <div class="form-group">
+            <select id="location">
+              <option>TP. Hồ Chí Minh</option>
+              <option>Hà Nội</option>
+              <option>Đà Nẵng</option>
+            </select>
+          </div>
+<!-- Thay thế 2 form-group date cũ bằng code mới -->
+<div class="date-row">
+  <div class="form-group">
+      <label for="pickup-date">Ngày nhận xe</label>
+      <input type="datetime-local" id="pickup-date" value="2024-11-21T07:00">
+  </div>
+  <div class="form-group">
+      <label for="return-date">Ngày trả xe</label>
+      <input type="datetime-local" id="return-date" value="2024-11-21T19:00">
+  </div>
+</div>
+          <button class="btn btn-primary">Tìm xe giá tốt</button>
+          <div class="special-requests">
+            <p>Dành cho các yêu cầu đặc biệt</p>
+            <ul class="special-requests-list">
+              <li><a href="#">Thuê xe dài hạn <span class="new">New</span></a></li>
+              <li><a href="#">Thuê xe có lái</a></li>
+              <li><a href="#">Yêu cầu thuê xe khác</a></li>
+            </ul>
+          </div>
+                <!--------------------------------------------------------------------------->
+			</div>
+>>>>>>> 580e915da86f89ffb4f570a5729f73f0af84f2d4
 		</div>
 	</section>
 
 	<!-- sale -->
 	<section id="sale">
+<<<<<<< HEAD
 		<div th:replace="~{module/sale :: sale}" class="container">
 			
+=======
+		<div class="container">
+			<div class="sale-layout">
+				<h2 class="title-big">Chương Trình Khuyến Mãi Từ RENTALCAR</h2>
+				<div class="swiper img-slider">
+					<div class="swiper-wrapper">
+						<div class="swiper-slide">
+							<div class="img-poster">
+								<img src="./assets/images/thoaimai.png" alt="" />
+							</div>
+						</div>
+						<div class="swiper-slide">
+							<div class="img-poster">
+								<img src="./assets/images/TanHuong.png" alt="" />
+							</div>
+						</div>
+						<div class="swiper-slide">
+							<div class="img-poster">
+								<img src="./assets/images/XeHienDai.png" alt="" />
+							</div>
+						</div>
+						<div class="swiper-slide">
+							<div class="img-poster">
+								<img src="./assets/images/uudai.png" alt="" />
+							</div>
+						</div>
+						<div class="swiper-slide">
+							<div class="img-poster">
+								<img src="./assets/images/xe7cho.png" alt="" />
+							</div>
+						</div>
+						<div class="swiper-slide">
+							<div class="img-poster">
+								<img src="./assets/images/datxe.png" alt="" />
+							</div>
+						</div>
+						<div class="swiper-slide">
+							<div class="img-poster">
+								<img src="https://n1-cstg.mioto.vn/g/2024/06/08/08/6NH5V581.jpg"
+									alt="" />
+							</div>
+						</div>
+					</div>
+					<div class="swiper-button-prev"></div>
+					<div class="swiper-button-next"></div>
+				</div>
+			</div>
+>>>>>>> 580e915da86f89ffb4f570a5729f73f0af84f2d4
 		</div>
 	</section>
 
@@ -515,6 +613,9 @@
 	<script
 		src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 	<script src="./assets/js/swiper.js"></script>
+	<script src="./assets/js/rental-form.js"></script>
+	
+	
 
 	<!-- Bootstrap JS và các phụ thuộc -->
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
