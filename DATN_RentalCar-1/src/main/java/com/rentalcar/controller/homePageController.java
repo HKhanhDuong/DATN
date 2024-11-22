@@ -26,11 +26,13 @@ import com.rentalcar.entity.Account;
 import com.rentalcar.entity.Role;
 import com.rentalcar.dao.AccountRepo;
 import com.rentalcar.dao.CarRepo;
+import com.rentalcar.dao.DrivingLiscenseRepo;
 import com.rentalcar.dao.MotorbikeRepo;
 import com.rentalcar.dao.RentalVehicleRepo;
 import com.rentalcar.dto.RentalDTO;
 import com.rentalcar.dto.RentalDTO2;
 import com.rentalcar.entity.Car;
+import com.rentalcar.entity.DrivingLicense;
 import com.rentalcar.entity.Motorbike;
 import com.rentalcar.entity.Rental;
 import com.rentalcar.entity.RentalVehicle;
@@ -57,7 +59,9 @@ public class homePageController {
     private AccountService accountService;
 	@Autowired
     private CarService carService;
-	
+	@Autowired
+    private DrivingLiscenseRepo drivingLiscenseRepo;
+
 	@Autowired
     private RentalService rentalService;
 	
@@ -147,45 +151,87 @@ public class homePageController {
         return "account"; // Quay lại trang tài khoản
     }
 
-
-
-    
     @PostMapping("/save-account-info")
     public String saveAccountInfo(@RequestParam String fullName, 
                                   @RequestParam String phoneNumber, 
                                   @RequestParam String address, 
                                   @RequestParam String dateOfBirth, 
-                                  @RequestParam String email) throws ParseException {
-        
+                                  @RequestParam String email, 
+                                  @RequestParam String licenseNumber,
+                                  Model model) throws ParseException {
+
         // Lấy thông tin người dùng đã đăng nhập từ session
         Account user = (Account) session.get("user");
 
         if (user == null) {
-            return "redirect:/login"; // Nếu không có người dùng trong session, chuyển hướng về trang đăng nhập
+            model.addAttribute("error", "Bạn cần đăng nhập để cập nhật thông tin.");
+            return "account"; // Trả về trang tài khoản với thông báo lỗi đăng nhập
         }
 
-        // Cập nhật thông tin người dùng
-        user.setFullName(fullName);
-        user.setPhoneNumber(phoneNumber);
-        user.setAddress(address);
-        user.setEmail(email);
+        // Kiểm tra các trường có bị để trống hay không
+        if (fullName.isEmpty() || phoneNumber.isEmpty() || address.isEmpty() || dateOfBirth.isEmpty() || email.isEmpty()) {
+            model.addAttribute("error", "Vui lòng điền đầy đủ các trường bắt buộc!");
+            model.addAttribute("user", user); // Để giữ lại thông tin người dùng trên form
+            return "account"; // Trả về trang tài khoản với thông báo lỗi
+        }
 
-        // Chuyển đổi ngày sinh từ String thành Date
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date dob = dateFormat.parse(dateOfBirth);
-        user.setDateOfBirth(dob); // Cập nhật ngày sinh
+        // Kiểm tra định dạng email
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
+        if (!email.matches(emailRegex)) {
+            model.addAttribute("error", "Email không đúng định dạng!");
+            model.addAttribute("user", user);
+            return "account"; // Trả về trang tài khoản với thông báo lỗi
+        }
 
-        // Lưu lại thông tin người dùng vào cơ sở dữ liệu
-        accountRepo.save(user); // Lưu thay đổi vào cơ sở dữ liệu
+        // Kiểm tra định dạng số điện thoại
+        String phoneRegex = "^0[0-9]{9}$";
+        if (!phoneNumber.matches(phoneRegex)) {
+            model.addAttribute("error", "Số điện thoại chỉ được chứa số và phải từ 10 đến 12 chữ số!");
+            model.addAttribute("user", user);
+            return "account"; // Trả về trang tài khoản với thông báo lỗi
+        }
 
-        // Cập nhật lại session với thông tin mới của người dùng
-        session.set("user", user);
+        try {
+            // Cập nhật thông tin người dùng
+            user.setFullName(fullName);
+            user.setPhoneNumber(phoneNumber);
+            user.setAddress(address);
+            user.setEmail(email);
 
-        // Sau khi lưu xong, chuyển hướng về trang tài khoản
-        return "redirect:/account";
+            // Chuyển đổi ngày sinh từ String thành Date
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date dob = dateFormat.parse(dateOfBirth);
+            user.setDateOfBirth(dob); // Cập nhật ngày sinh
+
+            // Kiểm tra và cập nhật thông tin giấy phép lái xe
+            DrivingLicense drivingLicense = user.getDrivingLicense();
+            if (drivingLicense == null) {
+                drivingLicense = new DrivingLicense();
+                drivingLicense.setAccount(user);
+                user.setDrivingLicense(drivingLicense);
+            }
+            drivingLicense.setLicenseNumber(licenseNumber); // Cập nhật số giấy phép lái xe
+            drivingLiscenseRepo.save(drivingLicense); // Lưu thông tin giấy phép lái xe
+
+            // Lưu lại thông tin người dùng vào cơ sở dữ liệu
+            accountRepo.save(user); // Lưu thay đổi vào cơ sở dữ liệu
+
+            // Cập nhật lại session với thông tin mới của người dùng
+            session.set("user", user);
+
+            // Thêm thông báo thành công
+            model.addAttribute("success", "Cập nhật thông tin tài khoản thành công!");
+            return "account"; // Trả về trang tài khoản với thông báo thành công
+
+        } catch (Exception e) {
+            // Nếu có lỗi xảy ra trong quá trình lưu thông tin
+            model.addAttribute("error", "Có lỗi xảy ra khi cập nhật thông tin tài khoản. Vui lòng thử lại.");
+            model.addAttribute("user", user); // Để giữ lại thông tin người dùng trên form
+            return "account"; // Trả về trang tài khoản với thông báo lỗi
+        }
     }
 
-    
+
     @GetMapping("/about")
     public String about() {
         return "about";
