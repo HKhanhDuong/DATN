@@ -1,56 +1,70 @@
-
-    <div class="account-container" th:fragment="accountInfo">
-        <div class="account-header">
-            <h2>Cài đặt tài khoản</h2>
-        </div>
-        <div class="profile-image-container">
-            <!-- Hiển thị ảnh đại diện hiện tại và cho phép nhấp để chọn ảnh mới -->
-            <img id="profileImagePreview" th:src="@{'/images/' + ${user.imageUrl}}" alt="Profile Image" onclick="triggerFileInput()">
-        </div>
-        <form th:action="@{/save-account-info}" method="post" enctype="multipart/form-data" class="form-container">
-            <!-- Trường ẩn cho id -->
-            <input type="hidden" th:value="${user.accountId}" name="id">
-
-            <!-- Họ và tên -->
-            <div class="form-group">
-                <label for="fullname">Họ và tên</label>
-                <input type="text" id="fullname" th:value="${user.fullName}" name="fullName" required>
-            </div>
-
-            <!-- Email -->
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" th:value="${user.email}" name="email" required>
-            </div>
-
-            <!-- Số điện thoại -->
-            <div class="form-group">
-                <label for="phone">Số điện thoại</label>
-                <input type="text" id="phone" th:value="${user.phoneNumber}" name="phoneNumber" required>
-            </div>
-
-            <!-- Địa chỉ -->
-            <div class="form-group">
-                <label for="address">Địa chỉ</label>
-                <input type="text" id="address" th:value="${user.address}" name="address" required>
-            </div>
-
-            <!-- Ngày sinh -->
-            <div class="form-group">
-                <label for="dob">Ngày sinh</label>
-                <input type="date" id="dob" th:value="${#dates.format(user.dateOfBirth, 'yyyy-MM-dd')}" name="dateOfBirth" required>
-            </div>
-
-            <!-- Ảnh đại diện (ẩn và liên kết với nhấp vào ảnh) -->
-            <div class="form-group">
-                <input type="file" id="profileImage" name="profileImage" accept="image/*" style="display:none;" onchange="previewImage(event)">
-            </div>
-
-            <!-- Nút hành động -->
-            <div class="btn-group">
-                <button type="button" class="btn-cancel">Hủy</button>
-                <button type="submit" class="btn-submit">Lưu thay đổi</button>
-            </div>
-        </form>
+<div class="container my-4" th:fragment="accountInfo">
+    <div class="text-center mb-4">
+        <h2>Cài đặt tài khoản</h2>
     </div>
+    <div class="text-center mb-4">
+        <!-- Hiển thị ảnh đại diện hiện tại và cho phép nhấp để chọn ảnh mới -->
+        <img id="profileImagePreview" th:src="@{'/images/' + ${user.imageUrl}}" alt="Profile Image"
+            class="rounded-circle mx-auto d-block" style="width: 100px; height: 100px; object-fit: cover;" onclick="triggerFileInput()">
+    </div>
+    <form th:action="@{/save-account-info}" method="post" enctype="multipart/form-data">
+        <!-- Trường ẩn cho id -->
+        <input type="hidden" th:value="${user.accountId}" name="id">
 
+        <!-- Họ và tên -->
+        <div class="mb-3">
+            <label for="fullname" class="form-label">Họ và tên</label>
+            <input type="text" id="fullname" th:value="${user.fullName}" name="fullName" class="form-control" required>
+        </div>
+
+        <!-- Email -->
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" th:value="${user.email}" name="email" class="form-control" required>
+        </div>
+
+        <!-- Số điện thoại -->
+        <div class="mb-3">
+            <label for="phone" class="form-label">Số điện thoại</label>
+            <input type="text" id="phone" th:value="${user.phoneNumber}" name="phoneNumber" class="form-control" required>
+        </div>
+
+        <!-- Địa chỉ -->
+        <div class="mb-3">
+            <label for="address" class="form-label">Địa chỉ</label>
+            <input type="text" id="address" th:value="${user.address}" name="address" class="form-control" required>
+        </div>
+
+        <!-- Ngày sinh -->
+        <div class="mb-3">
+            <label for="dob" class="form-label">Ngày sinh</label>
+            <input type="date" id="dob" th:value="${#dates.format(user.dateOfBirth, 'yyyy-MM-dd')}" name="dateOfBirth" class="form-control" required>
+        </div>
+		<!-- Số giấy phép lái xe -->
+<div class="mb-3">
+    <label for="licenseNumber" class="form-label">Số giấy phép lái xe</label>
+    <!-- Kiểm tra nếu drivingLicense có tồn tại -->
+    <input type="text" id="licenseNumber" th:value="${user.drivingLicense != null ? user.drivingLicense.licenseNumber : ''}" name="licenseNumber" class="form-control" required>
+</div>
+
+        <!-- Ảnh đại diện (ẩn và liên kết với nhấp vào ảnh) -->
+        <div class="mb-3">
+            <input type="file" id="profileImage" name="profileImage" accept="image/*" style="display:none;" onchange="previewImage(event)">
+        </div>
+
+        <!-- Nút hành động -->
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-secondary me-2">Hủy</button>
+            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+        </div>
+        
+    </form>
+
+    <!-- Hiển thị thông báo lỗi hoặc thành công -->
+        <div th:if="${error}">
+            <p th:text="${error}" style="color:red;"></p>
+        </div>
+        <div th:if="${success}">
+            <p th:text="${success}" style="color:green;"></p>
+        </div>
+</div>

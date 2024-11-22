@@ -54,6 +54,10 @@ public class Account {
     
     @OneToMany(mappedBy = "account")
     private Set<Rental> rental;
+    
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    private DrivingLicense drivingLicense;
+
 
     // Getters and Setters
 }
