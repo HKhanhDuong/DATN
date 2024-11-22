@@ -394,11 +394,13 @@ const AccountSettings: React.FC = () => {
                       <SelectValue placeholder="Chọn vai trò" />
                     </SelectTrigger>
                     <SelectContent>
-                      {roles.map((role) => (
-                        <SelectItem key={role.roleId} value={role.roleId.toString()}>
-                          {role.roleName}
-                        </SelectItem>
-                      ))}
+                      {roles
+                        .filter(role => role.roleName !== "customer")
+                        .map((role) => (
+                          <SelectItem key={role.roleId} value={role.roleId.toString()}>
+                            {role.roleName}
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                   {formErrors.roles && (
@@ -440,36 +442,38 @@ const AccountSettings: React.FC = () => {
                 </thead>
                 <tbody>
                   {accounts.map((account) => (
-                    <tr key={account.accountId}>
-                      <td className="py-2 px-4 border text-center">{account.accountId}</td>
-                      <td className="py-2 px-4 border text-center">
-                        {account.imageUrl ? (
-                          <img
-                            src={`${BASE_URL}/uploads/${account.imageUrl}`}
-                            alt={account.fullName}
-                            className="w-10 h-10 rounded-full object-cover mx-auto"
-                          />
-                        ) : (
-                          <UserCircle2 className="w-10 h-10 mx-auto" />
-                        )}
-                      </td>
-                      <td className="py-2 px-4 border">{account.fullName}</td>
-                      <td className="py-2 px-4 border">{account.email}</td>
-                      <td className="py-2 px-4 border">{account.phoneNumber}</td>
-                      <td className="py-2 px-4 border">
-                        <span className="px-2 py-1 bg-primary/10 text-primary text-sm rounded-full">
-                          {account.roles[0]?.roleName}
-                        </span>
-                      </td>
-                      <td className="py-2 px-4 border flex justify-center space-x-2">
-                        <Button size="sm" onClick={() => handleEditAccount(account)} disabled={loading}>
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button size="sm" variant="destructive" onClick={() => handleDeleteAccount(account.accountId)} disabled={loading}>
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </td>
-                    </tr>
+                    account.roles[0]?.roleName !== "customer" && (
+                      <tr key={account.accountId}>
+                        <td className="py-2 px-4 border text-center">{account.accountId}</td>
+                        <td className="py-2 px-4 border text-center">
+                          {account.imageUrl ? (
+                            <img
+                              src={`${BASE_URL}/uploads/${account.imageUrl}`}
+                              alt={account.fullName}
+                              className="w-10 h-10 rounded-full object-cover mx-auto"
+                            />
+                          ) : (
+                            <UserCircle2 className="w-10 h-10 mx-auto" />
+                          )}
+                        </td>
+                        <td className="py-2 px-4 border">{account.fullName}</td>
+                        <td className="py-2 px-4 border">{account.email}</td>
+                        <td className="py-2 px-4 border">{account.phoneNumber}</td>
+                        <td className="py-2 px-4 border">
+                          <span className="px-2 py-1 bg-primary/10 text-primary text-sm rounded-full">
+                            {account.roles[0]?.roleName}
+                          </span>
+                        </td>
+                        <td className="py-2 px-4 border flex justify-center space-x-2">
+                          <Button size="sm" onClick={() => handleEditAccount(account)} disabled={loading}>
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button size="sm" variant="destructive" onClick={() => handleDeleteAccount(account.accountId)} disabled={loading}>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </td>
+                      </tr>
+                    )
                   ))}
                 </tbody>
               </table>

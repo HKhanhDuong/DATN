@@ -102,7 +102,7 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Danh Sách Khách Hàng',
         label: '',
-        href: '/sign-in',
+        href: '/account-customer',
         icon: <IconHexagonNumber1 size={18} />,
       },
       {

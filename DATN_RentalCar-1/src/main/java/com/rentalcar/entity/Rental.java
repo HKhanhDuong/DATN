@@ -59,4 +59,7 @@ public class Rental {
     
     @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Payment> payment;
+    
+    @OneToMany(mappedBy = "rental", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Feedback> Feedback;
 }

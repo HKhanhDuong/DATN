@@ -366,3 +366,11 @@ INSERT [dbo].[payments] ([payment_id], [amount], [payment_date], [payment_method
 GO
 SET IDENTITY_INSERT [dbo].[payments] OFF
 GO
+SET IDENTITY_INSERT [dbo].[feedbacks] ON 
+GO
+INSERT [dbo].[feedbacks] ([feedback_id], [comment], [feedback_date], [rating], [rental_id]) VALUES (3, N'abc', CAST(N'2023-11-04' AS Date), 5, 2)
+GO
+INSERT [dbo].[feedbacks] ([feedback_id], [comment], [feedback_date], [rating], [rental_id]) VALUES (4, N'abc', CAST(N'2023-11-04' AS Date), 5, 3)
+GO
+SET IDENTITY_INSERT [dbo].[feedbacks] OFF
+GO

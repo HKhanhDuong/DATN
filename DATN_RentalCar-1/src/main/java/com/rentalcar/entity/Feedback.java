@@ -18,10 +18,10 @@ public class Feedback {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long feedbackID;
+    private Long feedbackId;
 
     @ManyToOne
-    @JoinColumn(name = "rentalID", nullable = false)
+    @JoinColumn(name = "rentalId", nullable = false)
     private Rental rental;
 
     @Column(nullable = false)

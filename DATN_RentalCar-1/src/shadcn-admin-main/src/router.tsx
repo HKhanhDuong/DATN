@@ -91,6 +91,14 @@ const router = createBrowserRouter([
         }),
       },
 
+      //account-customer
+      {
+        path: '/account-customer',
+        lazy: async () => ({
+          Component: (await import('@/pages/accounts/accountCustomerManagement')).default,
+        }),
+      },
+
       {
         path: 'tasks',
         lazy: async () => ({
