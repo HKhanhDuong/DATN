@@ -1,42 +1,43 @@
-<div th:fragment="search" class="rental-form">
-					          <h2>Bạn cần thuê xe?</h2>
-          <div class="form-group">
 
-            <div class="vehicle-type">
-    <button class="btn btn-select active" data-type="car">
-        Ô tô <i class="fas fa-check"></i>
-    </button>
-    <button class="btn btn-select" data-type="bike">
-        Xe máy <i class="fas fa-check"></i>
-    </button>
-			</div>
-          </div>
-          <div class="form-group">
-            <select id="location">
-              <option>TP. Hồ Chí Minh</option>
-              <option>Hà Nội</option>
-              <option>Đà Nẵng</option>
-            </select>
-          </div>
-<!-- Thay thế 2 form-group date cũ bằng code mới -->
-<div class="date-row">
-  <div class="form-group">
-      <label for="pickup-date">Ngày nhận xe</label>
-      <input type="datetime-local" id="pickup-date" value="2024-11-21T07:00">
-  </div>
-  <div class="form-group">
-      <label for="return-date">Ngày trả xe</label>
-      <input type="datetime-local" id="return-date" value="2024-11-21T19:00">
-  </div>
-</div>
-          <button class="btn btn-primary">Tìm xe giá tốt</button>
-          <div class="special-requests">
-            <p>Dành cho các yêu cầu đặc biệt</p>
-            <ul class="special-requests-list">
-              <li><a href="#">Thuê xe dài hạn <span class="new">New</span></a></li>
-              <li><a href="#">Thuê xe có lái</a></li>
-              <li><a href="#">Yêu cầu thuê xe khác</a></li>
-            </ul>
-					</div>
-					</div>
-					
+            <div th:fragment="search" class="rental-container">
+              <!-- Form 1: Tiêu đề và buttons -->
+              <div class="rental-form">
+                
+                <div class="form-group">
+                  <div class="vehicle-type">
+                    <button class="btn btn-select active" data-type="car">
+                      Ô tô <i class="fas fa-check"></i>
+                    </button>
+                    <button class="btn btn-select" data-type="bike">
+                      Xe máy <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Form 2: Thông tin tìm kiếm -->
+              <div class="rental-form-search">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="days">Địa Điểm</label>
+                    <select id="location">
+                      <option>TP. Hồ Chí Minh</option>
+                      <option>Hà Nội</option>
+                      <option>Đà Nẵng</option>
+                    </select>
+                  </div>
+                  <div class="form-group date-input">
+                    <label for="pickup-date" >Ngày nhận xe</label>
+                    <input type="datetime-local" id="pickup-date" value="2024-11-21T07:00">
+                  </div>
+                  <div class="form-group date-input">
+                    <label for="return-date">Ngày trả xe</label>
+                    <input type="datetime-local" id="return-date" value="2024-11-21T19:00">
+                  </div>
+                  <div class="form-group btn-group">
+                    <button class="btn btn-primary">Tìm xe</button>
+                  </div>
+                </div>
+              </div>
+            
+            </div>
