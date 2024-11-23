@@ -261,7 +261,7 @@ public class homePageController {
             model.addAttribute("error", "Email không tồn tại trong hệ thống.");
         }
 
-        return "login";
+        return "forgotPassword";
     }
     
  // Hàm tạo mật khẩu mới ngẫu nhiên
