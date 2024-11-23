@@ -66,6 +66,8 @@ const router = createBrowserRouter([
           Component: (await import('@/pages/rental/rentalPage')).default,
         }),
       },
+      //history rental
+      {path : 'HistoryRental', lazy: async() => ({Component : (await import('@/pages/historyRental/historyRental')).default,}),},
 
       //payment
       {

@@ -88,7 +88,7 @@ export const sidelinks: SideLink[] = [
       {
         title: 'Lịch Sử Thuê Xe',
         label: '',
-        href: '/sign-in-2',
+        href: '/historyRental',
         icon: <IconHexagonNumber3 size={18} />,
       },
     ],
