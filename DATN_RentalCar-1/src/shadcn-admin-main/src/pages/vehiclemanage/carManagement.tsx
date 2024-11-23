@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Edit, Trash2 } from "lucide-react";
 import axios from "axios";
@@ -31,6 +30,7 @@ const CarManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
 
   const [newCar, setNewCar] = useState<Car>({
@@ -58,7 +58,10 @@ const CarManagement: React.FC = () => {
 
   useEffect(() => {
     fetchCars();
-  }, []);
+    return () => {
+      imagePreviews.forEach(URL.revokeObjectURL);
+    };
+  }, [uploadedImages]);
 
   const fetchCars = () => {
     axios
@@ -73,48 +76,65 @@ const CarManagement: React.FC = () => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    if (uploadedImages.length + files.length > 5) {
+    // Kiểm tra xem số ảnh đã tải lên + ảnh mới chọn có vượt quá 5 ảnh không
+    if (imagePreviews.length + files.length > 5) {
       alert("Chỉ được phép tải lên tối đa 5 ảnh");
       return;
     }
 
     setIsUploading(true);
-    const uploadedUrls: string[] = [];
-    const serverHost = "http://localhost:8080"; // Thêm host của server
 
     try {
+      const uploadedFilesAndUrls = [];
+
       for (const file of Array.from(files)) {
         const formData = new FormData();
         formData.append("file", file);
         formData.append("type", "car");
 
-        const response = await axios.post(`${serverHost}/api/uploadImg`, formData, {
+        const response = await axios.post(`http://localhost:8080/api/uploadImg`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
 
-        // Lấy URL tương đối từ server (nếu đường dẫn trả về là full URL, thì chỉ lấy phần sau localhost)
         const relativeUrl = response.data.imageUrl.startsWith("http")
-          ? response.data.imageUrl.split('http://localhost:8080')[1] // Lấy phần sau localhost
+          ? response.data.imageUrl.split('http://localhost:8080')[1]
           : response.data.imageUrl;
 
-        uploadedUrls.push(relativeUrl);
+        uploadedFilesAndUrls.push({ file, url: relativeUrl });
       }
 
-      // Cập nhật danh sách ảnh đã tải lên
-      setUploadedImages(prev => [...prev, ...uploadedUrls]);
-      // Cập nhật vào newCar với đường dẫn tương đối của ảnh
-      setNewCar(prev => ({
-        ...prev,
-        imageUrl: [...uploadedImages, ...uploadedUrls].join(","), // Chỉ lưu đường dẫn tương đối
-      }));
+      // Cập nhật danh sách ảnh tạm thời và thêm ảnh mới vào ảnh đã có
+      const uploadedUrls = uploadedFilesAndUrls.map(item => item.url);
+      setUploadedImages(prev => [...prev, ...uploadedUrls]); // Thêm ảnh mới vào ảnh đã có
+
+      // Tạo preview ảnh và thêm ảnh mới vào ảnh đã có
+      const newPreviews = uploadedFilesAndUrls.map(item => URL.createObjectURL(item.file));
+      setImagePreviews(prev => [...prev, ...newPreviews]); // Thêm preview ảnh mới
+
     } catch (error) {
       console.error("Error uploading images:", error);
       alert("Lỗi khi tải ảnh lên");
     } finally {
       setIsUploading(false);
     }
+  };
+
+  const handleDeleteImage = (index: number) => {
+    // Xóa ảnh khỏi mảng imagePreviews
+    const newImagePreviews = [...imagePreviews];
+    newImagePreviews.splice(index, 1);
+
+    // Cập nhật lại mảng imagePreviews
+    setImagePreviews(newImagePreviews);
+
+    // Nếu bạn cũng muốn xóa ảnh khỏi uploadedImages, làm tương tự
+    const newUploadedImages = [...uploadedImages];
+    newUploadedImages.splice(index, 1);
+
+    // Cập nhật lại mảng uploadedImages
+    setUploadedImages(newUploadedImages);
   };
 
 
@@ -125,17 +145,17 @@ const CarManagement: React.FC = () => {
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
-
     setNewCar((prevCar) => ({
       ...prevCar,
       [id]:
         value === ""
-          ? "" // Cho phép người dùng xóa giá trị, đặt lại thành chuỗi rỗng
+          ? ""
           : id === "year" || id === "mileage" || id === "dailyRate" || id === "fuelConsumption"
-            ? Number(value) // Chuyển đổi sang số nếu không rỗng
-            : value, // Giữ nguyên chuỗi ký tự khác
+            ? Number(value)
+            : value,
     }));
   };
+
 
   const filteredCars = cars.filter(
     (car) =>
@@ -144,7 +164,7 @@ const CarManagement: React.FC = () => {
       car.color.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  //--------------Checkbox nội thất--------------------------------------------------------------
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -153,19 +173,17 @@ const CarManagement: React.FC = () => {
     setNewCar((prevCar) => {
       let updatedFacilities = prevCar.facilities;
       if (checked) {
-        updatedFacilities = updatedFacilities.length === 0 ? value : updatedFacilities + ", " + value; // Nối chuỗi
+        updatedFacilities = updatedFacilities.length === 0 ? value : updatedFacilities + ", " + value;
       } else {
-        updatedFacilities = updatedFacilities.replace(new RegExp(`\\b${value}\\b,?\\s*`), ''); // Xóa chuỗi tương ứng nếu unchecked
+        updatedFacilities = updatedFacilities.replace(new RegExp(`\\b${value}\\b,?\\s*`), '');
       }
-
       return {
         ...prevCar,
-        facilities: updatedFacilities, // Lưu dưới dạng chuỗi
+        facilities: updatedFacilities,
       };
     });
   };
 
-  //------------------------CURD-----------------------------------------
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
@@ -173,10 +191,10 @@ const CarManagement: React.FC = () => {
     const maintenanceData = {
       maintenanceDate: new Date().toISOString(),
       description: `Bảo dưỡng cho xe ${car.make} ${car.model} (${car.year})`,
-      cost: 0, // Có thể tùy chỉnh chi phí bảo dưỡng nếu cần
-      carId: car.carId, // Liên kết với xe thông qua carId
+      cost: 0,
+      carId: car.carId,
     };
-  
+
     axios
       .post("http://localhost:8080/api/car-maintenance", maintenanceData)
       .then(() => {
@@ -184,52 +202,73 @@ const CarManagement: React.FC = () => {
       })
       .catch((error) => console.error("Error adding maintenance:", error));
   };
-  
+
   const handleAddCar = () => {
+    // Cập nhật ảnh vào newCar chỉ khi người dùng nhấn "Add Car"
+    const carDataToSend = {
+      ...newCar,
+      imageUrl: uploadedImages.join(",") // Chỉ lưu ảnh đã được tải lên
+    };
+
     if (isEditing) {
+      // Cập nhật xe hiện tại
       axios
-        .put(`http://localhost:8080/api/car/${newCar.carId}`, newCar)
+        .put(`http://localhost:8080/api/car/${newCar.carId}`, carDataToSend)
         .then(() => {
           if (newCar.status === "Bảo dưỡng") {
-            addMaintenance(newCar); // Thêm bản ghi bảo dưỡng
+            addMaintenance(newCar);
           } else {
-            deleteMaintenanceByCarId(newCar.carId); // Xóa bản ghi bảo dưỡng khi trạng thái không còn là "Bảo dưỡng"
+            deleteMaintenanceByCarId(newCar.carId);
           }
-          fetchCars(); // Cập nhật danh sách xe
-          resetForm(); // Làm mới form nhập liệu
+          fetchCars();
+          resetForm();
         })
         .catch((error) => console.error("Lỗi khi cập nhật xe:", error));
     } else {
+      // Thêm mới xe
       axios
-        .post("http://localhost:8080/api/car", newCar)
+        .post("http://localhost:8080/api/car", carDataToSend)
         .then(() => {
           if (newCar.status === "Bảo dưỡng") {
-            addMaintenance(newCar); // Thêm bản ghi bảo dưỡng
+            addMaintenance(newCar);
           }
-          fetchCars(); // Cập nhật danh sách xe
-          resetForm(); // Làm mới form nhập liệu
+          fetchCars();
+          resetForm();
         })
         .catch((error) => console.error("Lỗi khi thêm xe:", error));
     }
   };
-  
-  
-  
 
   const handleDeleteCar = (id: number) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa xe này?")) {
+      const carToDelete = cars.find(car => car.carId === id);
+
+      if (carToDelete) {
+        carToDelete.imageUrl.split(',').forEach(url => {
+          const index = imagePreviews.findIndex(preview => preview.includes(url));
+          if (index > -1) {
+            URL.revokeObjectURL(imagePreviews[index]);
+          }
+        });
+      }
       axios
         .delete(`http://localhost:8080/api/car/${id}`)
         .then(() => fetchCars())
         .catch((error) => console.error("Error deleting car:", error));
+      resetForm();
     }
   };
 
   const handleEditCar = (car: Car) => {
     setIsEditing(true);
     setNewCar(car);
-    // Chuyển đổi chuỗi imageUrl thành mảng images
-    setUploadedImages(car.imageUrl.split(',').map(item => item.trim()));
+
+    const imageUrls = car.imageUrl.split(',').filter(Boolean);
+    setUploadedImages(imageUrls);
+
+    setImagePreviews(imageUrls.map(url => `http://localhost:8080/assets/images/car/${url}`));
+
+
   };
 
   const deleteMaintenanceByCarId = (carId: number) => {
@@ -240,8 +279,6 @@ const CarManagement: React.FC = () => {
       })
       .catch((error) => console.error("Lỗi khi xóa bảo dưỡng:", error));
   };
-  
-  
 
   const resetForm = () => {
     setNewCar({
@@ -266,9 +303,11 @@ const CarManagement: React.FC = () => {
       vehicleLocation: "",
       percentDiscount: 0,
     });
-    setUploadedImages([]);
+    setUploadedImages([]); // Xóa ảnh tạm thời
+    setImagePreviews([]); // Xóa preview ảnh
     setIsEditing(false);
   };
+
   //----------------------------------------------------------------------------------------------
 
   return (
@@ -285,13 +324,13 @@ const CarManagement: React.FC = () => {
               <h3 className="text-lg font-semibold mb-4">Tải lên ảnh của xe</h3>
 
               {/* Ảnh Toàn Xe */}
-              <div className="border-dashed border-2 border-gray-400 rounded-lg h-48 flex flex-col items-center justify-center text-gray-500 mb-4 relative">
+              <div className="border-dashed border-2 border-gray-400 rounded-lg h-48 flex flex-col items-center justify-center text-gray-500 mb-4 relative group">
                 <input
                   type="file"
                   accept="image/*"
                   onChange={handleImageUpload}
                   className="opacity-0 absolute h-full w-full cursor-pointer"
-                  multiple // Thêm thuộc tính multiple để cho phép chọn nhiều ảnh
+                  multiple // Cho phép chọn nhiều ảnh
                 />
 
                 {isUploading && (
@@ -300,9 +339,9 @@ const CarManagement: React.FC = () => {
                   </div>
                 )}
 
-                {uploadedImages[0] ? (
+                {imagePreviews[0] ? (
                   <img
-                    src={`http://localhost:8080/assets/images/car/${uploadedImages[0]}`} // Nối localhost trước khi hiển thị
+                    src={imagePreviews[0]}
                     alt="Ảnh Toàn Xe"
                     className="object-cover w-full h-full rounded-lg"
                   />
@@ -314,6 +353,15 @@ const CarManagement: React.FC = () => {
                   </>
                 )}
 
+                {/* Hover button for delete */}
+                {imagePreviews[0] && (
+                  <button
+                    onClick={() => handleDeleteImage(0)} // Xóa ảnh "Ảnh Toàn Xe"
+                    className="absolute top-0 right-0 bg-black text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600 focus:outline-none"
+                  >
+                    &times;
+                  </button>
+                )}
               </div>
 
               {/* Display uploaded images */}
@@ -321,21 +369,33 @@ const CarManagement: React.FC = () => {
                 {["Ảnh Đầu Xe", "Ảnh Đuôi Xe", "Ảnh Đồng Hồ", "Ảnh Phụ"].map((label, index) => (
                   <div
                     key={index}
-                    className="border-dashed border-2 border-gray-400 rounded-lg h-24 flex items-center justify-center text-gray-500 relative"
+                    className="border-dashed border-2 border-gray-400 rounded-lg h-24 flex items-center justify-center text-gray-500 relative group"
                   >
-                    {uploadedImages?.[index + 1] ? (
-                      <img
-                        src={`http://localhost:8080/assets/images/car/${uploadedImages[index + 1]}`}
-                        alt={label}
-                        className="object-cover h-full w-full rounded-lg"
-                      />
+                    {imagePreviews[index + 1] ? (
+                      <div className="relative group-hover:block"> {/* Thêm group-hover vào div này */}
+                        <img
+                          src={imagePreviews[index + 1]}
+                          alt={label}
+                          className="object-cover h-full w-full rounded-lg"
+                        />
+                        <button
+                          onClick={() => handleDeleteImage(index + 1)} // Xóa ảnh theo index
+                          className="absolute top-0 right-0 bg-black text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600 focus:outline-none"
+                        >
+                          &times;
+                        </button>
+                      </div>
                     ) : (
-                      <p className="font-medium">{label}</p>
+                      <div className="flex items-center justify-center text-gray-400">
+                        <p className="font-medium">{label}</p>
+                      </div>
                     )}
                   </div>
                 ))}
               </div>
             </div>
+
+
 
 
             {/* Car Information Form */}
