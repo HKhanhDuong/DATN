@@ -199,7 +199,8 @@ const AccountSettings: React.FC = () => {
     setIsEditing(true);
     setFormData({
       ...account,
-      dateOfBirth: account.dateOfBirth ? moment(account.dateOfBirth).format('YYYY-MM-DD') : ''
+      dateOfBirth: account.dateOfBirth ? moment(account.dateOfBirth).format('YYYY-MM-DD') : '',
+      imageUrl: account.imageUrl ? `${BASE_IMAGE_URL}${account.imageUrl}` : ''
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -274,7 +275,7 @@ const AccountSettings: React.FC = () => {
                 <div className="relative">
                   {formData.imageUrl ? (
                     <img
-                      src={selectedImage ? URL.createObjectURL(selectedImage) : `${BASE_URL}/uploads/${formData.imageUrl}`}
+                      src={selectedImage ? URL.createObjectURL(selectedImage) : `${formData.imageUrl}`}
                       alt="Profile"
                       className="w-32 h-32 rounded-full object-cover"
                     />
