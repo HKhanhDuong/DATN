@@ -1144,7 +1144,7 @@ updateRentalRate();
     <p><strong>Địa chỉ:</strong> <span id="rentalAddress"></span></p>
     <p><strong>Mã giảm giá:</strong> <span id="promoCode"></span></p>
     <p><span id="notes">Ghi Chú</span><br />
-	<textarea id="notes-input" rows="6" style="width:70%; resize: vertical;" placeholder="Nhập nội dung.."></textarea>
+	<textarea id="rental-notes" name="rental-notes" rows="6" style="width:70%; resize: vertical;" placeholder="Nhập nội dung.."></textarea>
     </p>
 	<br> <hr>
 	<p><strong>Tổng thanh toán: </strong> <span value="0" id="finalRentRate" class="float-end text-danger fw-bold"></span></p>
@@ -1304,6 +1304,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     collectRentalData() {
       const logAccId = /*[[${loggedAcc != null ? loggedAcc.accountId : 0}]]*/ 0;
+      const notesElement = document.getElementById('rental-notes');
+      const notesValue = notesElement ? notesElement.value.trim() : '';
       
       return {
         account: { accountId: logAccId },
@@ -1314,7 +1316,7 @@ document.addEventListener('DOMContentLoaded', () => {
         discount: { discountId: Number(DOM.getValue("selectedDiscountValue")) || 0 },
         haveDriver: this.elements.driverCheckbox.checked,
         rentalLocations: DOM.getValue("address-input"),
-        notes: DOM.getValue("notes-input")
+        notes: notesValue,
       };
     }
 
@@ -1363,6 +1365,8 @@ document.addEventListener('DOMContentLoaded', () => {
         vehicleType: "car",
         driver: null
       };
+      
+      console.log("rentalVehicleData: ", rentalVehicleData)
 
       return this.makeApiRequest(
         CONSTANTS.API_ENDPOINTS.RENTAL_VEHICLE,
@@ -1372,19 +1376,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async postRentalPayment(rentalId, amount, paymentMethod, idQrcode) {
-      const paymentData = {
-        rental: { rentalId },
-        paymentDate: new Date().toISOString().split('T')[0],
-        amount,
-        paymentMethod,
-        idQrCode
-      };
+        const paymentData = {
+            rental: { rentalId },
+            paymentDate: new Date().toISOString().split('T')[0],
+            amount,
+            paymentMethod,
+            idQrCode: idQrcode // Đảm bảo tên trường khớp với backend
+        };
+        
+        console.log("postRentalPayment data: ", paymentData); // Sửa lỗi consolid thành console.log
 
-      return this.makeApiRequest(
-        CONSTANTS.API_ENDPOINTS.RENTAL_PAYMENT,
-        paymentData,
-        "Có lỗi xảy ra khi lưu thông tin thanh toán"
-      );
+        return this.makeApiRequest(
+            CONSTANTS.API_ENDPOINTS.RENTAL_PAYMENT,
+            paymentData,
+            "Có lỗi xảy ra khi lưu thông tin thanh toán"
+        );
     }
 
     async handleRentButtonClick() {
@@ -1416,58 +1422,57 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async handleConfirmRent() {
-    	  if (!confirm("Hãy chắc chắn rằng bạn đã thanh toán nếu chọn trả trước!")) {
-    	    return;
-    	  }
-    	    
-    	  try {
-    	    const rentalData = this.collectRentalData();
-    	    this.validateRentalData(rentalData);
-    	    
-    	    // Generate booking code
-    	    const fullName = DOM.getText('fullName');
-    	    const carId = /*[[${car.carId}]]*/ 0;
-    	    const bookingCode = this.generateBookingCode(
-    	      carId,
-    	      rentalData.account.accountId || 0,
-    	      fullName || 'User',
-    	      rentalData.rentalDate,
-    	      DOM.getText("totalRentalHours")
-    	    );
+        if (!confirm("Hãy chắc chắn rằng bạn đã thanh toán nếu chọn trả trước!")) {
+            return;
+        }
+            
+        try {
+            const rentalData = this.collectRentalData();
+            this.validateRentalData(rentalData);
+            
+            // Lấy carId từ document hoặc data attribute để đảm bảo giá trị luôn tồn tại
+            const carId = /*[[${car.carId}]]*/ 0;
+            const fullName = DOM.getText('fullName') || 'User';
+            
+            // Tạo booking code
+            const bookingCode = this.generateBookingCode(
+                carId,
+                rentalData.account.accountId,
+                fullName,
+                rentalData.rentalDate,
+                DOM.getText("totalRentalHours")
+            );
 
-    	    // Save rental information
-    	    const rental = await this.makeApiRequest(
-    	      CONSTANTS.API_ENDPOINTS.RENTAL,
-    	      rentalData,
-    	      "Có lỗi xảy ra khi lưu thông tin thuê xe"
-    	    );
+            // Lưu thông tin thuê xe
+            const rental = await this.makeApiRequest(
+                CONSTANTS.API_ENDPOINTS.RENTAL,
+                rentalData,
+                "Có lỗi xảy ra khi lưu thông tin thuê xe"
+            );
 
-    	    await this.postRentalVehicle(rental.rentalId, carId);
+            await this.postRentalVehicle(rental.rentalId, carId);
 
-    	    // Process payment
-    	    const paymentMethod = this.elements.prepayRadio.checked ? "prePayment" : "postPayment";
-    	    await this.postRentalPayment(
-    	      rental.rentalId, 
-    	      rentalData.totalCost, 
-    	      paymentMethod, 
-    	      bookingCode
-    	    );
+            // Xử lý thanh toán
+            const paymentMethod = this.elements.prepayRadio.checked ? "prePayment" : "postPayment";
+            await this.postRentalPayment(
+                rental.rentalId, 
+                rentalData.totalCost, 
+                paymentMethod, 
+                bookingCode // Sử dụng bookingCode làm idQrCode
+            );
 
-    	    alert("Đăng ký thuê xe thành công!");
-    	    bootstrap.Modal.getInstance(this.elements.rentModal).hide();
-    	  } catch (error) {
-    	    alert(error.message);
-    	  }
-    	}
+            alert("Đăng ký thuê xe thành công!");
+            bootstrap.Modal.getInstance(this.elements.rentModal).hide();
+        } catch (error) {
+            alert(error.message);
+        }
+    }
   }
 
   // Initialize the form handler
   new RentalFormHandler();
 });
 </script>
-
-
-
 		
 					</div>
 					
