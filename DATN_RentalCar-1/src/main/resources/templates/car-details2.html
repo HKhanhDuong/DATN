@@ -1144,7 +1144,7 @@ updateRentalRate();
     <p><strong>Địa chỉ:</strong> <span id="rentalAddress"></span></p>
     <p><strong>Mã giảm giá:</strong> <span id="promoCode"></span></p>
     <p><span id="notes">Ghi Chú</span><br />
-	<textarea id="notes-input" rows="6" style="width:70%; resize: vertical;" placeholder="Nhập nội dung.."></textarea>
+	<textarea id="rental-notes" name="rental-notes" rows="6" style="width:70%; resize: vertical;" placeholder="Nhập nội dung.."></textarea>
     </p>
 	<br> <hr>
 	<p><strong>Tổng thanh toán: </strong> <span value="0" id="finalRentRate" class="float-end text-danger fw-bold"></span></p>
@@ -1304,6 +1304,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     collectRentalData() {
       const logAccId = /*[[${loggedAcc != null ? loggedAcc.accountId : 0}]]*/ 0;
+      const notesElement = document.getElementById('rental-notes');
+      const notesValue = notesElement ? notesElement.value.trim() : '';
       
       return {
         account: { accountId: logAccId },
@@ -1314,7 +1316,7 @@ document.addEventListener('DOMContentLoaded', () => {
         discount: { discountId: Number(DOM.getValue("selectedDiscountValue")) || 0 },
         haveDriver: this.elements.driverCheckbox.checked,
         rentalLocations: DOM.getValue("address-input"),
-        notes: DOM.getValue("notes-input")
+        notes: notesValue,
       };
     }
 
@@ -1471,9 +1473,6 @@ document.addEventListener('DOMContentLoaded', () => {
   new RentalFormHandler();
 });
 </script>
-
-
-
 		
 					</div>
 					
