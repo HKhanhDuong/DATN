@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.rentalcar.entity.Account;
 import com.rentalcar.entity.Role;
+import com.rentalcar.EmailService;
 import com.rentalcar.dao.AccountRepo;
 import com.rentalcar.dao.CarRepo;
 import com.rentalcar.dao.DrivingLiscenseRepo;
@@ -41,6 +42,8 @@ import com.rentalcar.service.CarService;
 import com.rentalcar.service.RentalService;
 import com.rentalcar.service.RentalVehicleService;
 import com.rentalcar.service.SessionService;
+
+import jakarta.mail.MessagingException;
 
 
 @Controller
@@ -61,7 +64,8 @@ public class homePageController {
     private CarService carService;
 	@Autowired
     private DrivingLiscenseRepo drivingLiscenseRepo;
-
+	@Autowired
+    private EmailService emailService;
 	@Autowired
     private RentalService rentalService;
 	
@@ -231,11 +235,51 @@ public class homePageController {
         }
     }
 
+    // Xử lý gửi email quên mật khẩu
+    @PostMapping("/forgot-password")
+    public String handleForgotPassword(@RequestParam("email") String email, Model model) {
+        Account account = accountRepo.findByEmail(email);
+        
+        if (account != null) {
+            // Tạo mật khẩu mới ngẫu nhiên
+            String newPassword = generateRandomPassword();
+            
+            // Cập nhật mật khẩu mới trong cơ sở dữ liệu
+            account.setPasswordHash(newPassword);
+            accountService.saveAccount(account);
+            
+            // Gửi email với mật khẩu mới
+            try {
+                String subject = "Mật khẩu mới của bạn";
+                String text = "Chào bạn, \n\n Mật khẩu mới của bạn là: " + newPassword;
+                emailService.sendEmail(email, subject, text);
+                model.addAttribute("success", "Mật khẩu mới đã được gửi qua email của bạn.");
+            } catch (MessagingException e) {
+                model.addAttribute("error", "Đã xảy ra lỗi khi gửi email. Vui lòng thử lại.");
+            }
+        } else {
+            model.addAttribute("error", "Email không tồn tại trong hệ thống.");
+        }
+
+        return "login";
+    }
+    
+ // Hàm tạo mật khẩu mới ngẫu nhiên
+    private String generateRandomPassword() {
+        // Cách đơn giản để tạo mật khẩu mới ngẫu nhiên
+        return Long.toHexString(Double.doubleToLongBits(Math.random()));
+    }
 
     @GetMapping("/about")
     public String about() {
         return "about";
-    } 	
+    } 
+    
+    @GetMapping("/forgotPassword")
+    public String forgot() {
+        return "forgotPassword";
+    }
+    
     
     @GetMapping("/pick-vehicle")
     public String viewAllVehicle(Model model) {
