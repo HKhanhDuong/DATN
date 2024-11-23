@@ -21,8 +21,9 @@ public class WebConfiger implements WebMvcConfigurer {
     
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:uploads/");
+        registry.addResourceHandler("/static/assets/images/**")
+                .addResourceLocations("file:./assets/images/account") // Đường dẫn thư mục
+                .setCachePeriod(0); // Tắt cache
     }
 
     @Override

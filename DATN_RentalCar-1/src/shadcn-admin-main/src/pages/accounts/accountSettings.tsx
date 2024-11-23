@@ -44,6 +44,7 @@ interface UploadResponse {
 const API_URL = "http://localhost:8080/api/account";
 const UPLOAD_URL = "http://localhost:8080/api/uploadImg";
 const BASE_URL = "http://localhost:8080";
+const BASE_IMAGE_URL = `${BASE_URL}/assets/images/account/`;
 
 const AccountSettings: React.FC = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);
@@ -112,7 +113,7 @@ const AccountSettings: React.FC = () => {
     try {
       await axios.post(API_URL, {
         ...accountData,
-        imageUrl: accountData.imageUrl || "user.jpg"
+        imageUrl: accountData.imageUrl ? accountData.imageUrl.split('/').pop() : "user.jpg"
       });
       await fetchAccounts(); //refresh account list after creation.
       showNotification("Thêm mới tài khoản thành công", "success");
@@ -169,7 +170,7 @@ const AccountSettings: React.FC = () => {
             'Content-Type': 'multipart/form-data'
           }
         });
-        finalImageUrl = response.data.imageUrl.split("/uploads")[1];
+        finalImageUrl = response.data.imageUrl;
       }
 
       const accountData = {
@@ -448,7 +449,7 @@ const AccountSettings: React.FC = () => {
                         <td className="py-2 px-4 border text-center">
                           {account.imageUrl ? (
                             <img
-                              src={`${BASE_URL}/uploads/${account.imageUrl}`}
+                              src={`${BASE_IMAGE_URL}${account.imageUrl}`}
                               alt={account.fullName}
                               className="w-10 h-10 rounded-full object-cover mx-auto"
                             />

@@ -12,18 +12,18 @@ import jakarta.annotation.PostConstruct;
 
 @Configuration
 public class FileStorageConfig {
-    @Value("${file.upload-dir}")
-    private String uploadDir;
-    
-    @PostConstruct
-    public void init() {
-        try {
-            Path path = Paths.get(uploadDir);
-            if (!Files.exists(path)) {
-                Files.createDirectories(path);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Could not create upload directory!", e);
-        }
-    }
+//    @Value("${file.upload-dir}")
+//    private String uploadDir;
+//    
+//    @PostConstruct
+//    public void init() {
+//        try {
+//            Path path = Paths.get(uploadDir);
+//            if (!Files.exists(path)) {
+//                Files.createDirectories(path);
+//            }
+//        } catch (IOException e) {
+//            throw new RuntimeException("Could not create upload directory!", e);
+//        }
+//    }
 }
