@@ -1,0 +1,63 @@
+
+
+/* Menu container */
+.position-sticky {
+    background-color: #f8f9fa; /* Nền sáng nhẹ */
+    padding: 20px;
+    border-radius: 10px; /* Bo góc cho container */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hiệu ứng nổi */
+}
+
+/* Menu ul */
+.position-sticky .nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Menu item */
+.position-sticky .nav-item {
+    margin-bottom: 15px; /* Khoảng cách giữa các mục */
+}
+
+.position-sticky .nav-item:last-child {
+    margin-bottom: 0; /* Bỏ khoảng cách cho mục cuối */
+}
+
+/* Link chung */
+.position-sticky .nav-link {
+    display: block;
+    padding: 10px 15px;
+    font-size: 1.5rem; /* Chữ to hơn */
+    font-weight: 500; /* Tăng độ đậm */
+    color: #555; /* Màu chữ */
+    background-color: #ffffff; /* Nền trắng */
+    border-radius: 8px; /* Bo góc cho link */
+    text-decoration: none; /* Bỏ gạch chân */
+    transition: all 0.3s ease; /* Hiệu ứng chuyển đổi */
+}
+
+/* Link hover */
+.position-sticky .nav-link:hover {
+    background-color: #007bff; /* Nền xanh khi hover */
+    color: #ffffff; /* Chữ trắng khi hover */
+    transform: scale(1.05); /* Hiệu ứng phóng to nhẹ */
+}
+
+/* Link active */
+.position-sticky .nav-link.active {
+    background-color: #0056b3; /* Nền xanh đậm */
+    color: #ffffff; /* Chữ trắng */
+    font-weight: 600; /* Đậm hơn để làm nổi bật */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .position-sticky {
+        padding: 10px; /* Giảm padding trên màn hình nhỏ */
+    }
+
+    .position-sticky .nav-link {
+        font-size: 1rem; /* Giảm cỡ chữ trên màn hình nhỏ */
+    }
+}

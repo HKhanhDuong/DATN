@@ -1,65 +1,61 @@
-
-<div th:fragment="rentalList" class="container">
-    <h2>Danh sách thuê</h2>
+<div th:fragment="rentalList" class="rental-list-container">
+    <h2 class="rental-list-title">Danh sách thuê</h2>
 
     <!-- Tab Xe Ô Tô và Xe Máy -->
-    <ul class="nav nav-tabs" id="rentalTab" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" id="car-tab" data-bs-toggle="tab" href="#car-rentals" role="tab" aria-controls="car-rentals" aria-selected="true">Xe Ô Tô</a>
+    <ul class="rental-nav-tabs" id="rentalTab" role="tablist">
+        <li class="rental-nav-item">
+            <a class="rental-nav-link active" id="car-tab" data-bs-toggle="tab" href="#car-rentals" role="tab" aria-controls="car-rentals" aria-selected="true">Xe Ô Tô</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" id="motorbike-tab" data-bs-toggle="tab" href="#motorbike-rentals" role="tab" aria-controls="motorbike-rentals" aria-selected="false">Xe Máy</a>
+        <li class="rental-nav-item">
+            <a class="rental-nav-link" id="motorbike-tab" data-bs-toggle="tab" href="#motorbike-rentals" role="tab" aria-controls="motorbike-rentals" aria-selected="false">Xe Máy</a>
         </li>
     </ul>
 
-    <div class="tab-content mt-3">
+    <div class="rental-tab-content">
         <!-- Danh sách xe ô tô đã thuê -->
-        <div class="tab-pane fade show active" id="car-rentals" role="tabpanel" aria-labelledby="car-tab">
-            <h3>Xe Ô Tô</h3>
-            <table class="table table-striped">
+        <div class="rental-tab-pane active" id="car-rentals" role="tabpanel" aria-labelledby="car-tab">
+            <h3 class="rental-section-title" style="text-align: center;">Xe Ô Tô</h3>
+            <table class="rental-table">
                 <thead>
                     <tr>
-                        <th>Tên xe</th>
-                        <th>Ngày thuê</th>
-                        <th>Ngày trả</th>
-                        <th>Trạng thái</th>
+                        <th class="rental-table-header">Tên xe</th>
+                        <th class="rental-table-header">Ngày thuê</th>
+                        <th class="rental-table-header">Ngày trả</th>
+                        <th class="rental-table-header">Trạng thái</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="rental : ${rentedCars}">
-                        <td th:text="${rental.model}">Tên xe</td> <!-- Hiển thị tên xe từ trường model -->
-                        <td th:text="${#dates.format(rental.rentalDate, 'dd/MM/yyyy')}">01/01/2024</td>
-                        <td th:text="${#dates.format(rental.returnDate, 'dd/MM/yyyy')}">05/01/2024</td>
-                        <td th:text="${rental.renStatus}">Trạng thái</td>
+                        <td class="rental-table-cell" th:text="${rental.model}">Tên xe</td>
+                        <td class="rental-table-cell" th:text="${#dates.format(rental.rentalDate, 'dd/MM/yyyy')}">01/01/2024</td>
+                        <td class="rental-table-cell" th:text="${#dates.format(rental.returnDate, 'dd/MM/yyyy')}">05/01/2024</td>
+                        <td class="rental-table-cell" th:text="${rental.renStatus}">Trạng thái</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
         <!-- Danh sách xe máy đã thuê -->
-        <div class="tab-pane fade" id="motorbike-rentals" role="tabpanel" aria-labelledby="motorbike-tab">
-            <h3>Xe Máy</h3>
-            <table class="table table-striped">
+        <div class="rental-tab-pane" id="motorbike-rentals" role="tabpanel" aria-labelledby="motorbike-tab">
+            <h3 class="rental-section-title" style="text-align: center;">Xe Máy</h3>
+            <table class="rental-table">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Tên xe</th>
-                        <th>Ngày thuê</th>
-                        <th>Ngày trả</th>
-                        <th>Trạng thái</th>
+                        <th class="rental-table-header">Tên xe</th>
+                        <th class="rental-table-header">Ngày thuê</th>
+                        <th class="rental-table-header">Ngày trả</th>
+                        <th class="rental-table-header">Trạng thái</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr th:each="rental : ${rentedMotorbikes}">
-					    <td th:text="${rental.model}">Tên xe</td> <!-- Hiển thị tên xe từ trường model -->
-					    <td th:text="${#dates.format(rental.rentalDate, 'dd/MM/yyyy')}">01/01/2024</td>
-					    <td th:text="${#dates.format(rental.returnDate, 'dd/MM/yyyy')}">05/01/2024</td>
-					    <td th:text="${rental.renStatus}">Trạng thái</td>
-					</tr>
-
+                        <td class="rental-table-cell" th:text="${rental.model}">Tên xe</td>
+                        <td class="rental-table-cell" th:text="${#dates.format(rental.rentalDate, 'dd/MM/yyyy')}">01/01/2024</td>
+                        <td class="rental-table-cell" th:text="${#dates.format(rental.returnDate, 'dd/MM/yyyy')}">05/01/2024</td>
+                        <td class="rental-table-cell" th:text="${rental.renStatus}">Trạng thái</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
-	
