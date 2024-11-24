@@ -268,7 +268,6 @@ const CarManagement: React.FC = () => {
 
     setImagePreviews(imageUrls.map(url => `http://localhost:8080/assets/images/car/${url}`));
 
-
   };
 
   const deleteMaintenanceByCarId = (carId: number) => {
@@ -394,8 +393,6 @@ const CarManagement: React.FC = () => {
                 ))}
               </div>
             </div>
-
-
 
 
             {/* Car Information Form */}

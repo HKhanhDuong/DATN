@@ -69,7 +69,7 @@ public class Motorbike {
     @Column(nullable = false, length = 255)
     private String detailBike;
 
-    @Column(nullable = false, length = 255, columnDefinition = "NVARCHAR(255)")
+    @Column(nullable = true, length = 255, columnDefinition = "NVARCHAR(255)")
     private String facilities;
     
     @Min(0)
