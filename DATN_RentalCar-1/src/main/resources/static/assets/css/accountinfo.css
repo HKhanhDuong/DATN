@@ -1,115 +1,118 @@
-/* Cấu trúc chung cho container */
+
+
+/* Container chính */
 .account-settings-container {
-    max-width: 800px;
+    max-width: 100%; /* Giữ cân đối chiều rộng */
     margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+
+    border-radius: 12px;
+    background-color: #f8f9fa;
+    
 }
 
 /* Tiêu đề */
 .section-header h2 {
-    font-size: 1.8rem;
-    font-weight: 600;
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 30px;
     color: #333;
 }
 
-/* Hình ảnh đại diện */
+/* Cột ảnh đại diện */
+.profile-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-right: 20px; /* Bỏ border */
+}
+
 .profile-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border: none; /* Bỏ border */
     cursor: pointer;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .profile-image:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.file-input-container button {
+    margin-top: 10px;
+    font-size: 1rem;
+    padding: 8px 16px;
+    background-color: #6c757d;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.file-input-container button:hover {
+    background-color: #5a6268;
     transform: scale(1.05);
 }
 
-/* Các trường nhập liệu */
+/* Form */
+.form-group {
+    margin-bottom: 1.8rem;
+}
+
 .form-label {
+    font-size: 1.2rem;
     font-weight: 500;
     color: #555;
 }
 
 .form-control {
-    border-radius: 5px;
-    border: 1px solid #ddd;
+    font-size: 1.9rem;
     padding: 10px;
-    font-size: 1rem;
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 100%; /* Tăng độ dài */
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .form-control:focus {
-    border-color: #4CAF50;
-    box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
-}
-
-/* Các trường nhập liệu file */
-#profileImage {
-    display: none;
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
 }
 
 /* Nút hành động */
-.btn {
-    font-size: 1rem;
-    padding: 10px 20px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
+.form-actions .btn  {
+    font-size: 1.9rem;
+    padding: 12px 30px;
+    border-radius: 8px;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+    border: none; /* Bỏ border */
 }
 
+/* Nút "Hủy" */
 .btn-secondary {
-    background-color: #f0f0f0;
-    color: #333;
+    background-color: #e0e0e0;
+    color: #555;
 }
 
 .btn-secondary:hover {
-    background-color: #ddd;
+	
+    background-color: #ccc;
+    transform: scale(1.05);
 }
 
-.btn-primary {
-    background-color: #4CAF50;
+/* Nút "Lưu thay đổi" */
+.btn-primary1 {
+	width: 150px;
+    background-color: #007bff;
     color: white;
-    border: none;
 }
 
-.btn-primary:hover {
-    background-color: #45a049;
-}
-
-/* Các hiệu ứng cho thông báo lỗi và thành công */
-.error-message p, .success-message p {
-    font-size: 1rem;
-    font-weight: 500;
-    text-align: center;
-    margin-top: 10px;
-}
-
-.error-message p {
-    color: red;
-}
-
-.success-message p {
-    color: green;
-}
-
-/* Các hiệu ứng cho form các trường */
-.form-group {
-    margin-bottom: 20px;
-}
-
-/* Căn chỉnh các nút hành động */
-.form-actions {
-    display: flex;
-    justify-content: flex-end;
-}
-
-/* Hiệu ứng hover cho các trường nhập liệu */
-input[type="text"], input[type="email"], input[type="date"], input[type="file"] {
-    transition: background-color 0.3s ease;
-}
-
-input[type="text"]:focus, input[type="email"]:focus, input[type="date"]:focus {
-    background-color: #f4f9f4;
+.btn-primary1:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
 }

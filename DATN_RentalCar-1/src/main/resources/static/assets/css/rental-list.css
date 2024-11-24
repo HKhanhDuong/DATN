@@ -1,0 +1,135 @@
+/* Tổng quan container */
+.rental-list-container {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.rental-list-title {
+    text-align: center;
+    font-size: 24px;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Tabs styling */
+.rental-nav-tabs {
+	
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 10px;
+    margin: 0;
+    border-bottom: 2px solid #ddd;
+}
+
+.rental-nav-item {
+    margin: 0 10px;
+}
+
+.rental-nav-link {
+    padding: 10px 20px;
+    border-radius: 25px;
+    color: #007bff;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    background-color: #f8f9fa;
+    border: 1px solid #007bff;
+    transition: all 0.3s ease-in-out;
+    display: inline-block;
+}
+
+.rental-nav-link.active {
+    background-color: #007bff;
+    color: #fff;
+    border: 1px solid #007bff;
+}
+
+.rental-nav-link:hover {
+    background-color: #e7f3ff;
+    color: #0056b3;
+    border: 1px solid #0056b3;
+}
+
+/* Tab nội dung */
+.rental-tab-content {
+    margin-top: 15px;
+}
+
+.rental-tab-pane {
+    display: none;
+}
+
+.rental-tab-pane.active {
+    display: block;
+}
+
+.rental-section-title {
+    font-size: 20px;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* Table styling */
+.rental-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.rental-table thead {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.rental-table-header {
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+}
+
+.rental-table-cell {
+    font-size: 14px;
+    text-align: center;
+    padding: 10px;
+    color: #555;
+    vertical-align: middle;
+    border-bottom: 1px solid #ddd;
+}
+
+.rental-table tbody tr:hover {
+    background-color: #f0f8ff;
+    transition: background-color 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .rental-list-container {
+        padding: 10px;
+    }
+
+    .rental-nav-tabs {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .rental-nav-item {
+        margin: 5px 0;
+    }
+
+    .rental-table-header,
+    .rental-table-cell {
+        font-size: 12px;
+        padding: 8px;
+    }
+}
