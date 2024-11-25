@@ -8,4 +8,6 @@ import com.rentalcar.entity.Account;
 @Repository
 public interface AccountRepo extends JpaRepository<Account, Long>{
 	Account findByEmail(String email);
+	
+	public Account findByPhoneNumber(String phoneNumber);
 }

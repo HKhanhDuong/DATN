@@ -214,6 +214,7 @@ public class homePageController {
                 drivingLicense.setAccount(user);
                 user.setDrivingLicense(drivingLicense);
             }
+            // chưa thành công
             drivingLicense.setLicenseNumber(licenseNumber); // Cập nhật số giấy phép lái xe
             drivingLiscenseRepo.save(drivingLicense); // Lưu thông tin giấy phép lái xe
 

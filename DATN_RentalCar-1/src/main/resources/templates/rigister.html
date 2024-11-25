@@ -102,6 +102,18 @@
 									class="form-control form-control-lg"
 									placeholder="Nhập họ và tên" required />
 							</div>
+							
+							<!-- numberphone input -->
+							<div class="form-outline mb-4">
+								<label class="form-label" for="registerName">Số Điện Thoại: </label>
+								<input type="text" id="registerName" th:field="*{phoneNumber}"
+									class="form-control form-control-lg"
+									placeholder="Nhập số điện thoại" required />
+									<!-- Thông báo -->
+							    <span th:if="${SDTError}" class="error-message">
+							        <p th:text="${SDTError}" style="color:red;"></p>
+							    </span>
+							</div>
 
 							<!-- Email input -->
 							<div class="form-outline mb-4">
@@ -109,14 +121,19 @@
 									type="email" id="registerEmail" th:field="*{email}"
 									class="form-control form-control-lg"
 									placeholder="Nhập địa chỉ Email" required />
+									
+								<!-- Thông báo -->
+							    <span th:if="${EmailError}" class="error-message">
+							        <p th:text="${EmailError}" style="color:red;"></p>
+							    </span>
 							</div>
 
 							<!-- Username input -->
 							<div class="form-outline mb-4">
 								<label class="form-label" for="registerUsername">Tên
-									Đăng Nhập:</label> <input type="text" id="registerUsername"
+									Tài Khoản:</label> <input type="text" id="registerUsername"
 									th:field="*{username}" class="form-control form-control-lg"
-									placeholder="Nhập tên đăng nhập" required />
+									placeholder="Nhập tên tài khoản" required />
 							</div>
 
 							<!-- Password input -->
@@ -126,6 +143,15 @@
 									th:field="*{passwordHash}" class="form-control form-control-lg"
 									placeholder="Nhập mật khẩu" required />
 							</div>
+							
+							<!-- Thông báo -->
+						    <div th:if="${error}" class="error-message">
+						        <p th:text="${error}" style="color:red;"></p>
+						    </div>
+						    <div th:if="${success}" class="success-message">
+						        <p th:text="${success}" style="color:green;"></p>
+						    </div>
+						    
 
 							<div class="text-center text-lg-start mt-4 pt-2">
 								<button type="submit" class="btn btn-primary btn-lg"
@@ -135,31 +161,14 @@
 									Bạn đã có tài khoản? <a href="#" id="show-login"
 										class="link-danger">Đăng nhập</a>
 								</p>
-							</div>
-
-							<div class="">
-								<p class="text-center fw-bold mx-3 mb-0">hoặc</p>
-							</div>
-
-							<!-- Login with social buttons -->
-							<div
-								class="d-flex flex-row align-items-center justify-content-center"
-								id="btn-Login-with">
-								<button type="button" class="btn btn-primary btn-floating mx-1">
-									<i class="fab fa-facebook-f"></i>
-								</button>
-								<button type="button" class="btn btn-primary btn-floating mx-1">
-									<i class="fab fa-twitter"></i>
-								</button>
-								<button type="button" class="btn btn-primary btn-floating mx-1">
-									<i class="fab fa-linkedin-in"></i>
-								</button>
-							</div>
+							</div>	
+							
 						</form>
-
+					
 
 					</div>
 
+				</div>
 				</div>
 			</div>
 	</section>

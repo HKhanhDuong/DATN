@@ -33,8 +33,50 @@ public class RegisterController {
     
     @PostMapping
     public String register(Model model, Account account) {
+    	
+    	//Lỗi kiểm tra số đt tồn tại
+    	// Kiểm tra xem email đã tồn tại trong cơ sở dữ liệu chưa
+    	System.out.println("Phone number being checked: " + account.getPhoneNumber());
+    	if (accRepo.findByPhoneNumber(account.getPhoneNumber()) != null) {
+    	    model.addAttribute("SDTError", "Số điện thoại này đã tồn tại!");
+    	    model.addAttribute("account", account); // Giữ lại dữ liệu người dùng nhập
+    	    return "register"; // Trả về trang đăng ký với thông báo lỗi
+    	}
+    	
+        if (accRepo.findByEmail(account.getEmail()) != null) {
+            model.addAttribute("EmailError", "Email này đã tồn tại!");
+            model.addAttribute("account", account); // Giữ lại dữ liệu người dùng nhập
+            return "rigister"; // Trả về trang đăng ký với thông báo lỗi
+        }
+        
+    	// Kiểm tra định dạng email
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@[a-zA0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
+        if (!account.getEmail().matches(emailRegex)) {
+            model.addAttribute("error", "Email không đúng định dạng!");
+            model.addAttribute("account", account); // Đảm bảo giữ lại dữ liệu người dùng nhập
+            return "rigister"; // Trả về trang đăng ký với thông báo lỗi
+        }
+
+        // Kiểm tra định dạng số điện thoại
+        String phoneRegex = "^0[0-9]{9}$";
+        if (!account.getPhoneNumber().matches(phoneRegex)) {
+            model.addAttribute("error", "Số điện thoại chỉ được chứa số và phải từ 10 đến 12 chữ số!");
+            model.addAttribute("account", account); // Đảm bảo giữ lại dữ liệu người dùng nhập
+            return "rigister"; // Trả về trang đăng ký với thông báo lỗi
+        }
+        
+        
+
+        // Kiểm tra mật khẩu không chứa ký tự đặc biệt
+        String password = account.getPasswordHash();
+        String passwordRegex = "^[a-zA-Z0-9]+$";  // Chỉ cho phép chữ cái và số
+        if (!password.matches(passwordRegex)) {
+            model.addAttribute("error", "Mật khẩu không được chứa ký tự đặc biệt!");
+            model.addAttribute("account", account); // Đảm bảo giữ lại dữ liệu người dùng nhập
+            return "rigister"; // Trả về trang đăng ký với thông báo lỗi
+        }
+
         account.setDateOfBirth(new Date());
-        account.setPhoneNumber("");
         
         // Lấy Role từ cơ sở dữ liệu
         Long roleID = 2L; // ID của Role bạn muốn gán
@@ -49,6 +91,8 @@ public class RegisterController {
         // Lưu thông tin tài khoản mới
         accRepo.save(account);
 
+     // Thêm thông báo thành công
+        model.addAttribute("success", "Đăng ký thành công! Vui lòng đăng nhập.");
         // Chuyển hướng đến trang đăng nhập hoặc trang khác sau khi đăng ký thành công
         return "redirect:/login"; // Hoặc trang mà bạn muốn người dùng đến sau khi đăng ký
     }
