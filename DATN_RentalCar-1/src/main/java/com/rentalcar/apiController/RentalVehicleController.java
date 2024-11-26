@@ -3,6 +3,7 @@ package com.rentalcar.apiController;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,11 +18,23 @@ import org.springframework.web.bind.annotation.RestController;
 import com.rentalcar.dao.RentalVehicleRepo;
 import com.rentalcar.entity.Damage;
 import com.rentalcar.entity.RentalVehicle;
+import com.rentalcar.service.AccountService;
+import com.rentalcar.service.SessionService;
+
+import jakarta.transaction.Transactional;
+
+import com.rentalcar.entity.Account;
+import com.rentalcar.dao.AccountRepo;
 
 @RestController
 @RequestMapping("/api/rental-vehicle")
 public class RentalVehicleController {
 	@Autowired RentalVehicleRepo rentalvehicleRepo;
+	@Autowired AccountRepo accountRepo;
+	@Autowired
+    private SessionService session;
+
+	
 	
 	// tìm tất cả
 		@GetMapping
@@ -76,4 +89,72 @@ public class RentalVehicleController {
 
 			return "Deleted!!!!";
 		}
+		
+//		@Transactional
+//		@GetMapping("/rental-List")
+//		public ResponseEntity<Long> searchRental() {
+//		    try {	    	
+//		        Account sessionValue = session.get("user");
+//		        System.out.println("sessionValue: " + sessionValue.getFullName() );
+//		        if (sessionValue.equals(null)) {
+//		        	return ResponseEntity.status(500).body(null);
+//				} else {
+//					return ResponseEntity.ok(sessionValue.getAccountId());
+//				}
+//		        
+//		        
+//		    } catch (Exception e) {
+//		        e.printStackTrace();
+//		        return ResponseEntity.status(500).body(null);
+//		    }
+//		}
+		
+//		@Transactional
+//		@GetMapping("/rental-List")
+//		public ResponseEntity<List<RentalVehicle>> getRentalVehiclesByAccountId() {
+//		    try {
+//
+//
+//		        Account sessionValue = session.get("user");
+//		        System.out.println("sessionValue: " + sessionValue.getFullName());
+//		        
+//		        if (sessionValue == null) {
+//		            return ResponseEntity.status(401).body(null); 
+//		        }
+//
+//		     
+//		        
+//		        Long accountId = sessionValue.getAccountId();
+//		        List<RentalVehicle> rentalVehicles = rentalvehicleRepo.findByAccountId(accountId);
+//
+//		       
+//		        return ResponseEntity.ok(rentalVehicles);
+//		    } catch (Exception e) {
+//		        e.printStackTrace();
+//		        return ResponseEntity.status(500).body(null); // Lỗi server
+//		    }
+//		}
+		@Transactional
+		@GetMapping("/rental-List")
+		public ResponseEntity<List<RentalVehicle>> getRentalVehiclesByAccountId() {
+		    try {
+		        Account sessionValue = session.get("user");
+		        System.out.println("sessionValue: " + sessionValue.getFullName());
+		        
+		        if (sessionValue == null) {
+		            return ResponseEntity.status(401).body(null); // Unauthorized
+		        }
+
+		        Long accountId = sessionValue.getAccountId();
+		        List<RentalVehicle> rentalVehicles = rentalvehicleRepo.findByAccountId(accountId);
+		        return ResponseEntity.ok(rentalVehicles);
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		        return ResponseEntity.status(500).body(null); // Server error
+		    }
+		}
+
+		
+
+
 }

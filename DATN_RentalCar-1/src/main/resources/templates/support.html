@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- Link Swiper's CSS -->
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<link rel="stylesheet" href="./assets/css/base.css" />
+<link rel="stylesheet" href="./assets/css/utils.css" />
+<link rel="stylesheet" href="./assets/css/style.css" />
+<link rel="stylesheet" href="./assets/css/responsive.css" />
+<link rel="stylesheet" href="./assets/css/Search-option.css">
+<link rel="stylesheet" href="./assets/css/rental-form.css">
+<link rel="stylesheet" href="./assets/css/support.css">
+
+<!-- Search-option-->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.theme.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<title>TRANG CHỦ RENTALCAR</title>
+<style >
+	.product-item {
+	position: relative;
+	transition: transform 0.3s ease;
+	}
+	
+	.product-item:hover {
+		transform: scale(1.05); /* Slight zoom effect */
+		box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Adding shadow on hover */
+	}
+	
+	.product-link {
+		text-decoration: none;
+		color: inherit;
+		display: block; /* Make the whole div clickable */
+	}
+	
+</style>
+</head>
+
+<body>
+	<!-- header -->
+	<header th:replace="~{module/header :: header}">
+		
+	</header>
+
+
+	<!-- support -->
+
+	
+    <div class="row">
+      <div class="body-rent">
+        <div class="body-guide">
+          <section>
+            <h3 class="title-child-owner" style="text-align: center; font-size: 44px; color: #20B2AA; stroke: none; margin-top: 10px; margin-bottom: -40px;">Hướng dẫn thuê xe</h3>
+            <div class="rental-process">
+              <div>
+                <img
+                  alt="Process"
+                  src="./assets/images/others/1.png"
+                  class="img-process"
+                /><img
+                  alt="Process"
+                  src="./assets/images/others/2.png"
+                  class="img-process"
+                /><img
+                  alt="Process"
+                  src="./assets/images/others/3.png"
+                  class="img-process"
+                /><img
+                  alt="Process"
+                  src="./assets/images/others/4.png"
+                  class="img-process"
+                />
+              </div>
+              <div>
+              </div>
+              <div>
+                <div class="text-process">
+                  <span class="title-process">Tìm xe</span
+                  ><span class="des-process"
+                    >Truy cập website hoặc app Chungxe, lựa chọn thời gian &amp;
+                    địa điểm bạn cần thuê xe.</span
+                  >
+                </div>
+                <div class="text-process">
+                  <span class="title-process">Đặt xe</span
+                  ><span class="des-process"
+                    >Dựa trên hệ thống so sánh giá, lựa chọn chiếc xe ưng ý
+                    &amp; gửi yêu cầu về cho chúng tôi.</span
+                  >
+                </div>
+                <div class="text-process">
+                  <span class="title-process">Nhận xe</span
+                  ><span class="des-process"
+                    >Hoàn tất thủ tục thuê, nhận xe &amp; bắt đầu hành trình.
+                    Bạn có thể nhận xe tại nhà hoặc đại lí của chúng tôi.</span
+                  >
+                </div>
+                <div class="text-process">
+                  <span class="title-process">Trả xe</span
+                  ><span class="des-process"
+                    >Trả xe sau khi kết thúc hành trình. Chấm điểm dịch vụ để
+                    cải thiện chất lượng.</span
+                  >
+                </div>
+              </div>
+            </div>
+          </section>
+          <section>
+            <p class="title-child-owner question" style="text-align: center; font-size: 44px; color: #20B2AA; stroke: none;  ">Các câu hỏi thường gặp</p>
+          </section>
+          <div class="wrapper">
+            <div class="section p-2">
+              <div class="row">
+                <div class="col-10">
+                  Tôi cần chuẩn bị những gì để thuê một chiếc xe máy?
+                </div>
+                <div class="col-2">
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    stroke-width="0"
+                    viewBox="0 0 448 512"
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="collapse">
+                <div class="mt-3 ml-3">
+                  Chứng minh thư nhân dân (bản gốc); Giấy phép lái xe (bản gốc
+                  và bản sao); Hộ chiếu (passport) nếu là người nước ngoài; Tiền
+                  đặt cọc từ 3.000.000đ trở lên tùy loại xe.
+                </div>
+              </div>
+            </div>
+            <div class="section p-2">
+              <div class="row">
+                <div class="col-10">
+                  Tôi cần chuẩn bị những gì để thuê một chiếc xe ô tô tự lái?
+                </div>
+                <div class="col-2">
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    stroke-width="0"
+                    viewBox="0 0 448 512"
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="collapse">
+                <div class="mt-3 ml-3">
+                  Hộ khẩu hoặc KT3 (sổ tạm trú dài hạn), CMND/CCCD (bản gốc), Xe
+                  gắn máy kèm giấy đăng ký xe. Đặt cọc xe máy hoặc tiền mặt có
+                  trị giá từ 15.000.000đ trở lên tùy từng loại xe.
+                </div>
+              </div>
+            </div>
+            <div class="section p-2">
+              <div class="row">
+                <div class="col-10">
+                  Tôi có thể đăng ký thuê xe cho người khác không?
+                </div>
+                <div class="col-2">
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    stroke-width="0"
+                    viewBox="0 0 448 512"
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="collapse">
+                <div class="mt-3 ml-3">
+                  Bạn có thể đứng tên hợp đồng để thuê cho người thân hoặc bạn
+                  bè. Tùy từng nhà xe sẽ yêu cầu bạn bổ sung thêm 1 số giấy tờ
+                  phù hợp để đứng tên hợp đồng cho thuê xe.
+                </div>
+              </div>
+            </div>
+            <div class="section p-2">
+              <div class="row">
+                <div class="col-10">Tôi cần lưu ý gì khi nhận xe?</div>
+                <div class="col-2">
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    stroke-width="0"
+                    viewBox="0 0 448 512"
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="collapse">
+                <div class="mt-3 ml-3">
+                  Kiểm tra kĩ giấy tờ của xe xem còn hạn hay không. Mang đầy đủ
+                  giấy tờ, đặc biệt là Bằng lái xe, và Chứng minh nhân dân. Đọc
+                  kỹ biên bản bàn giao xe như xem có vết trầy xước nào không,
+                  vạch xăng thực tế khi bàn giao
+                </div>
+              </div>
+            </div>
+            <div class="section p-2">
+              <div class="row">
+                <div class="col-10">
+                  Khi gặp sự cố trên đường tôi phải làm gì?
+                </div>
+                <div class="col-2">
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    stroke-width="0"
+                    viewBox="0 0 448 512"
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="collapse">
+                <div class="mt-3 ml-3">
+                  Bạn nên gọi điện cho Hotline (090 450 9596) của Chungxe đồng
+                  thời liên lạc trực tiếp cho nhà xe để thông báo và thống nhất
+                  cách sửa chữa và thanh toán chi phí dựa trên thỏa thuận của
+                  hai bên.
+                </div>
+              </div>
+            </div>
+            <div class="section p-2">
+              <div class="row">
+                <div class="col-10">
+                  Giá thuê xe gồm những gì, có phụ phí gì phải lưu ý không?
+                </div>
+                <div class="col-2">
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    stroke-width="0"
+                    viewBox="0 0 448 512"
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="collapse">
+                <div class="mt-3 ml-3">
+                  Giá thuê xe sẽ được tính kết hợp theo ngày và theo giờ. Nếu
+                  bạn trả xe muộn hơn giờ trong thỏa thuận, tùy từng nhà xe sẽ
+                  có mức tính phí phát sinh dựa trên số giờ quá hạn hoặc theo số
+                  kilomet vượt quá. Giá thuê xe dịp lễ tết hoặc cuối tuần thường
+                  cao hơn so với ngày thường.
+                </div>
+              </div>
+            </div>
+            <div class="section p-2">
+              <div class="row">
+                <div class="col-10">Làm thế nào để đặt xe trên Chungxe</div>
+                <div class="col-2">
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    stroke-width="0"
+                    viewBox="0 0 448 512"
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="collapse">
+                <div class="mt-3 ml-3">
+                  Bạn có thể đặt xe qua email, điện thoại hoặc đăng ký ngay trên
+                  trang web hoặc app Chungxe
+                </div>
+              </div>
+            </div>
+            <div class="section p-2">
+              <div class="row">
+                <div class="col-10">Chungxe cho thuê những loại xe nào?</div>
+                <div class="col-2">
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    stroke-width="0"
+                    viewBox="0 0 448 512"
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="collapse">
+                <div class="mt-3 ml-3">
+                  Chúng tôi có nhiều dòng cả xe máy và ô tô để phù hợp với nhu
+                  cầu của khách hàng cả thuê ngắn và dài ngày như Xe ô tô 4-5
+                  chỗ, 7 chỗ, 9 chỗ; Xe máy tay ga, xe số, xe côn.
+                </div>
+              </div>
+            </div>
+            <div class="section p-2">
+              <div class="row">
+                <div class="col-10">
+                  Tôi có thể thanh toán bằng những hình thức nào?
+                </div>
+                <div class="col-2">
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    stroke-width="0"
+                    viewBox="0 0 448 512"
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="collapse">
+                <div class="mt-3 ml-3">
+                  Thanh toán chuyển khoản, phí chuyển khoản sẽ do khách hàng chi
+                  trả. Thanh toán tiền mặt. Thanh toán thẻ tín dụng
+                </div>
+              </div>
+            </div>
+            <div class="section p-2">
+              <div class="row">
+                <div class="col-10">
+                  Nếu hủy đặt xe tôi có phải chịu phí phạt không?
+                </div>
+                <div class="col-2">
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    stroke-width="0"
+                    viewBox="0 0 448 512"
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="collapse">
+                <div class="mt-3 ml-3">
+                  Bạn hoàn toàn không phải chịu phí phạt nào vì huỷ cọc trước
+                  thời điểm thực hiện hợp đồng thuê xe ( không áp dụng thuê xe
+                  trong ngày lễ, tết,…).
+                </div>
+              </div>
+            </div>
+            <div class="section p-2">
+              <div class="row">
+                <div class="col-10">
+                  Xe có mới không? Chất lượng xe có tốt không?
+                </div>
+                <div class="col-2">
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    stroke-width="0"
+                    viewBox="0 0 448 512"
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="collapse">
+                <div class="mt-3 ml-3">
+                  Chungxe cung cấp các dòng xe mới và được đăng kiểm đăng ký,
+                  bảo trì bảo dưỡng theo định kỳ.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+	<!-- footer -->
+	<div class="footer">
+		<div th:replace="~{module/footer :: footer }"  class="container">
+			
+		</div>
+	</div>
+
+	<!--Search-option-->
+
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/i18n/jquery-ui-i18n.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
+	<script src="./assets/js/Search-option.js"></script>
+	<!-- Ion-Icon -->
+	<script type="module"
+		src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+	<script nomodule
+		src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+	<!-- Swiper JS -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+	<script src="./assets/js/swiper.js"></script>
+	<script src="./assets/js/rental-form.js"></script>
+	<script src="./assets/js/support.js"></script>
+	
+
+	<!-- Bootstrap JS và các phụ thuộc -->
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

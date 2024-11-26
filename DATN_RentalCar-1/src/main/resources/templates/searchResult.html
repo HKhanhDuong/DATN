@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Kết quả tìm kiếm</title>
+</head>
+<body>
+<h1>Danh sách phương tiện</h1>
+
+<div>
+    <h2>Loại phương tiện: <span th:text="${vehicleType} == 'car' ? 'Ô tô' : 'Xe máy'"></span></h2>
+    <ul>
+        <li th:each="vehicle : ${vehicles}">
+            <div>
+                <p><strong>Hãng:</strong> <span th:text="${vehicle['make']}"></span></p>
+                <p><strong>Model:</strong> <span th:text="${vehicle['model']}"></span></p>
+                <p><strong>Địa điểm:</strong> <span th:text="${vehicle['vehicleLocation']}"></span></p>
+                <p><strong>Giá thuê/ngày:</strong> <span th:text="${vehicle['dailyRate']}"></span> VND</p>
+                <p><strong>Trạng thái:</strong> <span th:text="${vehicle['status']}"></span></p>
+            </div>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

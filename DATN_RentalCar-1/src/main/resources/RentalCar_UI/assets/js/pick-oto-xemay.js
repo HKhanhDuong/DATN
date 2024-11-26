@@ -83,16 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ['car-type', 'gear-type', 'car-brand', 'city', 'district'].forEach(setupDropdown);
 
     // --- Xử lý chọn ngày ---
-    const startDateBtn = document.getElementById('start-date-btn');
-    const endDateBtn = document.getElementById('end-date-btn');
 
-    if (startDateBtn) {
-        startDateBtn.addEventListener('click', () => alert('Chọn ngày bắt đầu'));
-    }
-
-    if (endDateBtn) {
-        endDateBtn.addEventListener('click', () => alert('Chọn ngày kết thúc'));
-    }
 
     // --- Xử lý cuộn ---
     window.addEventListener('scroll', () => {

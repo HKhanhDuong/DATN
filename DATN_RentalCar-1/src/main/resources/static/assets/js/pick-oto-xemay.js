@@ -185,11 +185,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	};
 
 	// Xử lý chọn ngày
-	const startDateBtn = document.getElementById('start-date-btn');
-	const endDateBtn = document.getElementById('end-date-btn');
-
-	if (startDateBtn) startDateBtn.addEventListener('click', () => alert('Chọn ngày bắt đầu'));
-	if (endDateBtn) endDateBtn.addEventListener('click', () => alert('Chọn ngày kết thúc'));
 
 	// Xử lý cuộn trang
 	window.addEventListener('scroll', () => {

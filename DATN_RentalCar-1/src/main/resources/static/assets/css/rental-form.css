@@ -17,16 +17,18 @@ select {
 
 /* Container chứa 2 form */
 .rental-container {
-margin-top: -50px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    width: 100%;
+    max-width: 1200px; /* hoặc kích thước phù hợp với design của bạn */
+    margin: 0 auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
 }
 
 /* Form 1 */
 .rental-form {
   width: 40%;
-  background: #f5f5f5;
+  background: #ffffff;
   padding: 20px;
   border-radius: 20%;
   text-align: center;
@@ -37,23 +39,24 @@ margin-top: -50px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 /* Form 2 */
 .rental-form-search {
-  width: 80%;
-  background: #ffffff;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  position: relative;
-  z-index: 2;
-  margin-top: -85px;
-  margin-bottom: 60px;
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
+    width: 100%;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    position: relative;
+    z-index: 2;
+    margin-top: -70px;
+    margin-bottom: 60px;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 .vehicle-type {
@@ -63,28 +66,35 @@ margin-top: -50px;
 }
 
 .form-row {
-  display: flex;
-  align-items: flex-end;
-  gap: 15px;
-  width: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
 }
 
 .form-group {
-  flex: 1;
+    flex: 1;
+    min-width: 0; /* Quan trọng để tránh overflow */
 }
 
 .date-input {
-  flex: 0.6;
+    flex: 1.5;
+}
+
+.date-input input {
+    width: 100%;
+    padding: 8px;
 }
 
 .btn-group {
-  flex: 0.5;
-  margin-bottom: 5px;
+    flex: 0 0 auto; /* Không co giãn */
+    margin-left: auto; /* Đẩy nút về bên phải */
 }
 
 .btn-primary {
-  width: 100%;
-  height: 40px;
+    white-space: nowrap;
+    padding: 10px 20px;
 }
 
 /* Form container */
@@ -359,7 +369,7 @@ input[type="datetime-local"]:focus {
 }
 
 .rental-form-search {
-  width: 80%;
+  width: 100%;
   background: #ffffff;
   padding: 30px;
   border-radius: 12px;

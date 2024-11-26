@@ -306,6 +306,11 @@ public class homePageController {
     public String about() {
         return "about";
     } 
+    @GetMapping("/support")
+    public String support() {
+        return "support";
+    }
+
     
     @GetMapping("/forgotPassword")
     public String forgot() {

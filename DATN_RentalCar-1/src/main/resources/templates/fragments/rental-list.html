@@ -1,7 +1,7 @@
-<div th:fragment="rentalList" class="rental-list-container">
+<div th:fragment="rentalList" class="rental-list-container" style="margin-bottom: 20px">
     <h2 class="rental-list-title">Danh sách thuê</h2>
 
-    <!-- Tab Xe Ô Tô và Xe Máy -->
+    <!-- Tabs cho Xe Ô Tô và Xe Máy -->
     <ul class="rental-nav-tabs" id="rentalTab" role="tablist">
         <li class="rental-nav-item">
             <a class="rental-nav-link active" id="car-tab" data-bs-toggle="tab" href="#car-rentals" role="tab" aria-controls="car-rentals" aria-selected="true">Xe Ô Tô</a>
@@ -12,7 +12,7 @@
     </ul>
 
     <div class="rental-tab-content">
-        <!-- Danh sách xe ô tô đã thuê -->
+        <!-- Danh sách xe ô tô -->
         <div class="rental-tab-pane active" id="car-rentals" role="tabpanel" aria-labelledby="car-tab">
             <h3 class="rental-section-title" style="text-align: center;">Xe Ô Tô</h3>
             <table class="rental-table">
@@ -24,18 +24,13 @@
                         <th class="rental-table-header">Trạng thái</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr th:each="rental : ${rentedCars}">
-                        <td class="rental-table-cell" th:text="${rental.model}">Tên xe</td>
-                        <td class="rental-table-cell" th:text="${#dates.format(rental.rentalDate, 'dd/MM/yyyy')}">01/01/2024</td>
-                        <td class="rental-table-cell" th:text="${#dates.format(rental.returnDate, 'dd/MM/yyyy')}">05/01/2024</td>
-                        <td class="rental-table-cell" th:text="${rental.renStatus}">Trạng thái</td>
-                    </tr>
+                <tbody id="car-rentals-body">
+                    <!-- Dữ liệu xe ô tô sẽ được chèn vào đây bằng JavaScript -->
                 </tbody>
             </table>
         </div>
 
-        <!-- Danh sách xe máy đã thuê -->
+        <!-- Danh sách xe máy -->
         <div class="rental-tab-pane" id="motorbike-rentals" role="tabpanel" aria-labelledby="motorbike-tab">
             <h3 class="rental-section-title" style="text-align: center;">Xe Máy</h3>
             <table class="rental-table">
@@ -47,13 +42,8 @@
                         <th class="rental-table-header">Trạng thái</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr th:each="rental : ${rentedMotorbikes}">
-                        <td class="rental-table-cell" th:text="${rental.model}">Tên xe</td>
-                        <td class="rental-table-cell" th:text="${#dates.format(rental.rentalDate, 'dd/MM/yyyy')}">01/01/2024</td>
-                        <td class="rental-table-cell" th:text="${#dates.format(rental.returnDate, 'dd/MM/yyyy')}">05/01/2024</td>
-                        <td class="rental-table-cell" th:text="${rental.renStatus}">Trạng thái</td>
-                    </tr>
+                <tbody id="motorbike-rentals-body">
+                    <!-- Dữ liệu xe máy sẽ được chèn vào đây bằng JavaScript -->
                 </tbody>
             </table>
         </div>

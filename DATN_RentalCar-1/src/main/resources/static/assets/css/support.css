@@ -1,0 +1,192 @@
+/* Container cho tất cả câu hỏi */
+.wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px 0;
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+/* Style cho từng section câu hỏi */
+.section {
+    flex: 0 0 calc(33.333% - 14px); /* Chia làm 3 cột, trừ đi gap */
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Style cho hàng chứa câu hỏi */
+.section .row {
+    background-color: rgba(211, 211, 211, 0.158);
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    cursor: pointer;
+    min-height: 72px; /* Đảm bảo chiều cao tối thiểu cho câu hỏi */
+}
+
+/* Style cho cột chứa nội dung câu hỏi */
+.section .col-10 {
+    flex: 0 0 90%;
+    font-weight: 500;
+    font-size: 15px;
+}
+
+/* Style cho cột chứa icon mũi tên */
+.section .col-2 {
+    flex: 0 0 10%;
+    display: flex;
+    justify-content: center;
+    color: #666;
+}
+
+/* Style cho phần nội dung trả lời */
+.collapse {
+    display: none;
+    padding: 0 16px 16px;
+    color: #666;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Khi collapse được mở */
+.collapse.show {
+    display: block;
+}
+
+/* Style cho icon mũi tên khi mở */
+.section.active svg {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease;
+}
+
+/* Thêm hover effect */
+.section:hover {
+    background: #f8f9fa;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .section {
+        flex: 0 0 calc(50% - 10px); /* 2 cột trên tablet */
+    }
+}
+
+@media (max-width: 768px) {
+    .section {
+        flex: 0 0 100%; /* 1 cột trên mobile */
+    }
+}
+
+/* Container chính */
+.rental-process {
+    width: 100%;
+    max-width: 1000px; /* Giới hạn độ rộng tối đa */
+    margin: 0 auto;
+    padding: 40px 0;
+}
+
+/* Container cho icons */
+.rental-process > div:first-child {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px; /* Giảm khoảng cách giữa các ảnh */
+    margin-bottom: 20px;
+}
+
+/* Style cho từng icon */
+.img-process {
+    width: 220px; /* Tăng kích thước ảnh */
+    height: 220px;
+    object-fit: contain;
+}
+
+/* Style cho timeline */
+.line-process {
+    background: #20B2AA;
+    position: relative;
+    margin: 30px 0;
+}
+
+/* Style cho dots trên timeline */
+.dot-line {
+    position: absolute;
+    width: 100%;
+    top: -6px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 110px; /* Căn chỉnh dots nằm dưới giữa mỗi ảnh */
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    background: #20B2AA;
+    border-radius: 50%;
+    border: 2px solid white; /* Thêm viền trắng cho dot */
+    box-shadow: 0 0 0 2px #20B2AA; /* Thêm viền ngoài cho dot */
+}
+
+/* Style cho icon complete */
+.dot4 {
+    width: 16px;
+    height: 16px;
+}
+
+/* Container cho text descriptions */
+.rental-process > div:last-child {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; /* Giảm khoảng cách giữa các text */
+    margin-top: 20px;
+    padding: 0 10px;
+}
+
+/* Style cho mỗi block text */
+.text-process {
+    width: 220px; /* Căn chỉnh độ rộng text bằng với ảnh */
+    text-align: center;
+}
+
+.title-process {
+    display: block;
+    color: #20B2AA;
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.des-process {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .rental-process > div:first-child {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .rental-process > div:last-child {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+    
+    .text-process {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .line-process,
+    .dot-line {
+        display: none;
+    }
+}
