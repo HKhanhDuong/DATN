@@ -38,6 +38,11 @@ public class LoginController {
     public String login(@RequestParam("email") String email, @RequestParam("password") String password, Model model) {
         Account account = accountService.findByEmail(email);  // Gọi accountService
 
+        if (account == null) {  // Kiểm tra tài khoản không tồn tại
+            model.addAttribute("error", "Tài khoản không tồn tại");
+            return "login"; // Hiển thị lại trang đăng nhập kèm thông báo lỗi
+        }
+        
         if (account != null && account.getPasswordHash().equals(password)) {  // Nên thay thế bằng cơ chế mã hóa mật khẩu như BCrypt
             session.set("user", account);
             

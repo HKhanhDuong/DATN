@@ -33,16 +33,14 @@ public class RegisterController {
     
     @PostMapping
     public String register(Model model, Account account) {
-    	
-    	//Lỗi kiểm tra số đt tồn tại
     	// Kiểm tra xem email đã tồn tại trong cơ sở dữ liệu chưa
     	System.out.println("Phone number being checked: " + account.getPhoneNumber());
     	if (accRepo.findByPhoneNumber(account.getPhoneNumber()) != null) {
     	    model.addAttribute("SDTError", "Số điện thoại này đã tồn tại!");
     	    model.addAttribute("account", account); // Giữ lại dữ liệu người dùng nhập
-    	    return "register"; // Trả về trang đăng ký với thông báo lỗi
+    	    return "rigister"; // Trả về trang đăng ký với thông báo lỗi
     	}
-    	
+    	// Kiểm tra xem email đã tồn tại trong cơ sở dữ liệu chưa
         if (accRepo.findByEmail(account.getEmail()) != null) {
             model.addAttribute("EmailError", "Email này đã tồn tại!");
             model.addAttribute("account", account); // Giữ lại dữ liệu người dùng nhập
@@ -66,11 +64,14 @@ public class RegisterController {
         }
         
         
-
         // Kiểm tra mật khẩu không chứa ký tự đặc biệt
         String password = account.getPasswordHash();
         String passwordRegex = "^[a-zA-Z0-9]+$";  // Chỉ cho phép chữ cái và số
-        if (!password.matches(passwordRegex)) {
+        if (password.length() < 3) {
+            model.addAttribute("error", "Mật khẩu phải chứa ít nhất 3 ký tự!");
+            return "rigister";  // Đảm bảo "register" khớp với tên của tệp register.html
+        }
+        else if (!password.matches(passwordRegex)) {
             model.addAttribute("error", "Mật khẩu không được chứa ký tự đặc biệt!");
             model.addAttribute("account", account); // Đảm bảo giữ lại dữ liệu người dùng nhập
             return "rigister"; // Trả về trang đăng ký với thông báo lỗi
