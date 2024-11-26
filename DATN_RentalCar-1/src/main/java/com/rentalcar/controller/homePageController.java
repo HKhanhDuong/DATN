@@ -134,7 +134,18 @@ public class homePageController {
             model.addAttribute("error", "Mật khẩu mới không được giống với mật khẩu cũ");
             return "account"; // Nếu mật khẩu mới giống mật khẩu cũ, yêu cầu nhập lại
         }
-
+     // Kiểm tra mật khẩu không chứa ký tự đặc biệt
+        String password = user.getPasswordHash();
+        String passwordRegex = "^[a-zA-Z0-9]+$";  // Chỉ cho phép chữ cái và số
+        if (newPassword.length() < 3) {
+            model.addAttribute("error", "Mật khẩu phải chứa ít nhất 3 ký tự!");
+            return "account";  // Đảm bảo "register" khớp với tên của tệp register.html
+        }
+        else if (!newPassword.matches(passwordRegex)) {
+            model.addAttribute("error", "Mật khẩu không được chứa ký tự đặc biệt!");
+            model.addAttribute("account", user); // Đảm bảo giữ lại dữ liệu người dùng nhập
+            return "account"; // Trả về trang đăng ký với thông báo lỗi
+        }
         // Cập nhật mật khẩu mới
         user.setPasswordHash(newPassword); // Lưu mật khẩu mới mà không mã hóa
 
