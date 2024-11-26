@@ -117,12 +117,6 @@ public class homePageController {
             return "redirect:/login"; // Nếu không có người dùng trong session, chuyển hướng về trang đăng nhập
         }
 
-     // Kiểm tra mật khẩu cũ và các điều kiện khác
-        if (currentPassword.trim().isEmpty() || newPassword.trim().isEmpty() || confirmNewPassword.trim().isEmpty()) {
-            model.addAttribute("error", "Tất cả các trường đều phải được điền.");
-            return "account";
-        }
-
      // Kiểm tra mật khẩu cũ có đúng không
         if (!user.getPasswordHash().equals(currentPassword)) {
             model.addAttribute("error", "Mật khẩu cũ không chính xác");
@@ -156,12 +150,13 @@ public class homePageController {
     }
 
     @PostMapping("/save-account-info")
-    public String saveAccountInfo(@RequestParam String fullName, 
+    public String saveAccountInfo(@RequestParam String fullName,
+    							  @RequestParam String userName, 
                                   @RequestParam String phoneNumber, 
                                   @RequestParam String address, 
                                   @RequestParam String dateOfBirth, 
                                   @RequestParam String email, 
-                                  @RequestParam String licenseNumber,
+                                  //@RequestParam String licenseNumber,
                                   Model model) throws ParseException {
 
         // Lấy thông tin người dùng đã đăng nhập từ session
@@ -171,52 +166,88 @@ public class homePageController {
             model.addAttribute("error", "Bạn cần đăng nhập để cập nhật thông tin.");
             return "account"; // Trả về trang tài khoản với thông báo lỗi đăng nhập
         }
+     // Kiểm tra nếu tên tài khoản có thay đổi hay không
+        if (!userName.equals(user.getUsername())) {
+            // Kiểm tra xem tên tài khoản đã tồn tại trong cơ sở dữ liệu chưa
+            Account existingUsernameAccount = accountRepo.findByUsername(userName);
+            if (existingUsernameAccount != null && !existingUsernameAccount.getAccountId().equals(user.getAccountId())) {
+                model.addAttribute("error", "Tên tài khoản này đã tồn tại!");
+                model.addAttribute("user", user); // Giữ lại dữ liệu người dùng nhập
+                return "account"; // Trả về trang tài khoản với thông báo lỗi
+            }
 
-        // Kiểm tra các trường có bị để trống hay không
-        if (fullName.isEmpty() || phoneNumber.isEmpty() || address.isEmpty() || dateOfBirth.isEmpty() || email.isEmpty()) {
-            model.addAttribute("error", "Vui lòng điền đầy đủ các trường bắt buộc!");
-            model.addAttribute("user", user); // Để giữ lại thông tin người dùng trên form
-            return "account"; // Trả về trang tài khoản với thông báo lỗi
+            // Cập nhật tên tài khoản nếu thay đổi
+            user.setUsername(userName);
         }
 
-        // Kiểm tra định dạng email
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
-        if (!email.matches(emailRegex)) {
-            model.addAttribute("error", "Email không đúng định dạng!");
-            model.addAttribute("user", user);
-            return "account"; // Trả về trang tài khoản với thông báo lỗi
-        }
 
-        // Kiểm tra định dạng số điện thoại
-        String phoneRegex = "^0[0-9]{9}$";
-        if (!phoneNumber.matches(phoneRegex)) {
-            model.addAttribute("error", "Số điện thoại chỉ được chứa số và phải từ 10 đến 12 chữ số!");
-            model.addAttribute("user", user);
-            return "account"; // Trả về trang tài khoản với thông báo lỗi
+     // Kiểm tra nếu email có thay đổi hay không
+        if (!email.equals(user.getEmail())) {
+            // Kiểm tra định dạng email chỉ khi email thay đổi
+            String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
+            if (!email.matches(emailRegex)) {
+                model.addAttribute("error", "Email không đúng định dạng!");
+                model.addAttribute("user", user);
+                return "account"; // Trả về trang tài khoản với thông báo lỗi
+            }
+
+            // Kiểm tra xem email đã tồn tại trong cơ sở dữ liệu chưa
+            Account existingEmailAccount = accountRepo.findByEmail(email);
+            if (existingEmailAccount != null && !existingEmailAccount.getAccountId().equals(user.getAccountId())) {
+                model.addAttribute("error", "Email này đã tồn tại!");
+                model.addAttribute("user", user); // Giữ lại dữ liệu người dùng nhập
+                return "account"; // Trả về trang tài khoản với thông báo lỗi
+            }
+
+            // Cập nhật email nếu thay đổi
+            user.setEmail(email);
+        }
+        
+        
+     // Kiểm tra nếu số điện thoại có thay đổi hay không
+        if (!phoneNumber.equals(user.getPhoneNumber())) {
+            // Kiểm tra định dạng số điện thoại chỉ khi số điện thoại thay đổi
+            String phoneRegex = "^0[0-9]{9}$";
+            if (!phoneNumber.matches(phoneRegex)) {
+                model.addAttribute("error", "Số điện thoại chỉ được chứa số tối đa 10 chữ số và bắt đầu bằng số 0");
+                model.addAttribute("user", user);
+                return "account"; // Trả về trang tài khoản với thông báo lỗi
+            }
+
+            // Kiểm tra xem số điện thoại đã tồn tại trong cơ sở dữ liệu hay chưa
+            Account existingAccount = accountRepo.findByPhoneNumber(phoneNumber);
+            if (existingAccount != null && !existingAccount.getAccountId().equals(user.getAccountId())) {
+                model.addAttribute("error", "Số điện thoại này đã tồn tại!");
+                model.addAttribute("user", user); // Giữ lại dữ liệu người dùng nhập
+                return "account"; // Trả về trang tài khoản với thông báo lỗi
+            }
+
+            // Cập nhật số điện thoại nếu thay đổi
+            user.setPhoneNumber(phoneNumber);
         }
 
         try {
             // Cập nhật thông tin người dùng
             user.setFullName(fullName);
-            user.setPhoneNumber(phoneNumber);
             user.setAddress(address);
             user.setEmail(email);
-
+            
+         
             // Chuyển đổi ngày sinh từ String thành Date
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date dob = dateFormat.parse(dateOfBirth);
             user.setDateOfBirth(dob); // Cập nhật ngày sinh
 
-            // Kiểm tra và cập nhật thông tin giấy phép lái xe
-            DrivingLicense drivingLicense = user.getDrivingLicense();
-            if (drivingLicense == null) {
-                drivingLicense = new DrivingLicense();
-                drivingLicense.setAccount(user);
-                user.setDrivingLicense(drivingLicense);
-            }
-            // chưa thành công
-            drivingLicense.setLicenseNumber(licenseNumber); // Cập nhật số giấy phép lái xe
-            drivingLiscenseRepo.save(drivingLicense); // Lưu thông tin giấy phép lái xe
+            // Kiểm tra và cập nhật thông tin giấy phép lái xe chưa thực hiện được 
+//            DrivingLicense drivingLicense = user.getDrivingLicense();
+//            if (drivingLicense == null) {
+//                drivingLicense = new DrivingLicense();
+//                drivingLicense.setAccount(user);
+//                user.setDrivingLicense(drivingLicense);
+//            }
+//            // chưa thành công
+//            drivingLicense.setLicenseNumber(licenseNumber); // Cập nhật số giấy phép lái xe
+//            drivingLiscenseRepo.save(drivingLicense); // Lưu thông tin giấy phép lái xe
 
             // Lưu lại thông tin người dùng vào cơ sở dữ liệu
             accountRepo.save(user); // Lưu thay đổi vào cơ sở dữ liệu

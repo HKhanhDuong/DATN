@@ -62,7 +62,7 @@ public class RegisterController {
         // Kiểm tra định dạng số điện thoại
         String phoneRegex = "^0[0-9]{9}$";
         if (!account.getPhoneNumber().matches(phoneRegex)) {
-            model.addAttribute("error", "Số điện thoại chỉ được chứa số và phải từ 10 đến 12 chữ số!");
+            model.addAttribute("error", "Số điện thoại chỉ được chứa số tối đa 10 số và bắt đầu bằng số 0");
             model.addAttribute("account", account); // Đảm bảo giữ lại dữ liệu người dùng nhập
             return "rigister"; // Trả về trang đăng ký với thông báo lỗi
         }

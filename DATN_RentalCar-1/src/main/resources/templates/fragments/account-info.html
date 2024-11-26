@@ -8,7 +8,7 @@
         <div class="col-md-4 profile-column text-center">
             <div class="profile-image-container mb-4">
                 <img id="profileImagePreview" 
-                     src="@{${user.imageUrl != null} ? '/images/' + ${user.imageUrl} : './assets/images/user.png'}"  
+                     src="@{${user.imageUrl != null} ? '/images/' + ${user.imageUrl} : './assets/images/others/user.png'}"  
                      alt="Profile Image"
                      class="profile-image rounded-circle" 
                      onclick="triggerFileInput()">
@@ -23,7 +23,12 @@
         <div class="col-md-8">
             <form th:action="@{/save-account-info}" method="post" enctype="multipart/form-data">
                 <input type="hidden" th:value="${user.accountId}" name="id">
-
+				<!-- Tên tài khoản -->
+                <div class="form-group mb-4">
+                    <label for="username" class="form-label">Họ và tên</label>
+                    <input type="text" id="username" th:value="${user.username}" name="userName" class="form-control" required>
+                </div>
+                
                 <!-- Họ và tên -->
                 <div class="form-group mb-4">
                     <label for="fullname" class="form-label">Họ và tên</label>
@@ -54,12 +59,22 @@
                     <input type="date" id="dob" th:value="${#dates.format(user.dateOfBirth, 'yyyy-MM-dd')}" name="dateOfBirth" class="form-control" required>
                 </div>
 
-                <!-- Số giấy phép lái xe -->
+                <!-- Số giấy phép lái xe 
                 <div class="form-group mb-4">
                     <label for="licenseNumber" class="form-label">Số giấy phép lái xe</label>
                     <input type="text" id="licenseNumber" th:value="${user.drivingLicense != null ? user.drivingLicense.licenseNumber : ''}" name="licenseNumber" class="form-control" required>
                 </div>
-
+				-->
+				
+				<!-- Thiếu tải lên hình ảnh giấy phép lái xe -->
+				
+				<!-- Thông báo -->
+    <div th:if="${error}" class="error-message">
+        <p th:text="${error}" style="color:red;"></p>
+    </div>
+    <div th:if="${success}" class="success-message">
+        <p th:text="${success}" style="color:green;"></p>
+    </div>
                 <!-- Nút hành động -->
                 <div class="form-actions d-flex justify-content-end">
                     <button type="button" class="btn btn-secondary me-2">Hủy</button>
@@ -69,11 +84,5 @@
         </div>
     </div>
 
-    <!-- Thông báo -->
-    <div th:if="${error}" class="error-message">
-        <p th:text="${error}" style="color:red;"></p>
-    </div>
-    <div th:if="${success}" class="success-message">
-        <p th:text="${success}" style="color:green;"></p>
-    </div>
+    
 </div>
