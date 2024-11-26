@@ -9,5 +9,8 @@ import com.rentalcar.entity.Account;
 public interface AccountRepo extends JpaRepository<Account, Long>{
 	Account findByEmail(String email);
 	
-	public Account findByPhoneNumber(String phoneNumber);
+	Account findByPhoneNumber(String phoneNumber);
+	
+	Account findByUsername(String username);
+
 }

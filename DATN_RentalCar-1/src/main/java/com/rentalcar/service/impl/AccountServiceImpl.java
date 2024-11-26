@@ -139,5 +139,9 @@ public class AccountServiceImpl implements AccountService {
 	public Account findByPhoneNumber(String phoneNumber) {
 		return accountRepo.findByPhoneNumber(phoneNumber);
 	}
+	
+	public Account findByUsername(String username) {
+		return accountRepo.findByUsername(username);
+	}
 }
 

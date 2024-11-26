@@ -46,7 +46,11 @@ public class RegisterController {
             model.addAttribute("account", account); // Giữ lại dữ liệu người dùng nhập
             return "rigister"; // Trả về trang đăng ký với thông báo lỗi
         }
-        
+        if (accRepo.findByUsername(account.getUsername()) != null) {
+    	    model.addAttribute("error", "Tên tài khoản đã tồn tại!");
+    	    model.addAttribute("account", account); // Giữ lại dữ liệu người dùng nhập
+    	    return "rigister"; // Trả về trang đăng ký với thông báo lỗi
+    	}
     	// Kiểm tra định dạng email
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@[a-zA0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
         if (!account.getEmail().matches(emailRegex)) {
