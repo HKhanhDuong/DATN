@@ -8,7 +8,7 @@
         <div class="col-md-4 profile-column text-center">
             <div class="profile-image-container mb-4">
                 <img id="profileImagePreview" 
-                     src="@{${user.imageUrl != null} ? '/images/' + ${user.imageUrl} : './assets/images/others/user.png'}"  
+                      th:src="${user.imageUrl != null} ? '/images/' + ${user.imageUrl} : '/assets/images/others/user.png'"  
                      alt="Profile Image"
                      class="profile-image rounded-circle" 
                      onclick="triggerFileInput()">
