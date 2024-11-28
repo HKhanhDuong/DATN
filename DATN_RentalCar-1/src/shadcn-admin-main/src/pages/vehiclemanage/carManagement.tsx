@@ -320,79 +320,78 @@ const CarManagement: React.FC = () => {
 
             {/* Upload Image Section */}
             <div className="col-span-1">
-              <h3 className="text-lg font-semibold mb-4">Tải lên ảnh của xe</h3>
+  <h3 className="text-lg font-semibold mb-4">Tải lên ảnh của xe</h3>
 
-              {/* Ảnh Toàn Xe */}
-              <div className="border-dashed border-2 border-gray-400 rounded-lg h-48 flex flex-col items-center justify-center text-gray-500 mb-4 relative group">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="opacity-0 absolute h-full w-full cursor-pointer"
-                  multiple // Cho phép chọn nhiều ảnh
-                />
+  {/* Ảnh Toàn Xe */}
+  <div className="border-dashed border-2 border-gray-400 rounded-lg h-48 flex items-center justify-center text-gray-500 mb-4 relative group overflow-hidden">
+    <input
+      type="file"
+      accept="image/*"
+      onChange={handleImageUpload}
+      className="opacity-0 absolute h-full w-full cursor-pointer"
+      multiple // Cho phép chọn nhiều ảnh
+    />
 
-                {isUploading && (
-                  <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white"></div>
-                  </div>
-                )}
+    {isUploading && (
+      <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white"></div>
+      </div>
+    )}
 
-                {imagePreviews[0] ? (
-                  <img
-                    src={imagePreviews[0]}
-                    alt="Ảnh Toàn Xe"
-                    className="object-cover w-full h-full rounded-lg"
-                  />
-                ) : (
-                  <>
-                    <p className="font-medium">Ảnh Toàn Xe</p>
-                    <p className="text-sm text-gray-400">Kích thước: 1200 x 600 px • JPG, PNG</p>
-                    <p className="text-sm text-gray-400">Dung lượng tối đa: 5 MB</p>
-                  </>
-                )}
+    {imagePreviews[0] ? (
+      <img
+        src={imagePreviews[0]}
+        alt="Ảnh Toàn Xe"
+        className="object-cover w-full h-full rounded-lg" // Đảm bảo ảnh chiếm toàn bộ ô mà không bị méo
+      />
+    ) : (
+      <>
+        <p className="font-medium text-center">Ảnh Toàn Xe</p>
+      </>
+    )}
 
-                {/* Hover button for delete */}
-                {imagePreviews[0] && (
-                  <button
-                    onClick={() => handleDeleteImage(0)} // Xóa ảnh "Ảnh Toàn Xe"
-                    className="absolute top-0 right-0 bg-black text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600 focus:outline-none"
-                  >
-                    &times;
-                  </button>
-                )}
-              </div>
+    {/* Hover button for delete */}
+    {imagePreviews[0] && (
+      <button
+        onClick={() => handleDeleteImage(0)} // Xóa ảnh "Ảnh Toàn Xe"
+        className="absolute top-0 right-0 bg-black text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600 focus:outline-none"
+      >
+        &times;
+      </button>
+    )}
+  </div>
 
-              {/* Display uploaded images */}
-              <div className="grid grid-cols-2 gap-4">
-                {["Ảnh Đầu Xe", "Ảnh Đuôi Xe", "Ảnh Đồng Hồ", "Ảnh Phụ"].map((label, index) => (
-                  <div
-                    key={index}
-                    className="border-dashed border-2 border-gray-400 rounded-lg h-24 flex items-center justify-center text-gray-500 relative group"
-                  >
-                    {imagePreviews[index + 1] ? (
-                      <div className="relative group-hover:block"> {/* Thêm group-hover vào div này */}
-                        <img
-                          src={imagePreviews[index + 1]}
-                          alt={label}
-                          className="object-cover h-full w-full rounded-lg"
-                        />
-                        <button
-                          onClick={() => handleDeleteImage(index + 1)} // Xóa ảnh theo index
-                          className="absolute top-0 right-0 bg-black text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600 focus:outline-none"
-                        >
-                          &times;
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="flex items-center justify-center text-gray-400">
-                        <p className="font-medium">{label}</p>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
+  {/* Display uploaded images */}
+  <div className="grid grid-cols-2 gap-4">
+    {["Ảnh Đầu Xe", "Ảnh Đuôi Xe", "Ảnh Đồng Hồ", "Ảnh Phụ"].map((label, index) => (
+      <div
+        key={index}
+        className="border-dashed border-2 border-gray-400 rounded-lg h-24 flex items-center justify-center text-gray-500 relative group overflow-hidden" // Đảm bảo ảnh không tràn ra ngoài
+      >
+        {imagePreviews[index + 1] ? (
+          <div className="relative group-hover:block"> {/* Thêm group-hover vào div này */}
+            <img
+              src={imagePreviews[index + 1]}
+              alt={label}
+              className="object-cover h-full w-full rounded-lg" // Đảm bảo ảnh chiếm toàn bộ ô mà không bị méo
+            />
+            <button
+              onClick={() => handleDeleteImage(index + 1)} // Xóa ảnh theo index
+              className="absolute top-0 right-0 bg-black text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600 focus:outline-none"
+            >
+              &times;
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center justify-center text-gray-400">
+            <p className="font-medium">{label}</p>
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+</div>
+
 
 
             {/* Car Information Form */}
