@@ -46,6 +46,7 @@ const router = createBrowserRouter([
     errorElement: <GeneralError />,
     children: [
       {
+        
         index: true,
         lazy: async () => ({
           Component: (await import('./pages/dashboard')).default,

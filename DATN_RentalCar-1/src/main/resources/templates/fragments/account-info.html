@@ -1,88 +1,125 @@
 <div class="account-settings-container my-4" th:fragment="accountInfo">
-    <div class="section-header mb-4">
-        <h2>Cài đặt tài khoản</h2>
-    </div>
+	<div class="section-header mb-4">
+		<h2>Cài đặt tài khoản</h2>
+	</div>
 
-    <div class="row">
-        <!-- Cột ảnh đại diện -->
-        <div class="col-md-4 profile-column text-center">
-            <div class="profile-image-container mb-4">
-                <img id="profileImagePreview" 
-                      th:src="${user.imageUrl != null} ? '/images/' + ${user.imageUrl} : '/assets/images/others/user.png'"  
-                     alt="Profile Image"
-                     class="profile-image rounded-circle" 
-                     onclick="triggerFileInput()">
-                <div class="file-input-container mt-3">
-                    <input type="file" id="profileImage" name="profileImage" accept="image/*" style="display:none;" onchange="previewImage(event)">
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="triggerFileInput()">Thay đổi ảnh</button>
-                </div>
-            </div>
-        </div>
+	<div class="row">
 
-        <!-- Cột thông tin -->
-        <div class="col-md-8">
-            <form th:action="@{/save-account-info}" method="post" enctype="multipart/form-data">
-                <input type="hidden" th:value="${user.accountId}" name="id">
+		<!-- Cột ảnh đại diện -->
+		<div th:action="@{/save-account-info}"
+			class="col-md-4 profile-column text-center">
+			<div class="profile-image-container mb-4">
+				<img id="profileImagePreview"
+					th:src="${user.imageUrl != null} ? '/assets/images/account/' + ${user.imageUrl} : '/assets/images/others/user.png'"
+					alt="Profile Image" class="profile-image rounded-circle"
+					onclick="triggerFileInput()">
+				<div class="file-input-container mt-3">
+					<input type="file" id="profileImage" name="profileImage"
+						accept="image/*" style="display: none;"
+						onchange="previewImage(event)">
+					<button type="button" class="btn btn-secondary btn-sm"
+						onclick="triggerFileInput()">Thay đổi ảnh</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Cột thông tin -->
+		<div class="col-md-8">
+			<form th:action="@{/save-account-info}" method="post"
+				enctype="multipart/form-data">
+				<input type="hidden" th:value="${user.accountId}" name="id">
 				<!-- Tên tài khoản -->
-                <div class="form-group mb-4">
-                    <label for="username" class="form-label">Họ và tên</label>
-                    <input type="text" id="username" th:value="${user.username}" name="userName" class="form-control" required>
-                </div>
-                
-                <!-- Họ và tên -->
-                <div class="form-group mb-4">
-                    <label for="fullname" class="form-label">Họ và tên</label>
-                    <input type="text" id="fullname" th:value="${user.fullName}" name="fullName" class="form-control" required>
-                </div>
+				<div class="form-group mb-4">
+					<label for="username" class="form-label">Tên Tài Khoản: </label> <input
+						type="text" id="username" th:value="${user.username}"
+						name="userName" class="form-control" required>
+				</div>
 
-                <!-- Email -->
-                <div class="form-group mb-4">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" id="email" th:value="${user.email}" name="email" class="form-control" required>
-                </div>
+				<!-- Họ và tên -->
+				<div class="form-group mb-4">
+					<label for="fullname" class="form-label">Họ và tên: </label> <input
+						type="text" id="fullname" th:value="${user.fullName}"
+						name="fullName" class="form-control" required>
+				</div>
 
-                <!-- Số điện thoại -->
-                <div class="form-group mb-4">
-                    <label for="phone" class="form-label">Số điện thoại</label>
-                    <input type="text" id="phone" th:value="${user.phoneNumber}" name="phoneNumber" class="form-control" required>
-                </div>
+				<!-- Email -->
+				<div class="form-group mb-4">
+					<label for="email" class="form-label">Email: </label> <input
+						type="email" id="email" th:value="${user.email}" name="email"
+						class="form-control" required>
+				</div>
 
-                <!-- Địa chỉ -->
-                <div class="form-group mb-4">
-                    <label for="address" class="form-label">Địa chỉ</label>
-                    <input type="text" id="address" th:value="${user.address}" name="address" class="form-control" required>
-                </div>
+				<!-- Số điện thoại -->
+				<div class="form-group mb-4">
+					<label for="phone" class="form-label">Số điện thoại:</label> <input
+						type="text" id="phone" th:value="${user.phoneNumber}"
+						name="phoneNumber" class="form-control" required>
+				</div>
 
-                <!-- Ngày sinh -->
-                <div class="form-group mb-4">
-                    <label for="dob" class="form-label">Ngày sinh</label>
-                    <input type="date" id="dob" th:value="${#dates.format(user.dateOfBirth, 'yyyy-MM-dd')}" name="dateOfBirth" class="form-control" required>
-                </div>
+				<!-- Địa chỉ -->
+				<div class="form-group mb-4">
+					<label for="address" class="form-label">Địa chỉ: </label> <input
+						type="text" id="address" th:value="${user.address}" name="address"
+						class="form-control" required>
+				</div>
 
-                <!-- Số giấy phép lái xe 
-                <div class="form-group mb-4">
-                    <label for="licenseNumber" class="form-label">Số giấy phép lái xe</label>
-                    <input type="text" id="licenseNumber" th:value="${user.drivingLicense != null ? user.drivingLicense.licenseNumber : ''}" name="licenseNumber" class="form-control" required>
-                </div>
-				-->
-				
+				<!-- Ngày sinh -->
+				<div class="form-group mb-4">
+					<label for="dob" class="form-label">Ngày sinh:</label> <input
+						type="date" id="dob"
+						th:value="${#dates.format(user.dateOfBirth, 'yyyy-MM-dd')}"
+						name="dateOfBirth" class="form-control" required>
+				</div>
+
+
+				<div class="form-group mb-4">
+					<div class="row">
+						<!-- Trường Số giấy phép lái xe -->
+						<div class="col-md-6">
+							<label for="licenseNumber" class="form-label">Số giấy
+								phép lái xe</label> <input type="text" id="licenseNumber"
+								th:value="${user.drivingLicense != null ? user.drivingLicense.licenseNumber : ''}"
+								name="licenseNumber" class="form-control" required>
+						</div>
+
+						<!-- Trường Tải lên giấy phép -->
+						<div class="col-md-6">
+							<label for="licenseFile" class="form-label">Tải lên giấy
+								phép</label> <input type="file" id="licenseFile" name="licenseFile"
+								class="form-control">
+						</div>
+<div class="select-container" style="margin-top: 20px;">
+  <label class="select-label" >Hạng giấy phép lái xe</label>
+  <select class="select-box">
+    <option>A1 (Bằng lái xe máy)</option>
+    <option>B1 (Bằng lái Ô tô)</option>
+  </select>
+</div>
+
+					</div>
+				</div>
+
+
+
+
+
 				<!-- Thiếu tải lên hình ảnh giấy phép lái xe -->
-				
-				<!-- Thông báo -->
-    <div th:if="${error}" class="error-message">
-        <p th:text="${error}" style="color:red;"></p>
-    </div>
-    <div th:if="${success}" class="success-message">
-        <p th:text="${success}" style="color:green;"></p>
-    </div>
-                <!-- Nút hành động -->
-                <div class="form-actions d-flex justify-content-end">
-                    <button type="button" class="btn btn-secondary me-2">Hủy</button>
-                    <button type="submit" class="btn btn-primary1">Lưu </button>
-                </div>
-            </form>
-        </div>
-    </div>
 
-    
+				<!-- Thông báo -->
+				<div th:if="${error}" class="error-message">
+					<p th:text="${error}" style="color: red;"></p>
+				</div>
+				<div th:if="${success}" class="success-message">
+					<p th:text="${success}" style="color: green;"></p>
+				</div>
+				<!-- Nút hành động -->
+				<div class="form-actions d-flex justify-content-end">
+					<button type="button" class="btn btn-secondary me-2">Hủy</button>
+					<button type="submit" class="btn btn-primary1">Lưu</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+
 </div>

@@ -6,7 +6,7 @@ import Nav from './nav'
 import { cn } from '@/lib/utils'
 import { sidelinks } from '@/data/sidelinks'
 import logo from '@/assets/images/Logo.png'; // Đường dẫn dựa trên cấu trúc alias hoặc tương đối
-
+import { Link } from 'react-router-dom';
 
 interface SidebarProps extends React.HTMLAttributes<HTMLElement> {
   isCollapsed: boolean
@@ -45,24 +45,26 @@ export default function Sidebar({
       <Layout fixed className={navOpened ? 'h-svh' : ''}>
         {/* Header */}
         <Layout.Header
-          sticky
-          className='z-50 flex justify-between px-4 py-3 shadow-sm md:px-4'
-        >
-          <div className={`flex items-center ${!isCollapsed ? 'gap-2' : ''}`}>
-          <img
-  src={logo} // Thay vì chuỗi, dùng biến logo
-  alt="Logo"
-  className={`transition-all ${isCollapsed ? 'h-8 w-8' : 'h-16 w-16'}`}
-/>
-
-            <div
-              className={`flex flex-col justify-end truncate ${isCollapsed ? 'invisible w-0' : 'visible w-auto'}`}
-            >
-              <span className='font-medium'>RENTALCAR</span>
-              <span className='text-xs'>Uy Tín Tạo Thương Hiệu</span>
-            </div>
-          </div>
-
+         sticky
+         className='z-50 flex justify-between px-4 py-3 shadow-sm md:px-4'
+       >   
+         {/* Bao quanh toàn bộ phần cần điều hướng với Link */}
+  <Link to="/dashboard" className="flex items-center">
+    <div className={`flex items-center ${!isCollapsed ? 'gap-2' : ''}`}>
+      <img
+        src={logo} // Thay vì chuỗi, dùng biến logo
+        alt="Logo"
+        className={`transition-all ${isCollapsed ? 'h-8 w-8' : 'h-16 w-16'}`}
+      />
+      <div
+        className={`flex flex-col justify-end truncate ${isCollapsed ? 'invisible w-0' : 'visible w-auto'}`}
+      >
+        <span className='font-medium'>RENTALCAR</span>
+        <span className='text-xs'>Uy Tín Tạo Thương Hiệu</span>
+      </div>
+    </div>
+  </Link>
+         
           {/* Toggle Button in mobile */}
           <Button
             variant='ghost'

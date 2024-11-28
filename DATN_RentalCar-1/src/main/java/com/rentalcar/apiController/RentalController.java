@@ -39,6 +39,7 @@ public class RentalController {
         return ResponseEntity.ok(rentals);
     }
 
+    
     @GetMapping("/{id}")
     public ResponseEntity<Rental> getByID(@PathVariable("id") Long id) {
         Optional<Rental> rental = rentalRepo.findById(id);
@@ -74,7 +75,6 @@ public class RentalController {
         }
     }
 
-    // Cập nhật rental
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody Rental rentalDetail) {
         Optional<Rental> optionalRental = rentalRepo.findById(id);
@@ -84,13 +84,17 @@ public class RentalController {
 
         Rental rentalUpdate = optionalRental.get();
 
-        // Cập nhật thông tin rental
+        // Chỉ cập nhật renStatus nếu trạng thái là "Chờ xác nhận"
+        if ("Chờ xác nhận".equals(rentalUpdate.getRenStatus()) && "Đã huỷ".equals(rentalDetail.getRenStatus())) {
+            rentalUpdate.setRenStatus("Đã huỷ");
+        }
+
+        // Cập nhật các trường khác nếu có
         rentalUpdate.setAccount(rentalDetail.getAccount());
         rentalUpdate.setRentalDate(rentalDetail.getRentalDate());
         rentalUpdate.setReturnDate(rentalDetail.getReturnDate());
         rentalUpdate.setActualReturnDate(rentalDetail.getActualReturnDate());
         rentalUpdate.setTotalCost(rentalDetail.getTotalCost());
-        rentalUpdate.setRenStatus(rentalDetail.getRenStatus());
         rentalUpdate.setDiscount(rentalDetail.getDiscount());
         rentalUpdate.setHaveDriver(rentalDetail.getHaveDriver());
         rentalUpdate.setRentalLocations(rentalDetail.getRentalLocations());
@@ -99,6 +103,16 @@ public class RentalController {
         Rental updatedRental = rentalRepo.save(rentalUpdate);
         return ResponseEntity.ok(updatedRental);
     }
+    
+    @PutMapping("/cancel/{id}")
+    public ResponseEntity<Rental> updateRental(@PathVariable Long id, @RequestBody Rental rental) {
+        // Kiểm tra xem rental tồn tại hay không
+        Rental existingRental = rentalRepo.findById(id).orElseThrow(() -> new RuntimeException("Rental not found"));
+        existingRental.setRenStatus(rental.getRenStatus());  // Chỉ cập nhật trạng thái
+        rentalRepo.save(existingRental);
+        return ResponseEntity.ok(existingRental);
+    }
+    
 
     // Xóa rental theo id
     @DeleteMapping("/{id}")

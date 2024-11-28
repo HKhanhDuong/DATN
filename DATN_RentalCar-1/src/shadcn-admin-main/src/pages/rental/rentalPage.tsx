@@ -58,6 +58,7 @@ const RENTAL_STATUS = {
   ARRIVING: 'Đang tới',
   RENTING: 'Đang thuê',
   COMPLETED: 'Hoàn tất',
+  CANCELLED: 'Đã hủy',
 } as const
 
 const RENTAL_STATUS_REVERSE = Object.entries(RENTAL_STATUS).reduce((acc, [key, value]) => {

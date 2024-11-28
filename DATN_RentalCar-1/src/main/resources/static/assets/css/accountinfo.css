@@ -2,6 +2,7 @@
 
 /* Container chính */
 .account-settings-container {
+	    margin-top: -1px !important;
     max-width: 100%; /* Giữ cân đối chiều rộng */
     margin: 0 auto;
     padding: 40px;
@@ -30,8 +31,9 @@
 }
 
 .profile-image {
-    width: 150px;
-    height: 150px;
+	margin-top: -340px;
+    width: 250px;
+    height: 250px;
     object-fit: cover;
     border: none; /* Bỏ border */
     cursor: pointer;
@@ -116,3 +118,16 @@
     background-color: #0056b3;
     transform: scale(1.05);
 }
+
+/* Đảm bảo các input trong hàng ngang sẽ có chiều rộng phù hợp */
+
+
+.form-control {
+    font-size: 1.2rem; /* Điều chỉnh kích thước font nếu cần */
+}
+
+
+
+
+
+

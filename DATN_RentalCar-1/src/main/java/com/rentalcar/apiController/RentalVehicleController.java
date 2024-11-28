@@ -153,8 +153,7 @@ public class RentalVehicleController {
 		        return ResponseEntity.status(500).body(null); // Server error
 		    }
 		}
-
-		
+	
 
 
 }
