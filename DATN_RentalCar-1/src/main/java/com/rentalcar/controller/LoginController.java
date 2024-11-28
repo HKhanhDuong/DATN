@@ -44,25 +44,25 @@ public class LoginController {
         }
         
         if (account != null && account.getPasswordHash().equals(password)) {  // Nên thay thế bằng cơ chế mã hóa mật khẩu như BCrypt
-            session.set("user", account);
+            session.set("user", account);  // Lưu thông tin người dùng vào session
             
             Account loggedAcc = session.get("user");
             System.out.println("User from session: " + loggedAcc.getUsername());
             
+            // Kiểm tra vai trò người dùng và chuyển hướng tương ứng
             if (this.checkAdmin(account)) {
-                session.set("userAdmin", "admin");
+                session.set("userAdmin", this.checkAdmin(account) ? "admin" : "staff");  // Lưu vai trò vào session
+                return "redirect:http://localhost:5173/";  // Redirect đến trang 5173 nếu là admin hoặc staff
             } else {
                 session.set("userAdmin", "customer");
+                return "redirect:http://localhost:8080";  // Redirect về localhost:8080 nếu không phải admin hoặc staff
             }
-            
-            System.out.println("userAdmin: " + session.get("userAdmin"));
-            
-            return "redirect:/home";  // Chuyển hướng đến trang home sau khi đăng nhập thành công
         } else {
             model.addAttribute("error", "Email hoặc mật khẩu không hợp lệ");
             return "login"; // Hiển thị lại trang đăng nhập kèm thông báo lỗi
         }
     }
+
     
 
  // Phương thức xử lý login cho nextjs

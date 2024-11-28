@@ -89,10 +89,109 @@ document.addEventListener('DOMContentLoaded', () => {
 		});
 	};
 
+	// Lấy các nút và dropdown
+	const cityDropdown = document.getElementById('city');
+	const districtDropdown = document.getElementById('district');
+
+	// Tạo phần tử span cho thành phố, chỉ tạo một lần
+	let citySelectedText = document.querySelector('.selected-city-text');
+	if (!citySelectedText) {
+		citySelectedText = document.createElement('span');
+		citySelectedText.classList.add('selected-city-text');
+		citySelectedText.textContent = 'Vui lòng chọn';
+		cityDropdown.parentNode.insertBefore(citySelectedText, cityDropdown.nextSibling);
+	}
+
+	// Tạo phần tử span cho quận/huyện, chỉ tạo một lần
+	let districtSelectedText = document.querySelector('.selected-district-text');
+	if (!districtSelectedText) {
+		districtSelectedText = document.createElement('span');
+		districtSelectedText.classList.add('selected-district-text');
+		districtSelectedText.textContent = 'Vui lòng chọn';
+		districtDropdown.parentNode.insertBefore(districtSelectedText, districtDropdown.nextSibling);
+	}
+
+	// Dữ liệu các thành phố và quận/huyện
+	const cityData = {
+		'Hà Nội': ['Quận Ba Đình', 'Quận Hoàn Kiếm', 'Quận Cầu Giấy', 'Quận Đống Đa'],
+		'Hồ Chí Minh': ['Quận 1', 'Quận 2', 'Quận 3', 'Quận 7'],
+		'Đà Nẵng': ['Quận Hải Châu', 'Quận Thanh Khê', 'Quận Liên Chiểu'],
+		'Hải Phòng': ['Quận Hồng Bàng', 'Quận Lê Chân', 'Quận Ngô Quyền'],
+	};
+
+	// Tạo dropdown cho thành phố
+	const setupCityDropdown = () => {
+		const dropdown = document.createElement('div');
+		dropdown.classList.add('dropdown-menu');
+		dropdown.style.display = 'none';
+
+		for (const city in cityData) {
+			const option = document.createElement('div');
+			option.classList.add('dropdown-item');
+			option.textContent = city;
+			dropdown.appendChild(option);
+
+			option.addEventListener('click', () => {
+				// Cập nhật span cho thành phố đã chọn
+				citySelectedText.textContent = city;
+				selectedCity = city;
+				selectedDistrict = "Vui lòng chọn";
+
+				// Cập nhật dropdown quận/huyện dựa trên thành phố đã chọn
+				updateDistrictDropdown(city);
+
+				// Ẩn dropdown sau khi chọn
+				dropdown.style.display = 'none';
+			});
+		}
+
+		cityDropdown.parentNode.appendChild(dropdown);
+		cityDropdown.addEventListener('click', () => {
+			dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+		});
+	};
+
+	// Tạo dropdown cho quận/huyện dựa trên thành phố đã chọn
+	const updateDistrictDropdown = (city) => {
+		// Xóa các dropdown cũ
+		const existingDropdown = districtDropdown.parentNode.querySelector('.dropdown-menu');
+		if (existingDropdown) {
+			existingDropdown.remove();
+		}
+
+		const districtOptions = cityData[city] || [];
+		const dropdown = document.createElement('div');
+		dropdown.classList.add('dropdown-menu');
+		dropdown.style.display = 'none';
+
+		// Cập nhật dropdown quận/huyện cho thành phố đã chọn
+		districtOptions.forEach(district => {
+			const option = document.createElement('div');
+			option.classList.add('dropdown-item');
+			option.textContent = district;
+			dropdown.appendChild(option);
+
+			option.addEventListener('click', () => {
+				// Cập nhật nội dung cho quận/huyện đã chọn
+				districtSelectedText.textContent = district;
+				selectedDistrict = district;
+				dropdown.style.display = 'none';
+			});
+		});
+
+		districtDropdown.parentNode.appendChild(dropdown);
+		districtDropdown.addEventListener('click', () => {
+			dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+		});
+	};
+
+
+
 	// Cập nhật dropdown theo loại xe đã chọn
 	const updateDropdowns = (vehicleType) => {
 		setupDropdown('car-type', apiUrls[vehicleType].model);
 		setupDropdown('car-brand', apiUrls[vehicleType].make);
+		setupCityDropdown();
 	};
 
 	// Xử lý sự kiện click cho nút "Xe Con"
@@ -124,6 +223,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Hàm lọc xe theo các điều kiện mà người dùng đã chọn
 	const filterVehicles = () => {
+		console.log("SelectedCity", selectedCity);
+		console.log("SelectedDistrict", selectedDistrict);
+
 		const searchQuery = document.querySelector('.search-box input').value.toLowerCase();
 		const vehicleType = carBtn.classList.contains('active') ? 'car' : 'motorbike';
 
@@ -133,25 +235,28 @@ document.addEventListener('DOMContentLoaded', () => {
 			const productModel = product.getAttribute('data-model');
 			const productBrand = product.getAttribute('data-brand');
 			const productGearType = product.getAttribute('data-gear');
-			const productCity = product.getAttribute('data-city');
-			const productDistrict = product.getAttribute('data-district');
+			const productLocation = product.getAttribute('data-location'); // lấy giá trị location
 
+			// Kiểm tra xem thành phố và quận người dùng chọn có nằm trong productLocation không
 			const matchesSearchQuery = searchQuery === '' || productName.includes(searchQuery);
 			const matchesModel = selectedModel === 'Vui lòng chọn' || selectedModel.toLowerCase() === productModel.toLowerCase();
 			const matchesBrand = selectedBrand === 'Vui lòng chọn' || selectedBrand.toLowerCase() === productBrand.toLowerCase();
 			const matchesGearType = selectedGearType === 'Vui lòng chọn' || selectedGearType.toLowerCase() === productGearType.toLowerCase();
-			const matchesCity = selectedCity === 'Vui lòng chọn' || selectedCity.toLowerCase() === productCity.toLowerCase();
-			const matchesDistrict = selectedDistrict === 'Vui lòng chọn' || selectedDistrict.toLowerCase() === productDistrict.toLowerCase();
+
+			// Kiểm tra nếu người dùng đã chọn thành phố hoặc quận và so sánh với giá trị trong productLocation
+			const matchesCity = (selectedCity === 'Vui lòng chọn' || productLocation.toLowerCase().includes(selectedCity.toLowerCase()));
+			const matchesDistrict = (selectedDistrict === 'Vui lòng chọn' || productLocation.toLowerCase().includes(selectedDistrict.toLowerCase()));
 
 			return matchesSearchQuery && matchesModel && matchesBrand && matchesGearType && matchesCity && matchesDistrict;
 		});
-
 		showProductList(matchedProducts, productList.filter(product => !matchedProducts.includes(product)));
 	};
+
 
 	// Xử lý sự kiện khi nhấn vào nút "Tìm kiếm"
 	document.querySelector('.search-btn').addEventListener('click', (event) => {
 		event.preventDefault();
+		console.log("Search clicked")
 		filterVehicles();
 	});
 
