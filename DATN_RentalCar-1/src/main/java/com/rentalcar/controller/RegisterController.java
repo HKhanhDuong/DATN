@@ -13,8 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.rentalcar.dao.AccountRepo;
 import com.rentalcar.dao.RoleRepo;
+import com.rentalcar.dao.StatisticsDataRepo;
 import com.rentalcar.entity.Account;
 import com.rentalcar.entity.Role;
+import com.rentalcar.service.StatisticsService;
+import com.rentalcar.service.impl.StatisticsServiceImpl;
+import com.rentalcar.entity.StatisticsData;
 
 @Controller
 @RequestMapping(value = "/register")
@@ -24,6 +28,9 @@ public class RegisterController {
     
     @Autowired
     private RoleRepo roleRepo;
+    
+    @Autowired
+    private StatisticsService statisticsService;
     
     @GetMapping
     public String registerPage(Model model) {
