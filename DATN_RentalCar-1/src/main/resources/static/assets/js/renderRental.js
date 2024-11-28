@@ -45,7 +45,8 @@ function createRentalRow(rental, index, vehicleType) {
 
     if (isCar) {
         row.innerHTML = `
-            <td class="rental-table-cell">${rental.rental.rentalId}</td>
+            
+			<td class="rental-table-cell">${rental.car.make} ${rental.car.model} ${rental.car.year} </td>
             <td class="rental-table-cell">${new Date(rental.rental.rentalDate).toLocaleDateString('vi-VN')}</td>
             <td class="rental-table-cell">${new Date(rental.rental.returnDate).toLocaleDateString('vi-VN')}</td>
             <td class="rental-table-cell">${renStatus}</td>

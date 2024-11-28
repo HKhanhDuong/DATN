@@ -55,12 +55,13 @@
         <nav id="sidebar" class="col-md-3 col-lg-2 sidebar">
             <div class="position-sticky">
                 <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" id="account-info-tab" data-bs-toggle="tab" href="#account-info">Thông tin tài khoản</a>
+                	<li class="nav-item">
+                        <a class="nav-link active" id="rental-list-tab" data-bs-toggle="tab" href="#rental-list">Danh sách thuê</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="rental-list-tab" data-bs-toggle="tab" href="#rental-list">Danh sách thuê</a>
+                        <a class="nav-link " id="account-info-tab" data-bs-toggle="tab" href="#account-info">Thông tin tài khoản</a>
                     </li>
+                    
                     <li class="nav-item">
                         <a class="nav-link" id="change-password-tab" data-bs-toggle="tab" href="#change-password">Đổi mật khẩu</a>
                     </li>
@@ -71,15 +72,17 @@
         <!-- Content -->
         <main class="col-md-9 col-lg-10">
             <div class="tab-content">
+            
+            <!-- Danh sách thuê -->
+                <div class="tab-pane fade show active" id="rental-list" role="tabpanel" aria-labelledby="rental-list-tab">
+                    <div th:replace="~{fragments/rental-list :: rentalList}"></div>
+                </div>
+                
                 <!-- Thông tin tài khoản -->
-                <div class="tab-pane fade show active" id="account-info" role="tabpanel" aria-labelledby="account-info-tab">
+                <div class="tab-pane fade " id="account-info" role="tabpanel" aria-labelledby="account-info-tab">
                     <div th:replace="~{fragments/account-info :: accountInfo}"></div>
                 </div>
 
-                <!-- Danh sách thuê -->
-                <div class="tab-pane fade" id="rental-list" role="tabpanel" aria-labelledby="rental-list-tab">
-                    <div th:replace="~{fragments/rental-list :: rentalList}"></div>
-                </div>
 
                 <!-- Đổi mật khẩu -->
                 <div class="tab-pane fade" id="change-password" role="tabpanel" aria-labelledby="change-password-tab">
