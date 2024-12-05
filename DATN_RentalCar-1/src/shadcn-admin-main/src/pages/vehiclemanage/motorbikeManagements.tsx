@@ -540,11 +540,11 @@ const MotorbikeManagement: React.FC = () => {
             placeholder="Tìm kiếm xe..."
             value={searchTerm}
             onChange={handleSearchChange}
-            className="w-full p-3 border border-gray-300 rounded mb-6"
+            className="w-full p-3 border bg-muted rounded mb-6"
           />
           <table className="w-full border-collapse border border-gray-200">
             <thead>
-              <tr className="bg-gray-100">
+              <tr className="bg-muted">
                 <th className="border border-gray-200 p-2">Hãng</th>
                 <th className="border border-gray-200 p-2">Mẫu</th>
                 <th className="border border-gray-200 p-2">Năm</th>

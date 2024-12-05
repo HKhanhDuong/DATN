@@ -40,7 +40,9 @@ public class Payment {
     private String notes; 
     
     @Column(length = 100, columnDefinition = "NVARCHAR(100)")
-    private String idQrCode; 
+    private String idQrCode;
+    
+    private String paymentType ; 
 
 }
 
